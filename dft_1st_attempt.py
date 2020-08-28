@@ -67,7 +67,7 @@ print(f"Throughout the program, the values d = {d}, k = {k}, n = {n}, eps = {eps
 print(f"ensure that the parameter gamma is set appropriately for the subsequent experiments. There will be {R} repeats of {V} ")
 print("different values of m.")
 
-gamma = max((((224*k*(math.sqrt(2*t*((np.log(1/dta))**(3))))*(np.log((2*t)/dta)))))/((n-1)*(eps**2)), (216*k*(np.log(1/dta)))/((n-1)*eps))
+gamma = ((224*k*(math.sqrt(2*t*((np.log(1/dta))**(3))))*(np.log((2*t)/dta))))/((n-1)*(eps**2))
 # The parameter gamma depends on k, t, n, eps and dta. It has already been shown that setting gamma as above guarantees
 # (eps, dta)-Differential Privacy, using advanced composition results.
 
