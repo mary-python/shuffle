@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
 # Import: 1) "random", which uses "random.SystemRandom().random()" to generate a cryptographically secure 
 # random negative exponential distribution, with values stored in a list named "randomVector";
 # and "random.sample()" to uniformly sample a coordinate from each list "randomVector";
-# 2) "math", which uses "math.sqrt" to calculate the value of the parameter gamma;
+# 2) "math", which uses "math.sqrt()" to calculate the value of the parameter gamma;
 # "math.log()" and "math.exp()" to generate the random negative exponential distribution;
-# and "math.floor" to calculate the proximity of each coordinate to each of the two nearest uniformly spaced points,
+# and "math.floor()" to calculate the proximity of each coordinate to each of the two nearest uniformly spaced points,
 # and to convert the time taken between various points in the program from seconds to hours, minutes and seconds;
 # 3) "time", which uses "time.perf_counter()" to measure the time taken between various points in the program;
 # 4) "numpy" as "np", which uses "np.log()" in the setting of parameters "gamma", "comparison" and "dftComparison";
@@ -430,7 +430,7 @@ for value in range(0, V):
 
     listFreq2 = freq2.tolist(); formattedFreq2 = list()
     for item in listFreq2:
-        formattedFreq2.append(int(float(item*(len(sampledList))/R)))
+        formattedFreq2.append(int(float(item*(len(debiasedList))/R)))
     # For the purposes of displaying the average numerical frequencies, undo the weighting applied for the plot, and divide 
     # by the number of repeats to convert from a total to an average.
 
@@ -454,7 +454,7 @@ for value in range(0, V):
 
     listFreq3 = freq3.tolist(); formattedFreq3 = list()
     for item in listFreq3:
-        formattedFreq3.append(int(float(item*(len(sampledList))/R)))
+        formattedFreq3.append(int(float(item*(len(dftSampledList))/R)))
     # For the purposes of displaying the average numerical frequencies, undo the weighting applied for the plot, and divide 
     # by the number of repeats to convert from a total to an average.
     
@@ -479,7 +479,7 @@ for value in range(0, V):
 
     listFreq4 = freq4.tolist(); formattedFreq4 = list()
     for item in listFreq4:
-        formattedFreq4.append(int(float(item*(len(sampledList))/R)))
+        formattedFreq4.append(int(float(item*(len(dftDebiasedList))/R)))
     # For the purposes of displaying the average numerical frequencies, undo the weighting applied for the plot, and divide 
     # by the number of repeats to convert from a total to an average.
 
