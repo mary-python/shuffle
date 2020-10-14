@@ -1,6 +1,7 @@
 import random, math, time; import numpy as np
 from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
+from brokenaxes import brokenaxes
 # Import: 1) "random", which uses "random.SystemRandom().random()" to generate a cryptographically secure 
 # random negative exponential distribution, with values stored in a list named "randomVector";
 # and "random.sample()" to uniformly sample a coordinate from each list "randomVector";
@@ -23,7 +24,8 @@ import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
 # "plt.tight_layout()" to adjust the positioning of subplot axes to achieve a good layout for the plot;
 # "plt.draw()" to redraw the current figure and "plt.savefig()" to save the current figure in the current folder;
 # "plt.clf()" to clear the current figure and "plt.cla()" to clear the current axes so a new figure can be drawn;
-# and 7) "matplotlib.ticker", which uses "PercentFormatter" to format the labels of the y-axis of each plot/histogram as a percentage.
+# 7) "matplotlib.ticker", which uses "PercentFormatter" to format the labels of the y-axis of each plot/histogram as a percentage.
+# and 8) "brokenaxes", which uses "brokenaxes" to specify breaks in the y-axis of the stacked bar chart.
 
 startTime = time.perf_counter()
 # This records the start time of the program, to be used when calculating the total time between particular points in the program.
@@ -375,7 +377,7 @@ for value in range(0, V):
     
     perErrors.append(totalDftMeanSquaredError/R)
     recErrors.append(totalReconstructionError/R)
-    labels.append(f'{m/10}%')
+    labels.append(f'{round(m/10)}%')
 
     datafile.write(f"Total experimental MSE: {round(float((totalDftMeanSquaredError/R) + (totalReconstructionError/R))/1000)*1000} \n")
     error3 = round((100)*((totalReconstructionError/R)/((totalDftMeanSquaredError/R) + (totalReconstructionError/R))), 1)
@@ -514,19 +516,37 @@ width = 0.35
 # Define the width of the bars in the final chart displaying the ratio between the experimental errors over all values of m
 # in the algorithm.
 
-fig, ax = plt.subplots()
-ax.bar(labels, perErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
-ax.bar(labels, recErrors, width, bottom = perErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
+plotPerErrors = [a/(10**5) for a in perErrors]
+plotRecErrors = [b/(10**5) for b in recErrors]
+# Remove the scientific multiplier from the bars to avoid any overlapping issues, instead adding it to the y-axis label.
+
+limit1 = math.ceil((plotPerErrors[2] + plotRecErrors[2])*10)/10
+limit2 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
+limit3 = limit2 + 0.4
+limit4 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
+limit5 = limit4 + 0.4
+# Set the limits for two breaks in the y-axis based on the heights of the largest three bars. I chose to use a non-logarithmic y-axis 
+# to preserve the scale of the ratios displayed in the stacked bar chart, but I had to chop off the top parts of the largest 
+# three bars to fit them on the graph whilst ensuring that the ratios of the smaller bars are visible.
+
+fig = plt.figure()
+bax = brokenaxes(ylims = ((0, limit1), (limit2, limit3), (limit4, limit5)), hspace = .05)
+# Use "brokenaxes" from the package "brokenaxes" to construct two breaks in the y-axis using the limits set above. 
+
+bax.bar(labels, plotPerErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
+bax.bar(labels, plotRecErrors, width, bottom = plotPerErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
 # Plot the bars representing the perturbation errors for each value of m, then stack the bars representing the reconstruction
 # errors on top.
 
-ax.set_yscale('log')
-ax.set_ylabel('Total experimental MSE')
-ax.set_xlabel('% of Fourier coefficients retained')
-ax.set_title('Ratio between experimental errors by % of Fourier coefficients retained')
-ax.legend()
-# Note the logarithmic scale for the y-axis enables both the smaller and larger bars to be visible.
+bax.ticklabel_format(axis = 'y', style = 'plain')
+bax.set_xticks(['1%', '2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', '10%'])
+bax.set_ylabel('Total experimental MSE' + ' ' + 'x' + ' ' + '$10^5$')
+bax.set_xlabel('% of Fourier coefficients retained', labelpad = 20)
+# There is now no need to use a scientific style for the numbers on the y-axis. Add the scientific multiplier to the y-axis label, 
+# and move the x-axis label downwards to avoid any overlapping issues.
 
+bax.set_title('Ratio between experimental errors by % of Fourier coefficients retained')
+bax.legend()
 plt.draw() 
 plt.savefig("errorchart.png")
 
