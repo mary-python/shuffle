@@ -30,7 +30,7 @@ from brokenaxes import brokenaxes
 startTime = time.perf_counter()
 # This records the start time of the program, to be used when calculating the total time between particular points in the program.
 
-d = 1000; k = 10; n = 100000; eps = 0.1; dta = 0.479; R = 1; V = 10
+d = 1000; k = 10; n = 100000; eps = 0.1; dta = 0.479; R = 1; V = 10; s = 10; v = 5
 # These are the main variables that have been subject to change during the process of creating this algorithm. The above values
 # are now set throughout the program to ensure an optimal result.
 
@@ -38,7 +38,8 @@ print("The purpose of this Python program is to compare the errors of two algori
 print("Privacy to Vectors. \n")
 
 print("The first algorithm, Optimal Summation in the Shuffle Model (OSS), addresses the problem of computing the sum of n real ")
-print("vectors in a way that guarantees (eps, dta)-Differential Privacy. Each of n users inputs a d-dimensional vector with real ")
+print("vectors in a way that guarantees (eps, dta)-Differential Privacy. Each of n users inputs a d-dimensional vector, from a ")
+print("negative exponential distribution with scaling factor and steepness s. This d-dimensional vector consists of real ")
 print("coordinates between 0 and 1, of which a small number t coordinates are uniformly sampled from each vector. It has been ")
 print(f"established that the choice t = 1 produces the optimal error for the algorithm. \n")
 
@@ -62,12 +63,12 @@ print("theoretically improves the MSE. \n")
 print("However, the MSE of OSS, or the perturbation error, forms only one part of the total error. To return to the original ")
 print("domain with a d-dimensional vector, the outputted m-dimensional vector is padded with zeros before the inverse transform ")
 print("is applied. The error caused by the transform to the Fourier domain and back is called the reconstruction error. ")
-print("This program will explore several different values of m, investigating their effect on the perturbation and reconstruction ")
-print("errors. \n")
+print("This program will explore several different values of m and s, investigating their effect on the perturbation and ")
+print("reconstruction errors. \n")
 
 print(f"Throughout the program, the values d = {d}, k = {k}, n = {n}, eps = {eps} and dta = {dta} will be set. These choices ")
 print(f"ensure that the parameter gamma is set appropriately for the subsequent experiments. There will be {R} repeats of {V} ")
-print("different values of m.")
+print(f"different values of m, and {v} different values of s.")
 
 gamma = max((((14*k*(np.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
 # The parameter gamma depends on k, n, eps and dta. It has already been shown that setting gamma as above guarantees
@@ -148,7 +149,7 @@ for value in range(0, V):
             # used to store the coordinate resulting from each of the subsequent steps of sampling, submitting, descaling and debiasing.
 
             for i in range(0, d):
-                randomVector.append(-(math.log(1 - (1 - math.exp(-10))*(random.SystemRandom().random())))/10)
+                randomVector.append(-(math.log(1 - (1 - math.exp(-s))*(random.SystemRandom().random())))/s)
             # First, the program applies the steps of OSS. This loop represents the creation of a cryptographically secure random 
             # d-dimensional vector for each user, in which its coordinates form a negative exponential distribution, which is 
             # suitable for the calculation of Fourier coefficients.
@@ -386,7 +387,7 @@ for value in range(0, V):
     plt.style.use('seaborn-white'); plt.tight_layout()
     plt.subplot(2, 2, 1); plt.subplot(2, 2, 2); plt.subplot(2, 2, 3); plt.subplot(2, 2, 4)
     mng = plt.get_current_fig_manager(); mng.window.state('zoomed')
-    plt.draw(); plt.savefig("fourier" + str(m) + ".png"); plt.clf(); plt.cla()
+    plt.draw(); plt.savefig("fourier" + str(m) + "steepness" + str(s) + ".png"); plt.clf(); plt.cla()
     # The purpose of the lines above are to plot four empty subplots and save the resulting figure, before resetting both the 
     # figure and the axes. This is a solution which I have come up with to fix an inconsistency with the size of the subplots:
     # the subplots of the first figure produced in the loop have been consistently smaller than those of the other figures in
@@ -502,7 +503,7 @@ for value in range(0, V):
     datafile.write(f"Percentage difference: {round((100)*(returnedError)/(max(sum(formattedFreq2), sum(formattedFreq4))), 1)}% \n\n")
 
     plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed')
-    plt.draw(); plt.savefig("fourier" + str(m) + ".png"); plt.clf(); plt.cla()
+    plt.draw(); plt.savefig("fourier" + str(m) + "factor" + str(s) + ".png"); plt.clf(); plt.cla()
     # Finally, re-draw the four subplots and save the resulting figure, before resetting both the figure and the axes for the 
     # next loop. The purpose of the "tight layout" and "zoomed window" commands are to adjust the subplot params so that the 
     # subplots fit into the figure area, and to maximise the size of the figure.
@@ -521,20 +522,19 @@ plotRecErrors = [b/(10**5) for b in recErrors]
 # Remove the scientific multiplier from the bars to avoid any overlapping issues, instead adding it to the y-axis label.
 
 limit1 = 4
-# limit1 = math.ceil((plotPerErrors[2] + plotRecErrors[2])*10)/10
-limit2 = math.floor((plotPerErrors[2] + plotRecErrors[2])*10)/10 - 0.1
+limit2 = math.floor((plotPerErrors[2] + plotRecErrors[2])*10)/10 - 0.2
 limit3 = limit2 + 0.8
 limit4 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
 limit5 = limit4 + 0.8
 limit6 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
 limit7 = limit6 + 0.8
-# Set the limits for two breaks in the y-axis based on the heights of the largest three bars. I chose to use a non-logarithmic y-axis 
+# Set the limits for three breaks in the y-axis based on the heights of the largest three bars. I chose to use a non-logarithmic y-axis 
 # to preserve the scale of the ratios displayed in the stacked bar chart, but I had to chop off the top parts of the largest 
 # three bars to fit them on the graph whilst ensuring that the ratios of the smaller bars are visible.
 
 fig = plt.figure()
 bax = brokenaxes(ylims = ((0, limit1), (limit2, limit3), (limit4, limit5), (limit6, limit7)), hspace = .05)
-# Use "brokenaxes" from the package "brokenaxes" to construct two breaks in the y-axis using the limits set above. 
+# Use "brokenaxes" from the package "brokenaxes" to construct three breaks in the y-axis using the limits set above. 
 
 bax.bar(labels, plotPerErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
 bax.bar(labels, plotRecErrors, width, bottom = plotPerErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
@@ -551,7 +551,7 @@ bax.set_xlabel('% of Fourier coefficients retained', labelpad = 20)
 bax.set_title('Ratio between experimental errors by % of Fourier coefficients retained')
 bax.legend()
 plt.draw() 
-plt.savefig("errorchart.png")
+plt.savefig("errorchartfactor" + str(s) + ".png")
 
 avgtime = round((sum(loopTotal))/(V)); avgmins = math.floor(avgtime/60); avghrs = math.floor(avgmins/60)
 datafile.write(f"\nAverage time for each case: {avghrs}h {avgmins - (avghrs*60)}m {avgtime - (avgmins*60)}s \n")

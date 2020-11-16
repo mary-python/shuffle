@@ -30,7 +30,7 @@ from brokenaxes import brokenaxes
 startTime = time.perf_counter()
 # This records the start time of the program, to be used when calculating the total time between particular points in the program.
 
-d = 1000; k = 10; n = 100000; eps = 0.1; dta = 0.479; R = 1; V = 10; s = 25; v = 5
+d = 1000; k = 10; n = 100000; eps = 0.1; dta = 0.479; R = 1; V = 10; s = 15; v = 5
 # These are the main variables that have been subject to change during the process of creating this algorithm. The above values
 # are now set throughout the program to ensure an optimal result.
 
@@ -521,16 +521,18 @@ plotPerErrors = [a/(10**5) for a in perErrors]
 plotRecErrors = [b/(10**5) for b in recErrors]
 # Remove the scientific multiplier from the bars to avoid any overlapping issues, instead adding it to the y-axis label.
 
-limit1 = 2.4
-limit2 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
+limit1 = math.ceil((plotPerErrors[2] + plotRecErrors[2])*10)/10
+limit2 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
 limit3 = limit2 + 0.4
-# Set the limits for one break in the y-axis based on the height of the largest bar. I chose to use a non-logarithmic y-axis 
-# to preserve the scale of the ratios displayed in the stacked bar chart, but I had to chop off the top part of the largest 
-# bar to fit it on the graph whilst ensuring that the ratios of the smaller bars are visible.
+limit4 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
+limit5 = limit4 + 0.4
+# Set the limits for two breaks in the y-axis based on the heights of the largest three bars. I chose to use a non-logarithmic y-axis 
+# to preserve the scale of the ratios displayed in the stacked bar chart, but I had to chop off the top parts of the largest 
+# three bars to fit them on the graph whilst ensuring that the ratios of the smaller bars are visible.
 
 fig = plt.figure()
-bax = brokenaxes(ylims = ((0, limit1), (limit2, limit3)), hspace = .05)
-# Use "brokenaxes" from the package "brokenaxes" to construct one break in the y-axis using the limits set above. 
+bax = brokenaxes(ylims = ((0, limit1), (limit2, limit3), (limit4, limit5)), hspace = .05)
+# Use "brokenaxes" from the package "brokenaxes" to construct two breaks in the y-axis using the limits set above. 
 
 bax.bar(labels, plotPerErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
 bax.bar(labels, plotRecErrors, width, bottom = plotPerErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
