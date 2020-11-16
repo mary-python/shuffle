@@ -339,7 +339,7 @@ for value in range(0, V):
         totalReconstructionError += reconstructionError
         # The output of the FSA is compared in a MSE fashion with the output of the OSS to form the reconstruction error of the FSA.
 
-    datafile = open("fourier" + str(m) + ".txt", "w")
+    datafile = open("fourier" + str(m) + "factor" + str(s) + ".txt", "w")
     datafile.write(f"Number of Fourier coefficients m: {m} \n")
     datafile.write(f"Below are the average figures across the {R} repeats that were just performed. \n\n")
 
@@ -387,7 +387,7 @@ for value in range(0, V):
     plt.style.use('seaborn-white'); plt.tight_layout()
     plt.subplot(2, 2, 1); plt.subplot(2, 2, 2); plt.subplot(2, 2, 3); plt.subplot(2, 2, 4)
     mng = plt.get_current_fig_manager(); mng.window.state('zoomed')
-    plt.draw(); plt.savefig("fourier" + str(m) + "steepness" + str(s) + ".png"); plt.clf(); plt.cla()
+    plt.draw(); plt.savefig("fourier" + str(m) + "factor" + str(s) + ".png"); plt.clf(); plt.cla()
     # The purpose of the lines above are to plot four empty subplots and save the resulting figure, before resetting both the 
     # figure and the axes. This is a solution which I have come up with to fix an inconsistency with the size of the subplots:
     # the subplots of the first figure produced in the loop have been consistently smaller than those of the other figures in

@@ -339,7 +339,7 @@ for value in range(0, V):
         totalReconstructionError += reconstructionError
         # The output of the FSA is compared in a MSE fashion with the output of the OSS to form the reconstruction error of the FSA.
 
-    datafile = open("fourier" + str(m) + ".txt", "w")
+    datafile = open("fourier" + str(m) + "factor0" + str(s) + ".txt", "w")
     datafile.write(f"Number of Fourier coefficients m: {m} \n")
     datafile.write(f"Below are the average figures across the {R} repeats that were just performed. \n\n")
 
@@ -387,7 +387,7 @@ for value in range(0, V):
     plt.style.use('seaborn-white'); plt.tight_layout()
     plt.subplot(2, 2, 1); plt.subplot(2, 2, 2); plt.subplot(2, 2, 3); plt.subplot(2, 2, 4)
     mng = plt.get_current_fig_manager(); mng.window.state('zoomed')
-    plt.draw(); plt.savefig("fourier" + str(m) + ".png"); plt.clf(); plt.cla()
+    plt.draw(); plt.savefig("fourier" + str(m) + "factor0" + str(s) + ".png"); plt.clf(); plt.cla()
     # The purpose of the lines above are to plot four empty subplots and save the resulting figure, before resetting both the 
     # figure and the axes. This is a solution which I have come up with to fix an inconsistency with the size of the subplots:
     # the subplots of the first figure produced in the loop have been consistently smaller than those of the other figures in
@@ -503,7 +503,7 @@ for value in range(0, V):
     datafile.write(f"Percentage difference: {round((100)*(returnedError)/(max(sum(formattedFreq2), sum(formattedFreq4))), 1)}% \n\n")
 
     plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed')
-    plt.draw(); plt.savefig("fourier" + str(m) + "factor" + str(s) + ".png"); plt.clf(); plt.cla()
+    plt.draw(); plt.savefig("fourier" + str(m) + "factor0" + str(s) + ".png"); plt.clf(); plt.cla()
     # Finally, re-draw the four subplots and save the resulting figure, before resetting both the figure and the axes for the 
     # next loop. The purpose of the "tight layout" and "zoomed window" commands are to adjust the subplot params so that the 
     # subplots fit into the figure area, and to maximise the size of the figure.
@@ -550,8 +550,8 @@ bax.set_xlabel('% of Fourier coefficients retained', labelpad = 20)
 
 bax.set_title('Ratio between experimental errors by % of Fourier coefficients retained')
 bax.legend()
-plt.draw() 
-plt.savefig("errorchartfactor" + str(s) + ".png")
+plt.draw()
+plt.savefig("errorchartfactor0" + str(s) + ".png")
 
 avgtime = round((sum(loopTotal))/(V)); avgmins = math.floor(avgtime/60); avghrs = math.floor(avgmins/60)
 datafile.write(f"\nAverage time for each case: {avghrs}h {avgmins - (avghrs*60)}m {avgtime - (avgmins*60)}s \n")
