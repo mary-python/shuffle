@@ -387,7 +387,7 @@ for value in range(0, V):
     plt.style.use('seaborn-white'); plt.tight_layout()
     plt.subplot(2, 2, 1); plt.subplot(2, 2, 2); plt.subplot(2, 2, 3); plt.subplot(2, 2, 4)
     mng = plt.get_current_fig_manager(); mng.window.state('zoomed')
-    plt.draw(); plt.savefig("fourier" + str(m) + "factor" + str(s) + ".png")); plt.clf(); plt.cla()
+    plt.draw(); plt.savefig("fourier" + str(m) + "factor" + str(s) + ".png"); plt.clf(); plt.cla()
     # The purpose of the lines above are to plot four empty subplots and save the resulting figure, before resetting both the 
     # figure and the axes. This is a solution which I have come up with to fix an inconsistency with the size of the subplots:
     # the subplots of the first figure produced in the loop have been consistently smaller than those of the other figures in
