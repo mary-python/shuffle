@@ -148,7 +148,7 @@ for value in range(0, V):
             # used to store the coordinate resulting from each of the subsequent steps of sampling, submitting, descaling and debiasing.
 
             for i in range(0, d):
-                randomVector.append(-(math.log(1 - (1 - math.exp(-15))*(random.SystemRandom().random())))/15)
+                randomVector.append(-(math.log(1 - (1 - math.exp(-20))*(random.SystemRandom().random())))/20)
             # First, the program applies the steps of OSS. This loop represents the creation of a cryptographically secure random 
             # d-dimensional vector for each user, in which its coordinates form a negative exponential distribution, which is 
             # suitable for the calculation of Fourier coefficients.
@@ -520,8 +520,8 @@ plotPerErrors = [a/(10**5) for a in perErrors]
 plotRecErrors = [b/(10**5) for b in recErrors]
 # Remove the scientific multiplier from the bars to avoid any overlapping issues, instead adding it to the y-axis label.
 
-# limit1 = 2.4
-limit1 = math.ceil((plotPerErrors[2] + plotRecErrors[2])*10)/10
+limit1 = 2.4
+# limit1 = math.ceil((plotPerErrors[2] + plotRecErrors[2])*10)/10
 limit2 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
 limit3 = limit2 + 0.4
 limit4 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
