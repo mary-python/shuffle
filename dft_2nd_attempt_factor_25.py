@@ -526,9 +526,9 @@ limit2 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
 limit3 = limit2 + 0.3
 limit4 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
 limit5 = limit4 + 0.3
-# Set the limits for one break in the y-axis based on the height of the largest bar. I chose to use a non-logarithmic y-axis 
-# to preserve the scale of the ratios displayed in the stacked bar chart, but I had to chop off the top part of the largest 
-# bar to fit it on the graph whilst ensuring that the ratios of the smaller bars are visible.
+# Set the limits for two breaks in the y-axis based on the heights of the largest two bars. I chose to use a non-logarithmic y-axis 
+# to preserve the scale of the ratios displayed in the stacked bar chart, but I had to chop off the top parts of the largest 
+# two bars to fit them on the graph whilst ensuring that the ratios of the smaller bars are visible.
 
 fig = plt.figure()
 bax = brokenaxes(ylims = ((0, limit1), (limit2, limit3), (limit4, limit5)), hspace = .05)
