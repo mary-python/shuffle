@@ -355,7 +355,7 @@ for value in range(0, V):
     min3 = round(minDebiasedTotal/R, 1); max3 = round(maxDebiasedTotal/R, 1); avg3 = round(avgDebiasedTotal/R, 1)
     datafile.write(f"Output in the original domain: min {min3}, max {max3}, avg {avg3} \n\n")
 
-    comparison = ((d**(2/3))*(n**(1/3)))
+    comparison = (2*(14**(2/3))*(d**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))
     datafile.write(f"Theoretical Upper Bound for MSE: {round(float(comparison)/10)*10} \n")
     datafile.write(f"Experimental MSE: {round(float(totalMeanSquaredError/R)/10)*10} \n")
     error1 = round((100)*((totalMeanSquaredError/R)/comparison), 2)
@@ -372,7 +372,7 @@ for value in range(0, V):
     min6 = round(minFinalTotal/R, 2); max6 = round(maxFinalTotal/R); avg6 = round(avgFinalTotal/R, 1)
     datafile.write(f"Output in the original domain: min {min6}, max {max6}, avg {avg6} \n\n")
 
-    dftComparison = ((m**(2/3))*(n**(1/3)))
+    dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))
     datafile.write(f"Theoretical upper bound for perturbation error: {round(float(dftComparison)/10)*10} \n")
     datafile.write(f"Experimental perturbation error: {round(float(totalDftMeanSquaredError/R)/1000)*1000} \n")
     error2 = round((100)*((totalDftMeanSquaredError/R)/dftComparison), 1)
