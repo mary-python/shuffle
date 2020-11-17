@@ -542,11 +542,11 @@ plotRecErrors = [b/(10**5) for b in recErrors]
 if s == 5:
     limit1 = 16
     limit2 = math.floor((plotPerErrors[2] + plotRecErrors[2])*10)/10 - 0.2
-    limit3 = limit2 + 2
+    limit3 = limit2 + 0.5
     limit4 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
-    limit5 = limit4 + 2
+    limit5 = limit4 + 0.5
     limit6 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
-    limit7 = limit6 + 2
+    limit7 = limit6 + 0.5
     # Set the limits for three breaks in the y-axis based on the heights of the largest three bars. I chose to use a non-logarithmic
     # y-axis to preserve the scale of the ratios displayed in the stacked bar chart, but I had to chop off the top parts of the largest 
     # three bars to fit them on the graph whilst ensuring that the ratios of the smaller bars are visible.
@@ -581,20 +581,20 @@ elif s == 15:
     # Use "brokenaxes" from the package "brokenaxes" to construct two breaks in the y-axis using the limits set above.
 
 elif s == 20:
-    limit1 = 1.25
+    limit1 = 1.4
     limit2 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
-    limit3 = limit2 + 0.2
+    limit3 = limit2 + 0.3
     limit4 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
-    limit5 = limit4 + 0.2
+    limit5 = limit4 + 0.3
     # Do the same as the above but to suit the distribution when s = 20.
 
     fig = plt.figure()
     bax = brokenaxes(ylims = ((0, limit1), (limit2, limit3), (limit4, limit5)), hspace = .05)
 
 else:
-    limit1 = 0.9
+    limit1 = 1.1
     limit2 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
-    limit3 = limit2 + 0.2
+    limit3 = limit2 + 0.3
     # Do the same as the above but to suit the distribution when s = 25.
 
     fig = plt.figure()
