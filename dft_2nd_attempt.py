@@ -581,20 +581,20 @@ elif s == 15:
     # Use "brokenaxes" from the package "brokenaxes" to construct two breaks in the y-axis using the limits set above.
 
 elif s == 20:
-    limit1 = 1.5
+    limit1 = 1.25
     limit2 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
-    limit3 = limit2 + 0.3
+    limit3 = limit2 + 0.2
     limit4 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
-    limit5 = limit4 + 0.3
+    limit5 = limit4 + 0.2
     # Do the same as the above but to suit the distribution when s = 20.
 
     fig = plt.figure()
     bax = brokenaxes(ylims = ((0, limit1), (limit2, limit3), (limit4, limit5)), hspace = .05)
 
 else:
-    limit1 = 1
+    limit1 = 0.9
     limit2 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
-    limit3 = limit2 + 0.3
+    limit3 = limit2 + 0.2
     # Do the same as the above but to suit the distribution when s = 25.
 
     fig = plt.figure()

@@ -521,9 +521,9 @@ plotPerErrors = [a/(10**5) for a in perErrors]
 plotRecErrors = [b/(10**5) for b in recErrors]
 # Remove the scientific multiplier from the bars to avoid any overlapping issues, instead adding it to the y-axis label.
 
-limit1 = 1
+limit1 = 0.9
 limit2 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
-limit3 = limit2 + 0.3
+limit3 = limit2 + 0.2
 # Set the limits for one break in the y-axis based on the height of the largest bar. I chose to use a non-logarithmic y-axis 
 # to preserve the scale of the ratios displayed in the stacked bar chart, but I had to chop off the top part of the largest 
 # bar to fit it on the graph whilst ensuring that the ratios of the smaller bars are visible.
