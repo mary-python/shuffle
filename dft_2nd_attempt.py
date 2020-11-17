@@ -30,7 +30,7 @@ from brokenaxes import brokenaxes
 startTime = time.perf_counter()
 # This records the start time of the program, to be used when calculating the total time between particular points in the program.
 
-d = 1000; k = 10; n = 100000; eps = 0.1; dta = 0.479; R = 1; V = 10; s = 5; v = 5
+d = 1000; k = 10; n = 100000; eps = 0.1; dta = 0.479; R = 1; V = 10; s = 20; v = 5
 # These are the main variables that have been subject to change during the process of creating this algorithm. The above values
 # are now set throughout the program to ensure an optimal result.
 
@@ -583,9 +583,9 @@ elif s == 15:
 elif s == 20:
     limit1 = 2.4
     limit2 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
-    limit3 = limit2 + 0.4
+    limit3 = limit2 + 0.3
     limit4 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
-    limit5 = limit4 + 0.4
+    limit5 = limit4 + 0.3
     # Do the same as the above but to suit the distribution when s = 20.
 
     fig = plt.figure()
