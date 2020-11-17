@@ -521,7 +521,7 @@ plotPerErrors = [a/(10**5) for a in perErrors]
 plotRecErrors = [b/(10**5) for b in recErrors]
 # Remove the scientific multiplier from the bars to avoid any overlapping issues, instead adding it to the y-axis label.
 
-limit1 = 1.1
+limit1 = 1
 limit2 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
 limit3 = limit2 + 0.3
 # Set the limits for one break in the y-axis based on the height of the largest bar. I chose to use a non-logarithmic y-axis 
