@@ -592,11 +592,11 @@ elif s == 20:
     bax = brokenaxes(ylims = ((0, limit1), (limit2, limit3), (limit4, limit5)), hspace = .05)
 
 else:
-    limit1 = 1.2
+    limit1 = 1.1
     limit2 = math.floor((plotPerErrors[1] + plotRecErrors[1])*10)/10 - 0.1
-    limit3 = limit2 + 0.3
+    limit3 = limit2 + 0.4
     limit4 = math.floor((plotPerErrors[0] + plotRecErrors[0])*10)/10 - 0.2
-    limit5 = limit4 + 0.3
+    limit5 = limit4 + 0.4
     # Do the same as the above but to suit the distribution when s = 25.
 
     fig = plt.figure()
