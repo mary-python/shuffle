@@ -30,7 +30,7 @@ from brokenaxes import brokenaxes
 startTime = time.perf_counter()
 # This records the start time of the program, to be used when calculating the total time between particular points in the program.
 
-d = 1000; k = 10; n = 100000; eps = 0.1; dta = 0.479; R = 1; V = 10; s = 25; v = 5
+d = 1000; k = 10; n = 100000; eps = 0.1; dta = 0.479; R = 1; V = 10; s = 15; v = 5
 # These are the main variables that have been subject to change during the process of creating this algorithm. The above values
 # are now set throughout the program to ensure an optimal result.
 
