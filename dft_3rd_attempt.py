@@ -53,11 +53,13 @@ bar.finish()
 
 descaledTotal = [idx/k for idx in submittedTotal]
 mergedTracker = tuple(zip(indexTracker, descaledTotal))
-debiasedTotal = [(z - ((gamma/2)*count))/(1 - gamma) for count, z in mergedTracker]
+debiasedTotal = [((z/(max(1, count))) - (gamma/2))/(1 - gamma) for count, z in mergedTracker]
+print(debiasedTotal)
 
 averageVector = [idx/n for idx in totalVector]
 errorTuple = tuple(zip(debiasedTotal, averageVector))
 meanSquaredError = [(a - b)**2 for a, b in errorTuple]
+print(meanSquaredError)
 totalMeanSquaredError = sum(meanSquaredError)
 
 for value in range(0, V):
@@ -80,10 +82,10 @@ for value in range(0, V):
             dftTotalVector[a] += dftRandomCoord
 
         dftVector = (rfft(dftRandomVector)).tolist()
-        slicedDftVector = dftVector[0:m]
+        slicedDftVector = dftVector[1:m+1]
 
         dftRandomIndex = random.randint(0, m-1)
-        dftSampledPair = (dftRandomIndex, slicedDftVector[dftRandomIndex])
+        dftSampledPair = (dftRandomIndex, (6.0 + slicedDftVector[dftRandomIndex])/12.0)
 
         dftSampledCoord = dftSampledPair[1]
         dftSampledList.append(dftSampledCoord)
@@ -110,17 +112,24 @@ for value in range(0, V):
 
     dftDescaledTotal = [idx/k for idx in dftSubmittedTotal]
     dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledTotal))
-    dftDebiasedTotal = [(z - ((gamma/2)*count))/(1 - gamma) for count, z in dftMergedTracker]
+    dftDebiasedTotal = [12.0*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-6.0 for count, z in dftMergedTracker]
+    print(dftDebiasedTotal)
     paddedTotal = dftDebiasedTotal + [0]*(d-m)
+    print(paddedTotal)
     finalTotal = (irfft(paddedTotal)).tolist()
+    print(finalTotal)
 
     dftAverageVector = [idx/n for idx in dftTotalVector]        
     dftErrorTuple = tuple(zip(finalTotal, dftAverageVector))
     dftMeanSquaredError = [(a - b)**2 for a, b in dftErrorTuple]
+    print(dftMeanSquaredError)
     totalDftMeanSquaredError = sum(dftMeanSquaredError)
 
-    reconstructionTuple = tuple(zip(debiasedTotal, dftAverageVector))
+    exactVector = irfft(rfft(dftAverageVector).tolist()[0:m] + [0]*(d-m)).tolist()
+    print(exactVector)
+    reconstructionTuple = tuple(zip(exactVector, dftAverageVector))
     reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
+    print(reconstructionError)
     totalReconstructionError = sum(reconstructionError)
     
     if s == 5:
@@ -133,26 +142,26 @@ for value in range(0, V):
 
     comparison = (2*(14**(2/3))*(d**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))
     datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison)} \n")
-    datafile.write(f"Experimental MSE: {round(totalMeanSquaredError)} \n")
-    error1 = round((100)*((totalMeanSquaredError)/comparison))
+    datafile.write(f"Experimental MSE: {round(totalMeanSquaredError, 1)} \n")
+    error1 = round((100)*((totalMeanSquaredError)/comparison), 1)
     datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n\n")
 
     datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
     dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))
     datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison)} \n")
-    datafile.write(f"Experimental perturbation error: {round(totalDftMeanSquaredError)} \n")
-    error2 = round((100)*((totalDftMeanSquaredError)/dftComparison))
+    datafile.write(f"Experimental perturbation error: {round(totalDftMeanSquaredError, 1)} \n")
+    error2 = round((100)*((totalDftMeanSquaredError)/dftComparison), 1)
     datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
 
-    datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError)} \n")
+    datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError, 1)} \n")
     
     perErrors.append(totalDftMeanSquaredError)
     recErrors.append(totalReconstructionError)
     labels.append(f'{round(m/10)}%')
 
-    datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError))} \n")
-    error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))))
+    datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError), 1)} \n")
+    error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))), 1)
     datafile.write(f"Reconstruction error was {error3}% of the total experimental MSE. \n\n")
 
     plt.style.use('seaborn-white'); plt.tight_layout()
@@ -219,7 +228,7 @@ for value in range(0, V):
     datafile.write(f"Frequencies of sampled coordinates in the Fourier domain: \n")
     datafile.write(f"{str(formattedFreq3)[1:-1]} \n")
     datafile.write(f"Total: {sum(formattedFreq3)} \n")
-    perc1 = round((100)*(sum(formattedFreq3))/(sum(dftIndexTracker)), 1)
+    perc1 = round((100)*(sum(formattedFreq3))/(sum(dftIndexTracker)))
     datafile.write(f"Percentage of sampled coordinates between 0 and 1: {perc1}% \n\n")
 
     plt.subplot(2, 2, 4)
@@ -238,7 +247,7 @@ for value in range(0, V):
     datafile.write(f"Frequencies of returned coordinates in the Fourier domain: \n")
     datafile.write(f"{str(formattedFreq4)[1:-1]} \n")
     datafile.write(f"Total: {sum(formattedFreq4)} \n")
-    perc2 = round((100)*(sum(formattedFreq4))/(sum(dftIndexTracker)), 1)
+    perc2 = round((100)*(sum(formattedFreq4))/(sum(dftIndexTracker)))
     datafile.write(f"Percentage of returned coordinates between 0 and 1: {perc2}% \n\n")
 
     for a, b in zip(formattedFreq1, formattedFreq3):
