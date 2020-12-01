@@ -291,33 +291,17 @@ for value in range(0, V):
     casetime = round(loopTotal[value]); casemins = math.floor(casetime/60)
     datafile.write(f"Total time for case m = {m}: {casemins}m {casetime - (casemins*60)}s")
 
-width = 0.35
-
-limit1 = math.ceil((perErrors[2] + recErrors[2])*10)/10
-limit2 = math.floor((perErrors[1] + recErrors[1])*10)/10
-limit3 = limit2 + 0.1
-limit4 = math.floor((perErrors[0] + recErrors[0])*10)/10
-limit5 = limit4 + 0.1
-
-fig = plt.figure()
-bax = brokenaxes(ylims = ((0, limit1), (limit2, limit3), (limit4, limit5)), hspace = .05)
-
-bax.bar(labels, perErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
-bax.bar(labels, recErrors, width, bottom = perErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
-
-bax.ticklabel_format(axis = 'y', style = 'plain')
-bax.set_xticks(['1%', '2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', '10%'])
-bax.set_ylabel('Total experimental MSE')
-bax.set_xlabel('% of Fourier coefficients retained', labelpad = 20)
-
-bax.set_title('Ratio between experimental errors by % of Fourier coefficients retained')
-bax.legend()
-plt.draw()
-
 if s == 5:
-    plt.savefig("errorchartfactor0" + str(s) + ".png")
+    errorfile = open("errortemp0" + str(s) + ".txt", "w")
 else:
-    plt.savefig("errorchartfactor" + str(s) + ".png")
+    errorfile = open("errortemp" + str(s) + ".txt", "w")
+
+for value in range(0, V):
+    errorfile.write(f"{perErrors[value]} \n")
+    errorfile.write(f"{recErrors[value]} \n")
+    errorfile.write(f"{labels[value]} \n")
+
+errorfile.close()
 
 avgtime = round((sum(loopTotal))/(V)); avgmins = math.floor(avgtime/60)
 datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
