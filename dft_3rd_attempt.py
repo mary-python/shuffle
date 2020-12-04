@@ -219,10 +219,10 @@ for value in range(0, V):
     error2 = round((100)*((totalDftMeanSquaredError)/dftComparison), 6)
     datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
     datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError, 6)} \n")
-    
+
+    labels.append(f'{round(m/10)}%')
     perErrors.append(totalDftMeanSquaredError)
     recErrors.append(totalReconstructionError)
-    labels.append(f'{round(m/10)}%')
 
     datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError), 6)} \n")
     error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))), 2)
@@ -297,9 +297,7 @@ else:
     errorfile = open("errortemp" + str(s) + ".txt", "w")
 
 for value in range(0, V):
-    errorfile.write(f"{perErrors[value]} \n")
-    errorfile.write(f"{recErrors[value]} \n")
-    errorfile.write(f"{labels[value]} \n")
+    errorfile.write(f"{labels[value]} {perErrors[value]} {recErrors[value]} \n")
 
 errorfile.close()
 
