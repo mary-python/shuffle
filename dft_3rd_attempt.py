@@ -220,7 +220,7 @@ for value in range(0, V):
     datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
     datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError, 6)} \n")
 
-    labels.append(f'{round(m/10)}%')
+    labels.append(f'{round(m/10)}')
     perErrors.append(totalDftMeanSquaredError)
     recErrors.append(totalReconstructionError)
 

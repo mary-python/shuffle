@@ -5,9 +5,9 @@ labels = list(); perErrors = list(); recErrors = list()
 with open("errortemp" + str(s) + ".txt") as reader:
     for line in reader:
         tab = line.split()
-        labels.append(tab[0])
-        perErrors.append(tab[1])
-        recErrors.append(tab[2])
+        labels.append(f'{int(tab[0])}%')
+        perErrors.append(int(tab[1]))
+        recErrors.append(int(tab[2]))
 
 plt.bar(labels, perErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
 plt.bar(labels, recErrors, width, bottom = perErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
