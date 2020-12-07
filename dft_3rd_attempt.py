@@ -1,14 +1,14 @@
 import random, math, time; import numpy as np
 from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
-from brokenaxes import brokenaxes
+from decimal import *
 
 startTime = time.perf_counter()
 
-d = 1000; k = 6; n = 100000; eps = 0.1; dta = 0.185; V = 10; s = 15; v = 5
+d = 1000; k = 6; n = 100000; eps = 0.1; dta = 0.185; V = 10; v = 5
 gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
 
-loopTotal = list(); perErrors = list(); recErrors = list(); labels = list()
+loopTotal = list(); perErrors = list(); recErrors = list()
 randomVector = [0]*d; dftRandomVector = [0]*d
 sampledList = list(); debiasedList = list()
 indexTracker = [0]*d; submittedTotal = [0]*d; totalVector = [0]*d
@@ -21,7 +21,7 @@ bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 for i in range(0, n):
 
     for a in range(0, d):
-        randomCoord = -(math.log(1 - (1 - math.exp(-s))*(random.random())))/s
+        randomCoord = ((a/d)**2)*(random.random())
         randomVector[a] = randomCoord
         totalVector[a] += randomCoord
 
@@ -62,11 +62,7 @@ totalMeanSquaredError = sum(meanSquaredError)
 averageSquares = [idx**2 for idx in averageVector]
 sumOfSquares = sum(averageSquares)
 
-if s == 5:
-    datafile = open("basicfactor0" + str(s) + ".txt", "w")
-else:
-    datafile = open("basicfactor" + str(s) + ".txt", "w")
-
+datafile = open("basic.txt", "w")
 datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
 comparison = (2*(14**(2/3))*(d**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
@@ -80,12 +76,7 @@ plt.style.use('seaborn-white'); plt.tight_layout()
 plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)
 mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
     
-if s == 5:
-    plt.savefig("basicfactor0" + str(s) + ".png")
-else:
-    plt.savefig("basicfactor" + str(s) + ".png")
-    
-plt.clf(); plt.cla()
+plt.savefig("basic.png"); plt.clf(); plt.cla()
 
 plt.subplot(1, 2, 1)
 (freq1, bins1, patches) = plt.hist(sampledList, weights = np.ones(len(sampledList)) / len(sampledList),\
@@ -121,16 +112,10 @@ for item in listFreq2:
 datafile.write(f"Frequencies of returned coordinates in the original domain: \n")
 datafile.write(f"{str(formattedFreq2)[1:-1]} \n")
 datafile.write(f"Total: {sum(formattedFreq2)} \n")
-datafile.write(f"Percentage of returned coordinates between 0 and 1: {round((100)*(sum(formattedFreq2))/(sum(indexTracker)))}% \n\n")
+datafile.write(f"Percentage of returned coordinates between 0 and 1: {round((100)*(sum(formattedFreq2))/(sum(indexTracker)))}%")
 
 plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
-    
-if s == 5:
-    plt.savefig("basicfactor0" + str(s) + ".png")
-else:
-    plt.savefig("basicfactor" + str(s) + ".png")
-    
-plt.clf(); plt.cla()
+plt.savefig("basic.png"); plt.clf(); plt.cla()
 
 for value in range(0, V):
 
@@ -147,7 +132,7 @@ for value in range(0, V):
     for i in range(0, n):
             
         for a in range(0, d):
-            dftRandomCoord = -(math.log(1 - (1 - math.exp(-s))*(random.random())))/s
+            dftRandomCoord = ((a/d)**2)*(random.random())
             dftRandomVector[a] = dftRandomCoord
 
         dftVectorSum = sum(dftRandomVector)
@@ -179,7 +164,7 @@ for value in range(0, V):
         dftIndexTracker[dftRandomIndex] += 1
 
         dftDescaledCoord = dftSubmittedCoord/k
-        dftDebiasedCoord = (dftDescaledCoord - (gamma/2))/(1 - gamma)
+        dftDebiasedCoord = 2.0*((dftDescaledCoord - (gamma/2))/(1 - gamma))-1.0
         dftDebiasedList.append(dftDebiasedCoord)
     
         bar.next()
@@ -205,11 +190,7 @@ for value in range(0, V):
     reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
     totalReconstructionError = sum(reconstructionError)
     
-    if s == 5:
-        datafile = open("fourier" + str(m) + "factor0" + str(s) + ".txt", "w")
-    else:
-        datafile = open("fourier" + str(m) + "factor" + str(s) + ".txt", "w")
-
+    datafile = open("fourier" + str(m) + ".txt", "w")
     datafile.write(f"Number of Fourier coefficients m: {m} \n")
     datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
@@ -220,9 +201,8 @@ for value in range(0, V):
     datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
     datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError, 6)} \n")
 
-    labels.append(f'{round(m/10)}')
-    perErrors.append(totalDftMeanSquaredError)
-    recErrors.append(totalReconstructionError)
+    perErrors.append(Decimal(totalDftMeanSquaredError))
+    recErrors.append(Decimal(totalReconstructionError))
 
     datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError), 6)} \n")
     error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))), 2)
@@ -232,13 +212,7 @@ for value in range(0, V):
     plt.style.use('seaborn-white'); plt.tight_layout()
     plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)
     mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
-    
-    if s == 5:
-        plt.savefig("fourier" + str(m) + "factor0" + str(s) + ".png")
-    else:
-        plt.savefig("fourier" + str(m) + "factor" + str(s) + ".png")
-    
-    plt.clf(); plt.cla()
+    plt.savefig("fourier" + str(m) + ".png"); plt.clf(); plt.cla()
 
     plt.subplot(1, 2, 1)
     (freq3, bins3, patches) = plt.hist(dftSampledList, weights = np.ones(len(dftSampledList)) / len(dftSampledList),\
@@ -279,11 +253,7 @@ for value in range(0, V):
     datafile.write(f"Percentage of returned coordinates between 0 and 1: {perc2}% \n\n")
 
     plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
-    
-    if s == 5:
-        plt.savefig("fourier" + str(m) + "factor0" + str(s) + ".png")
-    else:
-        plt.savefig("fourier" + str(m) + "factor" + str(s) + ".png")
+    plt.savefig("fourier" + str(m) + ".png")
     
     plt.clf(); plt.cla()
 
@@ -291,13 +261,13 @@ for value in range(0, V):
     casetime = round(loopTotal[value]); casemins = math.floor(casetime/60)
     datafile.write(f"Total time for case m = {m}: {casemins}m {casetime - (casemins*60)}s")
 
-if s == 5:
-    errorfile = open("errortemp0" + str(s) + ".txt", "w")
-else:
-    errorfile = open("errortemp" + str(s) + ".txt", "w")
+errorfile = open("errortemp.txt", "w")
 
 for value in range(0, V):
-    errorfile.write(f"{labels[value]} {perErrors[value]} {recErrors[value]} \n")
+    if value != (V - 1):
+        errorfile.write(f"{value + 1} {perErrors[value]} {recErrors[value]} \n")
+    else:
+        errorfile.write(f"{value + 1} {perErrors[value]} {recErrors[value]}")
 
 errorfile.close()
 
