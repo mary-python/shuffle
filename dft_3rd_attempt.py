@@ -1,10 +1,8 @@
-import random, math, time; import numpy as np
+import random, math, time; import numpy as np; from decimal import *
 from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
-from decimal import *
 
 startTime = time.perf_counter()
-
 d = 1000; k = 6; n = 100000; eps = 0.1; dta = 0.185; V = 10; v = 5
 gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
 
@@ -14,14 +12,13 @@ sampledList = list(); debiasedList = list()
 indexTracker = [0]*d; submittedTotal = [0]*d; totalVector = [0]*d
 
 print(f"\n Processing the basic optimal summation result.")
-
 from progress.bar import FillingSquaresBar
 bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
 for i in range(0, n):
 
     for a in range(0, d):
-        randomCoord = ((a/d)**2)*(random.random())
+        randomCoord = (math.cos((a/d)**2))*(random.random())
         randomVector[a] = randomCoord
         totalVector[a] += randomCoord
 
@@ -75,7 +72,6 @@ datafile.write(f"Sum of squares of average vector: {round(sumOfSquares, 2)} \n\n
 plt.style.use('seaborn-white'); plt.tight_layout()
 plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)
 mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
-    
 plt.savefig("basic.png"); plt.clf(); plt.cla()
 
 plt.subplot(1, 2, 1)
@@ -132,7 +128,7 @@ for value in range(0, V):
     for i in range(0, n):
             
         for a in range(0, d):
-            dftRandomCoord = ((a/d)**2)*(random.random())
+            dftRandomCoord = (math.cos((a/d)**2))*(random.random())
             dftRandomVector[a] = dftRandomCoord
 
         dftVectorSum = sum(dftRandomVector)

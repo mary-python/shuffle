@@ -6,16 +6,16 @@ with open("errortemp.txt") as reader:
     for line in reader:
         tab = line.split()
         labels.append(f'{int(tab[0])}%')
-        perErrors.append(Decimal(tab[1]))
-        recErrors.append(Decimal(tab[2]))
+        perErrors.append((Decimal(tab[1]))*(Decimal('100000')))
+        recErrors.append((Decimal(tab[2]))*(Decimal('100000')))
 
 plt.bar(labels, perErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
 plt.bar(labels, recErrors, width, bottom = perErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
 
 plt.ticklabel_format(axis = 'y', style = 'plain')
 plt.xticks(['1%', '2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', '10%'])
-plt.ylabel('Total experimental MSE')
-plt.xlabel('% of Fourier coefficients retained', labelpad = 20)
+plt.ylabel('Total experimental MSE' + ' ' + 'x' + ' ' + '$10^{-5}$')
+plt.xlabel('% of Fourier coefficients retained', labelpad = 8)
 
 plt.title('Ratio between experimental errors by % of Fourier coefficients retained')
-plt.legend(); plt.draw(); plt.savefig("errorchart.png")
+plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("errorchart.png")
