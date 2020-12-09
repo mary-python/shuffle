@@ -3,7 +3,7 @@ from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
 
 startTime = time.perf_counter()
-d = 1000; k = 6; n = 100000; eps = 0.1; dta = 0.185; V = 10
+d = 300; k = 6; n = 400000; eps = 0.1; dta = 0.185; V = 10
 gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
 
 loopTotal = list(); perErrors = list(); recErrors = list()
