@@ -198,18 +198,18 @@ for value in range(0, V):
 
     dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
     datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 2)} \n")
-    datafile.write(f"Experimental perturbation error: {round(totalDftMeanSquaredError, 6)} \n")
-    error2 = round((100)*((totalDftMeanSquaredError)/dftComparison), 6)
+    datafile.write(f"Experimental perturbation error: {round(totalDftMeanSquaredError)} \n")
+    error2 = round((100)*((totalDftMeanSquaredError)/dftComparison))
     datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
-    datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError, 6)} \n")
+    datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError)} \n")
 
     perErrors.append(Decimal(totalDftMeanSquaredError))
     recErrors.append(Decimal(totalReconstructionError))
 
-    datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError), 6)} \n")
-    error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))), 2)
+    datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError))} \n")
+    error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))), 1)
     datafile.write(f"Reconstruction error was {error3}% of the total experimental MSE. \n")
-    datafile.write(f"Sum of squares of average vector: {round(dftSumOfSquares, 6)} \n\n")
+    datafile.write(f"Sum of squares of average vector: {round(dftSumOfSquares, 2)} \n\n")
 
     plt.style.use('seaborn-white'); plt.tight_layout()
     plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)

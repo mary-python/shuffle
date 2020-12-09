@@ -201,7 +201,7 @@ for value in range(0, V):
     recErrors.append(Decimal(totalReconstructionError))
 
     datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError), 6)} \n")
-    error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))), 2)
+    error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))), 1)
     datafile.write(f"Reconstruction error was {error3}% of the total experimental MSE. \n")
     datafile.write(f"Sum of squares of average vector: {round(dftSumOfSquares, 6)} \n\n")
 
