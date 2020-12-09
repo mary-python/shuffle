@@ -3,7 +3,7 @@ from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
 
 startTime = time.perf_counter()
-d = 1000; k = 6; n = 100000; eps = 0.1; dta = 0.185; V = 10
+d = 300; k = 6; n = 400000; eps = 0.1; dta = 0.185; V = 10
 gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
 
 loopTotal = list(); perErrors = list(); recErrors = list()
@@ -15,37 +15,40 @@ print(f"\n Processing the basic optimal summation result.")
 from progress.bar import FillingSquaresBar
 bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
-for i in range(0, n):
+with open("glove.6B.300d.txt", encoding = "utf8") as reader:
+    for line in reader:
+        tab = line.split()
+        offset = len(tab) - d
 
-    for a in range(0, d):
-        randomCoord = (math.cos((a/d)**2))*(random.random())
-        randomVector[a] = randomCoord
-        totalVector[a] += randomCoord
+        for a in range(0, d):
+            randomCoord = float(tab[a + offset])
+            randomVector[a] = randomCoord
+            totalVector[a] += randomCoord
 
-    randomIndex = random.randint(0, d-1)
-    sampledPair = (randomIndex, randomVector[randomIndex])
-    sampledCoord = sampledPair[1]
-    sampledList.append(sampledCoord)
+        randomIndex = random.randint(0, d-1)
+        sampledPair = (randomIndex, randomVector[randomIndex])
+        sampledCoord = sampledPair[1]
+        sampledList.append(sampledCoord)
 
-    roundedPair = (randomIndex, (math.floor(sampledCoord*k)\
-        + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))))
-    b = np.random.binomial(1, gamma)
+        roundedPair = (randomIndex, (math.floor(sampledCoord*k)\
+            + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))))
+        b = np.random.binomial(1, gamma)
 
-    if b == 0:
-        submittedPair = roundedPair
-    else:
-        submittedPair = (randomIndex, (np.random.randint(0, k+1)))
+        if b == 0:
+            submittedPair = roundedPair
+        else:
+            submittedPair = (randomIndex, (np.random.randint(0, k+1)))
 
-    submittedCoord = submittedPair[1]
-    submittedTotal[randomIndex] += submittedCoord
-    indexTracker[randomIndex] += 1
+        submittedCoord = submittedPair[1]
+        submittedTotal[randomIndex] += submittedCoord
+        indexTracker[randomIndex] += 1
 
-    descaledCoord = submittedCoord/k
-    debiasedCoord = (descaledCoord - (gamma/2))/(1 - gamma)
-    debiasedList.append(debiasedCoord)
+        descaledCoord = submittedCoord/k
+        debiasedCoord = (descaledCoord - (gamma/2))/(1 - gamma)
+        debiasedList.append(debiasedCoord)
 
-    bar.next()
-bar.finish()
+        bar.next()
+    bar.finish()
 
 descaledTotal = [idx/k for idx in submittedTotal]
 mergedTracker = tuple(zip(indexTracker, descaledTotal))
@@ -125,46 +128,49 @@ for value in range(0, V):
     from progress.bar import FillingSquaresBar
     bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
-    for i in range(0, n):
-            
-        for a in range(0, d):
-            dftRandomCoord = (math.cos((a/d)**2))*(random.random())
-            dftRandomVector[a] = dftRandomCoord
+    with open("glove.6B.300d.txt", encoding = "utf8") as reader:
+        for line in reader:
+            tab = line.split()
+            offset = len(tab) - d
 
-        dftVectorSum = sum(dftRandomVector)
-        dftNormalisedVector = [coord/dftVectorSum for coord in dftRandomVector]
+            for a in range(0, d):
+                dftRandomCoord = float(tab[a + offset])
+                dftRandomVector[a] = dftRandomCoord
+ 
+            dftVectorSum = sum(dftRandomVector)
+            dftNormalisedVector = [coord/dftVectorSum for coord in dftRandomVector]
 
-        for a in range(0, d):
-            dftTotalVector[a] += dftNormalisedVector[a]
+            for a in range(0, d):
+                dftTotalVector[a] += dftNormalisedVector[a]
 
-        dftVector = (rfft(dftNormalisedVector)).tolist()
-        slicedDftVector = dftVector[0:m]
+            dftVector = (rfft(dftNormalisedVector)).tolist()
+            slicedDftVector = dftVector[0:m]
 
-        dftRandomIndex = random.randint(0, m-1)
-        dftSampledPair = (dftRandomIndex, (1.0 + slicedDftVector[dftRandomIndex])/2.0)
+            dftRandomIndex = random.randint(0, m-1)
+            dftSampledPair = (dftRandomIndex, (1.0 + slicedDftVector[dftRandomIndex])/2.0)
 
-        dftSampledCoord = dftSampledPair[1]
-        dftSampledList.append(dftSampledCoord)
+            dftSampledCoord = dftSampledPair[1]
+            dftSampledList.append(dftSampledCoord)
 
-        dftRoundedPair = (dftRandomIndex, (math.floor(dftSampledCoord*k)\
-            + np.random.binomial(1, dftSampledCoord*k - math.floor(dftSampledCoord*k))))
-        b = np.random.binomial(1, gamma)
+            dftRoundedPair = (dftRandomIndex, (math.floor(dftSampledCoord*k)\
+                + np.random.binomial(1, dftSampledCoord*k - math.floor(dftSampledCoord*k))))
+            b = np.random.binomial(1, gamma)
 
-        if b == 0:
-            dftSubmittedPair = dftRoundedPair
-        else:
-            dftSubmittedPair = (dftRandomIndex, (np.random.randint(0, k+1)))
+            if b == 0:
+                dftSubmittedPair = dftRoundedPair
+            else:
+                dftSubmittedPair = (dftRandomIndex, (np.random.randint(0, k+1)))
 
-        dftSubmittedCoord = dftSubmittedPair[1]
-        dftSubmittedTotal[dftRandomIndex] += dftSubmittedCoord
-        dftIndexTracker[dftRandomIndex] += 1
+            dftSubmittedCoord = dftSubmittedPair[1]
+            dftSubmittedTotal[dftRandomIndex] += dftSubmittedCoord
+            dftIndexTracker[dftRandomIndex] += 1
 
-        dftDescaledCoord = dftSubmittedCoord/k
-        dftDebiasedCoord = 2.0*((dftDescaledCoord - (gamma/2))/(1 - gamma))-1.0
-        dftDebiasedList.append(dftDebiasedCoord)
+            dftDescaledCoord = dftSubmittedCoord/k
+            dftDebiasedCoord = 2.0*((dftDescaledCoord - (gamma/2))/(1 - gamma))-1.0
+            dftDebiasedList.append(dftDebiasedCoord)
     
-        bar.next()
-    bar.finish()
+            bar.next()
+        bar.finish()
 
     dftDescaledTotal = [idx/k for idx in dftSubmittedTotal]
     dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledTotal))
