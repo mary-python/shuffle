@@ -23,10 +23,15 @@ with open("glove.6B.300d.txt", encoding = "utf8") as reader:
         for a in range(0, d):
             randomCoord = float(tab[a + offset])
             randomVector[a] = randomCoord
-            totalVector[a] += randomCoord
+
+        vectorSum = sum(randomVector)
+        normalisedVector = [coord/vectorSum for coord in randomVector]
+
+        for a in range(0, d):
+            totalVector[a] += normalisedVector[a]
 
         randomIndex = random.randint(0, d-1)
-        sampledPair = (randomIndex, randomVector[randomIndex])
+        sampledPair = (randomIndex, (1.0 + randomVector[randomIndex])/2.0)
         sampledCoord = sampledPair[1]
         sampledList.append(sampledCoord)
 
@@ -44,7 +49,7 @@ with open("glove.6B.300d.txt", encoding = "utf8") as reader:
         indexTracker[randomIndex] += 1
 
         descaledCoord = submittedCoord/k
-        debiasedCoord = (descaledCoord - (gamma/2))/(1 - gamma)
+        debiasedCoord = 2.0*((descaledCoord - (gamma/2))/(1 - gamma))-1.0
         debiasedList.append(debiasedCoord)
 
         bar.next()
@@ -52,7 +57,7 @@ with open("glove.6B.300d.txt", encoding = "utf8") as reader:
 
 descaledTotal = [idx/k for idx in submittedTotal]
 mergedTracker = tuple(zip(indexTracker, descaledTotal))
-debiasedTotal = [((z/(max(1, count))) - (gamma/2))/(1 - gamma) for count, z in mergedTracker]
+debiasedTotal = [2.0*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1.0 for count, z in mergedTracker]
 
 averageVector = [idx/n for idx in totalVector]
 errorTuple = tuple(zip(debiasedTotal, averageVector))
@@ -198,15 +203,15 @@ for value in range(0, V):
 
     dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
     datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 2)} \n")
-    datafile.write(f"Experimental perturbation error: {round(totalDftMeanSquaredError)} \n")
+    datafile.write(f"Experimental perturbation error: {round(totalDftMeanSquaredError, 2)} \n")
     error2 = round((100)*((totalDftMeanSquaredError)/dftComparison))
     datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
-    datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError)} \n")
+    datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError, 2)} \n")
 
     perErrors.append(Decimal(totalDftMeanSquaredError))
     recErrors.append(Decimal(totalReconstructionError))
 
-    datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError))} \n")
+    datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError), 2)} \n")
     error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))), 1)
     datafile.write(f"Reconstruction error was {error3}% of the total experimental MSE. \n")
     datafile.write(f"Sum of squares of average vector: {round(dftSumOfSquares, 2)} \n\n")
