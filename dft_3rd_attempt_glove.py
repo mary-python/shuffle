@@ -123,7 +123,7 @@ plt.savefig("basic.png"); plt.clf(); plt.cla()
 
 for value in range(0, V):
 
-    loopTime = time.perf_counter(); m = (value + 1)*(10)
+    loopTime = time.perf_counter(); m = (value + 1)*(int(d/50))
     dftSampledList = list(); dftDebiasedList = list()
     dftIndexTracker = [0]*m; dftSubmittedTotal = [0]*m; dftTotalVector = [0]*d
     sampledError = 0; returnedError = 0
@@ -272,9 +272,9 @@ errorfile = open("errortemp.txt", "w")
 
 for value in range(0, V):
     if value != (V - 1):
-        errorfile.write(f"{value + 1} {perErrors[value]} {recErrors[value]} \n")
+        errorfile.write(f"{2*(value + 1)} {perErrors[value]} {recErrors[value]} \n")
     else:
-        errorfile.write(f"{value + 1} {perErrors[value]} {recErrors[value]}")
+        errorfile.write(f"{2*(value + 1)} {perErrors[value]} {recErrors[value]}")
 
 errorfile.close()
 
