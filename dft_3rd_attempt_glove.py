@@ -3,79 +3,85 @@ from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
 
 startTime = time.perf_counter()
-d = 300; k = 6; n = 400000; eps = 0.1; dta = 0.185; V = 10
+d = 300; k = 6; n = 400000; eps = 0.1; dta = 0.185; V = 10; R = 3
 gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
 
 loopTotal = list(); perErrors = list(); recErrors = list()
 randomVector = [0]*d; dftRandomVector = [0]*d
 sampledList = list(); debiasedList = list()
 indexTracker = [0]*d; submittedTotal = [0]*d; totalVector = [0]*d
+totalMeanSquaredError = 0; sumOfSquares = 0
 
-print(f"\n Processing the basic optimal summation result.")
-from progress.bar import FillingSquaresBar
-bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
+for r in range(0, R):
 
-with open("glove.6B.300d.txt", encoding = "utf8") as reader:
-    for line in reader:
-        tab = line.split()
-        offset = len(tab) - d
+    print(f"\n Processing the basic optimal summation result, repeat {r+1}.")
+    from progress.bar import FillingSquaresBar
+    bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
-        for a in range(0, d):
-            randomCoord = float(tab[a + offset])
-            randomVector[a] = randomCoord
+    with open("glove.6B.300d.txt", encoding = "utf8") as reader:
+        for line in reader:
+            tab = line.split()
+            offset = len(tab) - d
 
-        vectorSum = sum(randomVector)
-        normalisedVector = [coord/vectorSum for coord in randomVector]
+            for a in range(0, d):
+                randomCoord = float(tab[a + offset])
+                randomVector[a] = randomCoord
 
-        for a in range(0, d):
-            totalVector[a] += normalisedVector[a]
+            vectorSum = sum(randomVector)
+            normalisedVector = [coord/vectorSum for coord in randomVector]
 
-        randomIndex = random.randint(0, d-1)
-        sampledPair = (randomIndex, (1.0 + randomVector[randomIndex])/2.0)
-        sampledCoord = sampledPair[1]
-        sampledList.append(sampledCoord)
+            for a in range(0, d):
+                totalVector[a] += normalisedVector[a]
 
-        roundedPair = (randomIndex, (math.floor(sampledCoord*k)\
-            + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))))
-        b = np.random.binomial(1, gamma)
+            randomIndex = random.randint(0, d-1)
+            sampledPair = (randomIndex, (1.0 + randomVector[randomIndex])/2.0)
+            sampledCoord = sampledPair[1]
+            sampledList.append(sampledCoord)
 
-        if b == 0:
-            submittedPair = roundedPair
-        else:
-            submittedPair = (randomIndex, (np.random.randint(0, k+1)))
+            roundedPair = (randomIndex, (math.floor(sampledCoord*k)\
+                + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))))
+            b = np.random.binomial(1, gamma)
 
-        submittedCoord = submittedPair[1]
-        submittedTotal[randomIndex] += submittedCoord
-        indexTracker[randomIndex] += 1
+            if b == 0:
+                submittedPair = roundedPair
+            else:
+                submittedPair = (randomIndex, (np.random.randint(0, k+1)))
 
-        descaledCoord = submittedCoord/k
-        debiasedCoord = 2.0*((descaledCoord - (gamma/2))/(1 - gamma))-1.0
-        debiasedList.append(debiasedCoord)
+            submittedCoord = submittedPair[1]
+            submittedTotal[randomIndex] += submittedCoord
+            indexTracker[randomIndex] += 1
 
-        bar.next()
-    bar.finish()
+            descaledCoord = submittedCoord/k
+            debiasedCoord = 2.0*((descaledCoord - (gamma/2))/(1 - gamma))-1.0
+            debiasedList.append(debiasedCoord)
 
-descaledTotal = [idx/k for idx in submittedTotal]
-mergedTracker = tuple(zip(indexTracker, descaledTotal))
-debiasedTotal = [2.0*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1.0 for count, z in mergedTracker]
+            bar.next()
+        bar.finish()
 
-averageVector = [idx/n for idx in totalVector]
-errorTuple = tuple(zip(debiasedTotal, averageVector))
-meanSquaredError = [(a - b)**2 for a, b in errorTuple]
-totalMeanSquaredError = sum(meanSquaredError)
+    descaledTotal = [idx/k for idx in submittedTotal]
+    mergedTracker = tuple(zip(indexTracker, descaledTotal))
+    debiasedTotal = [2.0*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1.0 for count, z in mergedTracker]
 
-averageSquares = [idx**2 for idx in averageVector]
-sumOfSquares = sum(averageSquares)
+    averageVector = [idx/n for idx in totalVector]
+    errorTuple = tuple(zip(debiasedTotal, averageVector))
+    meanSquaredError = [(a - b)**2 for a, b in errorTuple]
+    totalMeanSquaredError += sum(meanSquaredError)
+
+    averageSquares = [idx**2 for idx in averageVector]
+    sumOfSquares += sum(averageSquares)
+
+averageMeanSquaredError = totalMeanSquaredError/R
+averageSumofSquares = sumOfSquares/R
 
 datafile = open("basic.txt", "w")
 datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
 comparison = (2*(14**(2/3))*(d**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
 datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 1)} \n")
-datafile.write(f"Experimental MSE: {round(totalMeanSquaredError, 2)} \n")
-error1 = round((100)*((totalMeanSquaredError)/comparison), 2)
+datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 2)} \n")
+error1 = round((100)*((averageMeanSquaredError)/comparison), 2)
 datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
-datafile.write(f"Sum of squares of average vector: {round(sumOfSquares, 2)} \n\n")
+datafile.write(f"Sum of squares of average vector: {round(averageSumofSquares, 2)} \n\n")
 
 plt.style.use('seaborn-white'); plt.tight_layout()
 plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)
@@ -123,98 +129,112 @@ plt.savefig("basic.png"); plt.clf(); plt.cla()
 
 for value in range(0, V):
 
-    loopTime = time.perf_counter(); m = (value + 1)*(int(d/50))
+    loopTime = time.perf_counter(); m = (value + 1)*(int(d/25))
     dftSampledList = list(); dftDebiasedList = list()
     dftIndexTracker = [0]*m; dftSubmittedTotal = [0]*m; dftTotalVector = [0]*d
+    totalDftMeanSquaredError = list(); dftSumOfSquares = 0; totalReconstructionError = list()
     sampledError = 0; returnedError = 0
 
-    print(f"\n Processing the optimal summation result with DFT for the value m = {m}.")
+    for r in range(0, R):
 
-    from progress.bar import FillingSquaresBar
-    bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
+        print(f"\n Processing the optimal summation result with DFT for the value m = {m}, repeat {r+1}.")
 
-    with open("glove.6B.300d.txt", encoding = "utf8") as reader:
-        for line in reader:
-            tab = line.split()
-            offset = len(tab) - d
+        from progress.bar import FillingSquaresBar
+        bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
-            for a in range(0, d):
-                dftRandomCoord = float(tab[a + offset])
-                dftRandomVector[a] = dftRandomCoord
+        with open("glove.6B.300d.txt", encoding = "utf8") as reader:
+            for line in reader:
+                tab = line.split()
+                offset = len(tab) - d
+
+                for a in range(0, d):
+                    dftRandomCoord = float(tab[a + offset])
+                    dftRandomVector[a] = dftRandomCoord
  
-            dftVectorSum = sum(dftRandomVector)
-            dftNormalisedVector = [coord/dftVectorSum for coord in dftRandomVector]
+                dftVectorSum = sum(dftRandomVector)
+                dftNormalisedVector = [coord/dftVectorSum for coord in dftRandomVector]
 
-            for a in range(0, d):
-                dftTotalVector[a] += dftNormalisedVector[a]
+                for a in range(0, d):
+                    dftTotalVector[a] += dftNormalisedVector[a]
 
-            dftVector = (rfft(dftNormalisedVector)).tolist()
-            slicedDftVector = dftVector[0:m]
+                dftVector = (rfft(dftNormalisedVector)).tolist()
+                slicedDftVector = dftVector[0:m]
 
-            dftRandomIndex = random.randint(0, m-1)
-            dftSampledPair = (dftRandomIndex, (1.0 + slicedDftVector[dftRandomIndex])/2.0)
+                dftRandomIndex = random.randint(0, m-1)
+                dftSampledPair = (dftRandomIndex, (1.0 + slicedDftVector[dftRandomIndex])/2.0)
 
-            dftSampledCoord = dftSampledPair[1]
-            dftSampledList.append(dftSampledCoord)
+                dftSampledCoord = dftSampledPair[1]
+                dftSampledList.append(dftSampledCoord)
 
-            dftRoundedPair = (dftRandomIndex, (math.floor(dftSampledCoord*k)\
-                + np.random.binomial(1, dftSampledCoord*k - math.floor(dftSampledCoord*k))))
-            b = np.random.binomial(1, gamma)
+                dftRoundedPair = (dftRandomIndex, (math.floor(dftSampledCoord*k)\
+                    + np.random.binomial(1, dftSampledCoord*k - math.floor(dftSampledCoord*k))))
+                b = np.random.binomial(1, gamma)
 
-            if b == 0:
-                dftSubmittedPair = dftRoundedPair
-            else:
-                dftSubmittedPair = (dftRandomIndex, (np.random.randint(0, k+1)))
+                if b == 0:
+                    dftSubmittedPair = dftRoundedPair
+                else:
+                    dftSubmittedPair = (dftRandomIndex, (np.random.randint(0, k+1)))
 
-            dftSubmittedCoord = dftSubmittedPair[1]
-            dftSubmittedTotal[dftRandomIndex] += dftSubmittedCoord
-            dftIndexTracker[dftRandomIndex] += 1
+                dftSubmittedCoord = dftSubmittedPair[1]
+                dftSubmittedTotal[dftRandomIndex] += dftSubmittedCoord
+                dftIndexTracker[dftRandomIndex] += 1
 
-            dftDescaledCoord = dftSubmittedCoord/k
-            dftDebiasedCoord = 2.0*((dftDescaledCoord - (gamma/2))/(1 - gamma))-1.0
-            dftDebiasedList.append(dftDebiasedCoord)
+                dftDescaledCoord = dftSubmittedCoord/k
+                dftDebiasedCoord = 2.0*((dftDescaledCoord - (gamma/2))/(1 - gamma))-1.0
+                dftDebiasedList.append(dftDebiasedCoord)
     
-            bar.next()
-        bar.finish()
+                bar.next()
+            bar.finish()
 
-    dftDescaledTotal = [idx/k for idx in dftSubmittedTotal]
-    dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledTotal))
-    dftDebiasedTotal = [2.0*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1.0 for count, z in dftMergedTracker]
-    paddedTotal = dftDebiasedTotal + [0]*(d-m)
-    paddedTotal[0] = 1.0
-    finalTotal = (irfft(paddedTotal)).tolist()
+        dftDescaledTotal = [idx/k for idx in dftSubmittedTotal]
+        dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledTotal))
+        dftDebiasedTotal = [2.0*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1.0 for count, z in dftMergedTracker]
+        paddedTotal = dftDebiasedTotal + [0]*(d-m)
+        paddedTotal[0] = 1.0
+        finalTotal = (irfft(paddedTotal)).tolist()
 
-    dftAverageVector = [idx/n for idx in dftTotalVector]        
-    dftErrorTuple = tuple(zip(finalTotal, dftAverageVector))
-    dftMeanSquaredError = [(a - b)**2 for a, b in dftErrorTuple]
-    totalDftMeanSquaredError = sum(dftMeanSquaredError)
+        dftAverageVector = [idx/n for idx in dftTotalVector]        
+        dftErrorTuple = tuple(zip(finalTotal, dftAverageVector))
+        dftMeanSquaredError = [(a - b)**2 for a, b in dftErrorTuple]
+        totalDftMeanSquaredError.append(sum(dftMeanSquaredError))
 
-    dftAverageSquares = [idx**2 for idx in dftAverageVector]
-    dftSumOfSquares = sum(dftAverageSquares)
+        dftAverageSquares = [idx**2 for idx in dftAverageVector]
+        dftSumOfSquares += sum(dftAverageSquares)
 
-    exactVector = irfft(rfft(dftAverageVector).tolist()[0:m] + [0]*(d-m)).tolist()
-    reconstructionTuple = tuple(zip(exactVector, dftAverageVector))
-    reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
-    totalReconstructionError = sum(reconstructionError)
+        exactVector = irfft(rfft(dftAverageVector).tolist()[0:m] + [0]*(d-m)).tolist()
+        reconstructionTuple = tuple(zip(exactVector, dftAverageVector))
+        reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
+        totalReconstructionError.append(sum(reconstructionError))
     
+    averageDftMeanSquaredError = (sum(totalDftMeanSquaredError))/R
+    averageDftSumofSquares = dftSumOfSquares/R
+    averageReconstructionError = (sum(totalReconstructionError))/R
+
+    differencesMeanSquaredError = [(value - averageDftMeanSquaredError)**2 for value in totalDftMeanSquaredError]
+    differencesReconstructionError = [(value - averageReconstructionError)**2 for value in totalReconstructionError]
+    standardDeviationMeanSquaredError = math.sqrt((sum(differencesMeanSquaredError))/R)
+    standardDeviationReconstructionError = math.sqrt((sum(differencesReconstructionError))/R)
+
     datafile = open("fourier" + str(m) + ".txt", "w")
     datafile.write(f"Number of Fourier coefficients m: {m} \n")
     datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
     dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
     datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 2)} \n")
-    datafile.write(f"Experimental perturbation error: {round(totalDftMeanSquaredError, 2)} \n")
-    error2 = round((100)*((totalDftMeanSquaredError)/dftComparison))
+    datafile.write(f"Experimental perturbation error: {round(averageDftMeanSquaredError, 2)} \n")
+    error2 = round((100)*((averageDftMeanSquaredError)/dftComparison))
     datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
-    datafile.write(f"Experimental reconstruction error: {round(totalReconstructionError, 2)} \n")
+    datafile.write(f"Standard deviation of perturbation error: {round(standardDeviationMeanSquaredError, 2)} \n")
+    datafile.write(f"Experimental reconstruction error: {round(averageReconstructionError, 2)} \n")
 
-    perErrors.append(Decimal(totalDftMeanSquaredError))
-    recErrors.append(Decimal(totalReconstructionError))
+    perErrors.append(Decimal(averageDftMeanSquaredError))
+    recErrors.append(Decimal(averageReconstructionError))
 
-    datafile.write(f"Total experimental MSE: {round((totalDftMeanSquaredError) + (totalReconstructionError), 2)} \n")
-    error3 = round((100)*((totalReconstructionError)/((totalDftMeanSquaredError) + (totalReconstructionError))), 1)
+    datafile.write(f"Total experimental MSE: {round((averageDftMeanSquaredError) + (averageReconstructionError), 2)} \n")
+    error3 = round((100)*((averageReconstructionError)/((averageDftMeanSquaredError) + (averageReconstructionError))), 1)
     datafile.write(f"Reconstruction error was {error3}% of the total experimental MSE. \n")
-    datafile.write(f"Sum of squares of average vector: {round(dftSumOfSquares, 2)} \n\n")
+    datafile.write(f"Standard deviation of reconstruction error: {round(standardDeviationReconstructionError, 2)} \n")
+    datafile.write(f"Sum of squares of average vector: {round(averageDftSumofSquares, 2)} \n\n")
 
     plt.style.use('seaborn-white'); plt.tight_layout()
     plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)
