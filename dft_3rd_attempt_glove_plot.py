@@ -13,7 +13,7 @@ plt.bar(labels, perErrors, width, label = 'Perturbation error', alpha = 0.6, col
 plt.bar(labels, recErrors, width, bottom = perErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
 
 plt.ticklabel_format(axis = 'y', style = 'plain')
-plt.xticks(['2%', '4%', '6%', '8%', '10%', '12%', '14%', '16%', '18%', '20%'])
+plt.xticks(['4%', '8%', '12%', '16%', '20%', '24%', '28%', '32%', '36%', '40%'])
 plt.ylabel('Total experimental MSE')
 plt.xlabel('% of Fourier coefficients retained', labelpad = 8)
 

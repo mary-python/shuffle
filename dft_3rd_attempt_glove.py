@@ -292,9 +292,9 @@ errorfile = open("errortemp.txt", "w")
 
 for value in range(0, V):
     if value != (V - 1):
-        errorfile.write(f"{2*(value + 1)} {perErrors[value]} {recErrors[value]} \n")
+        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]} \n")
     else:
-        errorfile.write(f"{2*(value + 1)} {perErrors[value]} {recErrors[value]}")
+        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]}")
 
 errorfile.close()
 
