@@ -3,10 +3,15 @@ from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
 
 startTime = time.perf_counter()
-d = 300; k = 6; n = 400000; eps = 0.1; dta = 0.185; V = 10; R = 3
-gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
+d = 100; k = 6; n = 400000; eps = 0.1; dta = 0.9832; V = 10; R = 3; t = 2
+
+if t == 1:
+    gamma = max((((14*k*(np.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
+else:
+    gamma = (((56*d*k*(math.log(1/dta))*(math.log((2*t)/dta))))/((n-1)*(eps**2)))
 
 loopTotal = list(); perErrors = list(); recErrors = list()
+perStandardDeviation = list(); recStandardDeviation = list()
 randomVector = [0]*d; dftRandomVector = [0]*d
 sampledList = list(); debiasedList = list()
 indexTracker = [0]*d; submittedTotal = [0]*d; totalVector = [0]*d
@@ -33,27 +38,28 @@ for r in range(0, R):
             for a in range(0, d):
                 totalVector[a] += normalisedVector[a]
 
-            randomIndex = random.randint(0, d-1)
-            sampledPair = (randomIndex, (1.0 + randomVector[randomIndex])/2.0)
-            sampledCoord = sampledPair[1]
-            sampledList.append(sampledCoord)
+            for a in range(0, t):
+                randomIndex = random.randint(0, d-1)
+                sampledPair = (randomIndex, (1.0 + randomVector[randomIndex])/2.0)
+                sampledCoord = sampledPair[1]
+                sampledList.append(sampledCoord)
 
-            roundedPair = (randomIndex, (math.floor(sampledCoord*k)\
-                + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))))
-            b = np.random.binomial(1, gamma)
+                roundedPair = (randomIndex, (math.floor(sampledCoord*k)\
+                    + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))))
+                b = np.random.binomial(1, gamma)
 
-            if b == 0:
-                submittedPair = roundedPair
-            else:
-                submittedPair = (randomIndex, (np.random.randint(0, k+1)))
+                if b == 0:
+                    submittedPair = roundedPair
+                else:
+                    submittedPair = (randomIndex, (np.random.randint(0, k+1)))
 
-            submittedCoord = submittedPair[1]
-            submittedTotal[randomIndex] += submittedCoord
-            indexTracker[randomIndex] += 1
+                submittedCoord = submittedPair[1]
+                submittedTotal[randomIndex] += submittedCoord
+                indexTracker[randomIndex] += 1
 
-            descaledCoord = submittedCoord/k
-            debiasedCoord = 2.0*((descaledCoord - (gamma/2))/(1 - gamma))-1.0
-            debiasedList.append(debiasedCoord)
+                descaledCoord = submittedCoord/k
+                debiasedCoord = 2.0*((descaledCoord - (gamma/2))/(1 - gamma))-1.0
+                debiasedList.append(debiasedCoord)
 
             bar.next()
         bar.finish()
@@ -76,7 +82,7 @@ averageSumofSquares = sumOfSquares/R
 datafile = open("basic.txt", "w")
 datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
-comparison = (2*(14**(2/3))*(d**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
+comparison = (2*(14**(2/3))*(d**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
 datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 1)} \n")
 datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 2)} \n")
 error1 = round((100)*((averageMeanSquaredError)/comparison), 2)
@@ -219,7 +225,7 @@ for value in range(0, V):
     datafile.write(f"Number of Fourier coefficients m: {m} \n")
     datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
-    dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
+    dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
     datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 2)} \n")
     datafile.write(f"Experimental perturbation error: {round(averageDftMeanSquaredError, 2)} \n")
     error2 = round((100)*((averageDftMeanSquaredError)/dftComparison))
@@ -229,6 +235,8 @@ for value in range(0, V):
 
     perErrors.append(Decimal(averageDftMeanSquaredError))
     recErrors.append(Decimal(averageReconstructionError))
+    perStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
+    recStandardDeviation.append(Decimal(standardDeviationReconstructionError))
 
     datafile.write(f"Total experimental MSE: {round((averageDftMeanSquaredError) + (averageReconstructionError), 2)} \n")
     error3 = round((100)*((averageReconstructionError)/((averageDftMeanSquaredError) + (averageReconstructionError))), 1)
@@ -292,9 +300,9 @@ errorfile = open("errortemp.txt", "w")
 
 for value in range(0, V):
     if value != (V - 1):
-        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]} \n")
+        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]} {perStandardDeviation[value]} {recStandardDeviation[value]} \n")
     else:
-        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]}")
+        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]} {perStandardDeviation[value]} {recStandardDeviation[value]}")
 
 errorfile.close()
 
