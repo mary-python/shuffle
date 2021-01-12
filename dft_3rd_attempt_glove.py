@@ -3,10 +3,10 @@ from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
 
 startTime = time.perf_counter()
-d = 100; k = 6; n = 400000; eps = 0.1; dta = 0.9832; V = 10; R = 3; t = 2
+d = 100; k = 6; n = 400000; eps = 0.1; dta = 0.9832; V = 10; R = 3; t = 1
 
 if t == 1:
-    gamma = max((((14*k*(np.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
+    gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
 else:
     gamma = (((56*d*k*(math.log(1/dta))*(math.log((2*t)/dta))))/((n-1)*(eps**2)))
 
