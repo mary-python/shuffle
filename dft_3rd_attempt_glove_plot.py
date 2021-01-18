@@ -1,5 +1,5 @@
 import math, re; import matplotlib.pyplot as plt; from decimal import *
-V = 10; width = 0.35
+d = 200; t = 2; V = 10; width = 0.35
 labels = list(); perErrors = list(); recErrors = list(); totalErrors = list(); totalStandardDeviation = list()
 
 with open("errortemp.txt") as reader:
@@ -21,4 +21,4 @@ plt.ylabel('Total experimental MSE')
 plt.xlabel('% of Fourier coefficients retained', labelpad = 8)
 
 plt.title('Ratio between experimental errors by % of Fourier coefficients retained')
-plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("errorchart.png")
+plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("errorchart" + str(d) + "d" + str(t) + "t.png")
