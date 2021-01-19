@@ -14,7 +14,7 @@ else:
 
 loopTotal = list(); perErrors = list(); recErrors = list()
 perStandardDeviation = list(); recStandardDeviation = list()
-randomVector = [0]*d; dftRandomVector = [0]*d
+randomVector = [0]*d; normalisedVector = [0]*d
 sampledList = list(); debiasedList = list()
 indexTracker = [0]*d; submittedTotal = [0]*d; totalVector = [0]*d
 totalMeanSquaredError = 0; sumOfSquares = 0
@@ -25,23 +25,32 @@ for r in range(0, R):
     from progress.bar import FillingSquaresBar
     bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
-    randomIndices = list(); randomisedResponse = list(); submittedCoords = list(); negativeCalculation = list()
+    randomIndices = list(); randomisedResponse = list(); submittedCoords = list()
 
     with open("glove.6B.300d.txt", encoding = "utf8") as reader:
         for line in reader:
             tab = line.split()
-            offset = len(tab) - d
+            offset = len(tab) - 300
 
             for a in range(0, d):
                 randomCoord = float(tab[a + offset])
                 randomVector[a] = randomCoord
 
-            absVector = [abs(coord) for coord in randomVector]
-            maxCoord = max(absVector)
-            normalisedVector = [coord/maxCoord for coord in randomVector]
+            maxCoord = max(randomVector)
+            minCoord = min(randomVector)
+            
+            for a in range(0, d):
+                if randomVector[a] > 1:
+                    normalisedVector[a] = randomVector[a]/maxCoord
+                elif randomVector[a] < -1:
+                    normalisedVector[a] = -randomVector[a]/minCoord
+                else:
+                    normalisedVector[a] = randomVector[a]
+
+            positiveVector = [(1 + coord)/2 for coord in normalisedVector]
 
             for a in range(0, d):
-                totalVector[a] += normalisedVector[a]
+                totalVector[a] += positiveVector[a]
 
             for a in range(0, t):
                 randomIndex = random.randint(0, d-1)
@@ -49,7 +58,7 @@ for r in range(0, R):
                 if len(randomIndices) < 10:
                     randomIndices.append(randomIndex)
 
-                sampledPair = (randomIndex, (1.0 + normalisedVector[randomIndex])/2.0)
+                sampledPair = (randomIndex, positiveVector[randomIndex])
                 sampledCoord = sampledPair[1]
                 sampledList.append(sampledCoord)
 
@@ -69,21 +78,12 @@ for r in range(0, R):
                 
                 if len(submittedCoords) < 10:
                     submittedCoords.append(submittedCoord)
-                
-                if submittedCoord < 0:
-                    if len(negativeCalculation) == 0:
-                        negativeCalculation.append(randomCoord)
-                        negativeCalculation.append(maxCoord)
-                        negativeCalculation.append(normalisedVector[randomIndex])
-                        negativeCalculation.append(sampledCoord)
-                        negativeCalculation.append(sampledCoord*k - math.floor(sampledCoord*k))
-                        negativeCalculation.append(roundedPair[1])
 
                 submittedTotal[randomIndex] += submittedCoord
                 indexTracker[randomIndex] += 1
 
                 descaledCoord = submittedCoord/k
-                debiasedCoord = 2.0*((descaledCoord - (gamma/2))/(1 - gamma))-1.0
+                debiasedCoord = (descaledCoord - (gamma/2))/(1 - gamma)
                 debiasedList.append(debiasedCoord)
 
             bar.next()
@@ -92,11 +92,10 @@ for r in range(0, R):
     print(f"\n{randomIndices}")
     print(f"{randomisedResponse}")
     print(f"{submittedCoords}")
-    print(f"{negativeCalculation}")
     
     descaledTotal = [idx/k for idx in submittedTotal]
     mergedTracker = tuple(zip(indexTracker, descaledTotal))
-    debiasedTotal = [2.0*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1.0 for count, z in mergedTracker]
+    debiasedTotal = [(z - ((gamma/2)*count))/(1 - gamma)/max(count, 1) for count, z in mergedTracker]
 
     averageVector = [idx/n for idx in totalVector]
     errorTuple = tuple(zip(debiasedTotal, averageVector))
@@ -163,6 +162,8 @@ datafile.write(f"Percentage of returned coordinates between 0 and 1: {round((100
 plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
 plt.savefig("basic.png"); plt.clf(); plt.cla()
 
+dftRandomVector = [0]*d; dftNormalisedVector = [0]*d; dftNormalisedSlicedVector = [0]*d
+
 for value in range(0, V):
 
     loopTime = time.perf_counter(); m = (value + 1)*(int(d/25))
@@ -178,35 +179,61 @@ for value in range(0, V):
         from progress.bar import FillingSquaresBar
         bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
-        dftRandomIndices = list(); dftRandomisedResponse = list(); dftSubmittedCoords = list(); dftNegativeCalculation = list()
+        dftRandomIndices = list(); dftRandomisedResponse = list(); dftSubmittedCoords = list(); outOfBounds = list()
 
         with open("glove.6B.300d.txt", encoding = "utf8") as reader:
             for line in reader:
                 tab = line.split()
-                offset = len(tab) - d
+                offset = len(tab) - 300
 
                 for a in range(0, d):
                     dftRandomCoord = float(tab[a + offset])
                     dftRandomVector[a] = dftRandomCoord
- 
-                dftVector = (rfft(dftRandomVector)).tolist()
-                dftSlicedVector = dftVector[0:m]
 
-                dftAbsVector = [abs(coord) for coord in dftVector]
-                dftMaxCoord = max(dftAbsVector)
-                dftNormalisedVector = [coord/dftMaxCoord for coord in dftVector]
+                dftMaxCoord = max(dftRandomVector)
+                dftMinCoord = min(dftRandomVector)
 
                 for a in range(0, d):
-                    dftTotalVector[a] += dftNormalisedVector[a]
+                    if dftRandomVector[a] > 1:
+                        dftNormalisedVector[a] = dftRandomVector[a]/dftMaxCoord
+                    elif dftRandomVector[a] < -1:
+                        dftNormalisedVector[a] = -dftRandomVector[a]/dftMinCoord
+                    else:
+                        dftNormalisedVector[a] = dftRandomVector[a]
 
+                dftPositiveVector = [(1 + coord)/2 for coord in dftNormalisedVector]
+
+                for a in range(0, d):
+                    dftTotalVector[a] += dftPositiveVector[a]
+ 
+                dftVector = (rfft(dftPositiveVector)).tolist()
+                dftSlicedVector = dftVector[0:m]
+                dftMaxSlicedCoord = max(dftSlicedVector)
+                dftMinSlicedCoord = min(dftSlicedVector)
+                
+                for a in range(0, m):
+                    if dftSlicedVector[a] > 1 and dftSlicedVector[a] < math.exp(2):
+                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]/math.exp(2)
+                    elif dftSlicedVector[a] > math.exp(2) and dftSlicedVector[a] < math.exp(3):
+                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]/math.exp(3)
+                    elif dftSlicedVector[a] > math.exp(3) and dftSlicedVector[a] < math.exp(4):
+                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]/math.exp(4)
+                    elif dftSlicedVector[a] > math.exp(4) and dftSlicedVector[a] < dftMaxSlicedCoord:
+                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]/dftMaxSlicedCoord
+                    elif dftSlicedVector[a] < -1:
+                        dftNormalisedSlicedVector[a] = -dftSlicedVector[a]/dftMinSlicedCoord
+                    else:
+                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]
+
+                dftPositiveSlicedVector = [(1 + coord)/2 for coord in dftNormalisedSlicedVector]
+                
                 for a in range(0, t):
                     dftRandomIndex = random.randint(0, m-1)
 
                     if len(dftRandomIndices) < 10:
                         dftRandomIndices.append(dftRandomIndex)
 
-                    dftSampledPair = (dftRandomIndex, (1.0 + dftNormalisedVector[dftRandomIndex])/2.0)
-
+                    dftSampledPair = (dftRandomIndex, dftPositiveSlicedVector[dftRandomIndex])
                     dftSampledCoord = dftSampledPair[1]
                     dftSampledList.append(dftSampledCoord)
 
@@ -227,20 +254,21 @@ for value in range(0, V):
                     if len(dftSubmittedCoords) < 10:
                         dftSubmittedCoords.append(dftSubmittedCoord)
 
-                    if dftSubmittedCoord < 0:
-                        if len(dftNegativeCalculation) == 0:
-                            dftNegativeCalculation.append(dftRandomCoord)
-                            dftNegativeCalculation.append(dftMaxCoord)
-                            dftNegativeCalculation.append(dftNormalisedVector[dftRandomIndex])
-                            dftNegativeCalculation.append(dftSampledCoord)
-                            dftNegativeCalculation.append(dftSampledCoord*k - math.floor(dftSampledCoord*k))
-                            dftNegativeCalculation.append(dftRoundedPair[1])
+                    if dftSubmittedCoord > 6 or dftSubmittedCoord < 0:
+                        if len(outOfBounds) == 0:
+                            outOfBounds.append(dftRandomCoord)
+                            outOfBounds.append(dftMaxSlicedCoord)
+                            outOfBounds.append(dftMinSlicedCoord)
+                            outOfBounds.append(dftPositiveSlicedVector[dftRandomIndex])
+                            outOfBounds.append(dftSampledCoord)
+                            outOfBounds.append(dftSampledCoord*k - math.floor(dftSampledCoord*k))
+                            outOfBounds.append(dftRoundedPair[1])
 
                     dftSubmittedTotal[dftRandomIndex] += dftSubmittedCoord
                     dftIndexTracker[dftRandomIndex] += 1
 
                     dftDescaledCoord = dftSubmittedCoord/k
-                    dftDebiasedCoord = 2.0*((dftDescaledCoord - (gamma/2))/(1 - gamma))-1.0
+                    dftDebiasedCoord = 2*((dftDescaledCoord - (gamma/2))/(1 - gamma))-1
                     dftDebiasedList.append(dftDebiasedCoord)
     
                 bar.next()
@@ -249,13 +277,13 @@ for value in range(0, V):
         print(f"\n{dftRandomIndices}")
         print(f"{dftRandomisedResponse}")
         print(f"{dftSubmittedCoords}")
-        print(f"{dftNegativeCalculation}")
+        print(f"{outOfBounds}")
 
         dftDescaledTotal = [idx/k for idx in dftSubmittedTotal]
         dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledTotal))
-        dftDebiasedTotal = [2.0*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1.0 for count, z in dftMergedTracker]
+        dftDebiasedTotal = [2*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1 for count, z in dftMergedTracker]
         paddedTotal = dftDebiasedTotal + [0]*(d-m)
-        paddedTotal[0] = 1.0
+        paddedTotal[0] = 1
         finalTotal = (irfft(paddedTotal)).tolist()
 
         dftAverageVector = [idx/n for idx in dftTotalVector]        
