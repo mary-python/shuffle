@@ -13,10 +13,9 @@ else:
     gamma = (((56*d*k*(math.log(1/dta))*(math.log((2*t)/dta))))/((n-1)*(eps**2)))
 
 loopTotal = list(); perErrors = list(); recErrors = list()
-perStandardDeviation = list(); recStandardDeviation = list()
-randomVector = [0]*d; normalisedVector = [0]*d
-sampledList = list(); debiasedList = list()
-indexTracker = [0]*d; submittedTotal = [0]*d; totalVector = [0]*d
+perStandardDeviation = list(); recStandardDeviation = list(); inputVector = list()
+randomVector = [0]*d; normalisedVector = [0]*d; normalisedDebiasedVector = [0]*d; normalisedFinalVector = [0]*d
+indexTracker = [0]*d; submittedVector = [0]*d; totalVector = [0]*d
 totalMeanSquaredError = 0; sumOfSquares = 0
 
 for r in range(0, R):
@@ -25,7 +24,7 @@ for r in range(0, R):
     from progress.bar import FillingSquaresBar
     bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
-    randomIndices = list(); randomisedResponse = list(); submittedCoords = list()
+    randomIndices = list(); randomisedResponse = list(); submittedCoords = list(); outputList = list()
 
     with open("glove.6B.300d.txt", encoding = "utf8") as reader:
         for line in reader:
@@ -35,22 +34,16 @@ for r in range(0, R):
             for a in range(0, d):
                 randomCoord = float(tab[a + offset])
                 randomVector[a] = randomCoord
-
-            maxCoord = max(randomVector)
-            minCoord = min(randomVector)
             
+            absoluteVector = [abs(coord) for coord in randomVector]
+            norm = sum(absoluteVector)
+            normalisedVector = [coord/norm for coord in randomVector]
+
             for a in range(0, d):
-                if randomVector[a] > 1:
-                    normalisedVector[a] = randomVector[a]/maxCoord
-                elif randomVector[a] < -1:
-                    normalisedVector[a] = -randomVector[a]/minCoord
-                else:
-                    normalisedVector[a] = randomVector[a]
+                totalVector[a] += normalisedVector[a]
+                inputVector.append(normalisedVector[a])
 
             positiveVector = [(1 + coord)/2 for coord in normalisedVector]
-
-            for a in range(0, d):
-                totalVector[a] += positiveVector[a]
 
             for a in range(0, t):
                 randomIndex = random.randint(0, d-1)
@@ -60,7 +53,6 @@ for r in range(0, R):
 
                 sampledPair = (randomIndex, positiveVector[randomIndex])
                 sampledCoord = sampledPair[1]
-                sampledList.append(sampledCoord)
 
                 roundedPair = (randomIndex, (math.floor(sampledCoord*k)\
                     + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))))
@@ -79,12 +71,8 @@ for r in range(0, R):
                 if len(submittedCoords) < 10:
                     submittedCoords.append(submittedCoord)
 
-                submittedTotal[randomIndex] += submittedCoord
+                submittedVector[randomIndex] += submittedCoord
                 indexTracker[randomIndex] += 1
-
-                descaledCoord = submittedCoord/k
-                debiasedCoord = (descaledCoord - (gamma/2))/(1 - gamma)
-                debiasedList.append(debiasedCoord)
 
             bar.next()
         bar.finish()
@@ -93,12 +81,20 @@ for r in range(0, R):
     print(f"{randomisedResponse}")
     print(f"{submittedCoords}")
     
-    descaledTotal = [idx/k for idx in submittedTotal]
-    mergedTracker = tuple(zip(indexTracker, descaledTotal))
-    debiasedTotal = [(z - ((gamma/2)*count))/(1 - gamma)/max(count, 1) for count, z in mergedTracker]
+    descaledVector = [idx/k for idx in submittedVector]
+    mergedTracker = tuple(zip(indexTracker, descaledVector))
+    print(f"\n{mergedTracker}")
+    debiasedVector = [2*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1 for count, z in mergedTracker]
+    print(f"\n{debiasedVector}")
+    print(f"\n{len(debiasedVector)}")
+
+    maxOutput = max(debiasedVector)
+    minOutput = min(debiasedVector) 
+    print(f"{maxOutput}")
+    print(f"{minOutput}")  
 
     averageVector = [idx/n for idx in totalVector]
-    errorTuple = tuple(zip(debiasedTotal, averageVector))
+    errorTuple = tuple(zip(debiasedVector, averageVector))
     meanSquaredError = [(a - b)**2 for a, b in errorTuple]
     totalMeanSquaredError += sum(meanSquaredError)
 
@@ -124,9 +120,14 @@ mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
 plt.savefig("basic.png"); plt.clf(); plt.cla()
 
 plt.subplot(1, 2, 1)
-(freq1, bins1, patches) = plt.hist(sampledList, weights = np.ones(len(sampledList)) / len(sampledList),\
+(freq1, bins1, patches) = plt.hist(inputVector, weights = np.ones(len(inputVector)) / len(inputVector),\
     bins = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1],\
         alpha = 0.4, histtype = 'bar', color = 'g', edgecolor = 'k')
+
+print(f"\n{freq1}")
+print(f"{bins1}")
+print(f"{np.ones(len(inputVector))}")
+print(f"{np.ones(len(inputVector)) / len(inputVector)}")
 
 plt.xlim(0, 1)
 plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
@@ -134,7 +135,9 @@ plt.gca().set(title = 'Histogram of sampled coordinates in the original domain',
 
 listFreq1 = freq1.tolist(); formattedFreq1 = list()
 for item in listFreq1:
-    formattedFreq1.append(int(float(item*(len(sampledList)))))
+    formattedFreq1.append(int(float(item*(len(inputVector)))))
+
+print(f"{formattedFreq1}")
 
 datafile.write(f"Frequencies of sampled coordinates in the original domain: \n")
 datafile.write(f"{str(formattedFreq1)[1:-1]} \n")
@@ -142,17 +145,24 @@ datafile.write(f"Total: {sum(formattedFreq1)} \n")
 datafile.write(f"Percentage of sampled coordinates between 0 and 1: {round((100)*(sum(formattedFreq1))/(sum(indexTracker)))}% \n\n")
 
 plt.subplot(1, 2, 2)
-(freq2, bins2, patches) = plt.hist(debiasedList, weights = np.ones(len(debiasedList)) / len(debiasedList),\
+(freq2, bins2, patches) = plt.hist(debiasedVector, weights = np.ones(len(debiasedVector)) / len(debiasedVector),\
     bins = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1],\
         alpha = 0.4, histtype = 'bar', color = 'b', edgecolor = 'k')
-    
+
+print(f"\n{freq2}")
+print(f"{bins2}")
+print(f"{np.ones(len(debiasedVector))}")
+print(f"{np.ones(len(debiasedVector)) / len(debiasedVector)}")
+
 plt.xlim(0, 1)
 plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
 plt.gca().set(title = 'Histogram of returned coordinates in the original domain', xlabel = 'Value', ylabel = 'Frequency')
 
 listFreq2 = freq2.tolist(); formattedFreq2 = list()
 for item in listFreq2:
-    formattedFreq2.append(int(float(item*(len(debiasedList)))))
+    formattedFreq2.append(int(float(item*(len(debiasedVector)))))
+
+print(f"{formattedFreq2}")
 
 datafile.write(f"Frequencies of returned coordinates in the original domain: \n")
 datafile.write(f"{str(formattedFreq2)[1:-1]} \n")
@@ -167,9 +177,9 @@ dftRandomVector = [0]*d; dftNormalisedVector = [0]*d; dftNormalisedSlicedVector 
 for value in range(0, V):
 
     loopTime = time.perf_counter(); m = (value + 1)*(int(d/25))
-    dftSampledList = list(); dftDebiasedList = list()
-    dftIndexTracker = [0]*m; dftSubmittedTotal = [0]*m; dftTotalVector = [0]*d
+    dftInputVector = list(); dftDebiasedVector = list()
     totalDftMeanSquaredError = list(); dftSumOfSquares = 0; totalReconstructionError = list()
+    dftIndexTracker = [0]*m; dftSubmittedVector = [0]*m; dftTotalVector = [0]*d
     sampledError = 0; returnedError = 0
 
     for r in range(0, R):
@@ -190,42 +200,17 @@ for value in range(0, V):
                     dftRandomCoord = float(tab[a + offset])
                     dftRandomVector[a] = dftRandomCoord
 
-                dftMaxCoord = max(dftRandomVector)
-                dftMinCoord = min(dftRandomVector)
+                dftAbsoluteVector = [abs(coord) for coord in dftRandomVector]
+                dftNorm = sum(dftAbsoluteVector)
+                dftNormalisedVector = [coord/dftNorm for coord in dftRandomVector]
 
                 for a in range(0, d):
-                    if dftRandomVector[a] > 1:
-                        dftNormalisedVector[a] = dftRandomVector[a]/dftMaxCoord
-                    elif dftRandomVector[a] < -1:
-                        dftNormalisedVector[a] = -dftRandomVector[a]/dftMinCoord
-                    else:
-                        dftNormalisedVector[a] = dftRandomVector[a]
-
-                dftPositiveVector = [(1 + coord)/2 for coord in dftNormalisedVector]
-
-                for a in range(0, d):
-                    dftTotalVector[a] += dftPositiveVector[a]
+                    dftTotalVector[a] += dftNormalisedVector[a]
+                    dftInputVector.append(dftNormalisedVector[a])
  
-                dftVector = (rfft(dftPositiveVector)).tolist()
-                dftSlicedVector = dftVector[0:m]
-                dftMaxSlicedCoord = max(dftSlicedVector)
-                dftMinSlicedCoord = min(dftSlicedVector)
-                
-                for a in range(0, m):
-                    if dftSlicedVector[a] > 1 and dftSlicedVector[a] < math.exp(2):
-                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]/math.exp(2)
-                    elif dftSlicedVector[a] > math.exp(2) and dftSlicedVector[a] < math.exp(3):
-                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]/math.exp(3)
-                    elif dftSlicedVector[a] > math.exp(3) and dftSlicedVector[a] < math.exp(4):
-                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]/math.exp(4)
-                    elif dftSlicedVector[a] > math.exp(4) and dftSlicedVector[a] < dftMaxSlicedCoord:
-                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]/dftMaxSlicedCoord
-                    elif dftSlicedVector[a] < -1:
-                        dftNormalisedSlicedVector[a] = -dftSlicedVector[a]/dftMinSlicedCoord
-                    else:
-                        dftNormalisedSlicedVector[a] = dftSlicedVector[a]
-
-                dftPositiveSlicedVector = [(1 + coord)/2 for coord in dftNormalisedSlicedVector]
+                dftVector = (rfft(dftNormalisedVector)).tolist()
+                dftPositiveVector = [(1 + coord)/2 for coord in dftVector]
+                dftSlicedVector = dftPositiveVector[0:m]
                 
                 for a in range(0, t):
                     dftRandomIndex = random.randint(0, m-1)
@@ -233,9 +218,8 @@ for value in range(0, V):
                     if len(dftRandomIndices) < 10:
                         dftRandomIndices.append(dftRandomIndex)
 
-                    dftSampledPair = (dftRandomIndex, dftPositiveSlicedVector[dftRandomIndex])
+                    dftSampledPair = (dftRandomIndex, dftSlicedVector[dftRandomIndex])
                     dftSampledCoord = dftSampledPair[1]
-                    dftSampledList.append(dftSampledCoord)
 
                     dftRoundedPair = (dftRandomIndex, (math.floor(dftSampledCoord*k)\
                         + np.random.binomial(1, dftSampledCoord*k - math.floor(dftSampledCoord*k))))
@@ -257,19 +241,13 @@ for value in range(0, V):
                     if dftSubmittedCoord > 6 or dftSubmittedCoord < 0:
                         if len(outOfBounds) == 0:
                             outOfBounds.append(dftRandomCoord)
-                            outOfBounds.append(dftMaxSlicedCoord)
-                            outOfBounds.append(dftMinSlicedCoord)
-                            outOfBounds.append(dftPositiveSlicedVector[dftRandomIndex])
+                            outOfBounds.append(dftSlicedVector[dftRandomIndex])
                             outOfBounds.append(dftSampledCoord)
                             outOfBounds.append(dftSampledCoord*k - math.floor(dftSampledCoord*k))
                             outOfBounds.append(dftRoundedPair[1])
 
-                    dftSubmittedTotal[dftRandomIndex] += dftSubmittedCoord
+                    dftSubmittedVector[dftRandomIndex] += dftSubmittedCoord
                     dftIndexTracker[dftRandomIndex] += 1
-
-                    dftDescaledCoord = dftSubmittedCoord/k
-                    dftDebiasedCoord = 2*((dftDescaledCoord - (gamma/2))/(1 - gamma))-1
-                    dftDebiasedList.append(dftDebiasedCoord)
     
                 bar.next()
             bar.finish()
@@ -279,15 +257,24 @@ for value in range(0, V):
         print(f"{dftSubmittedCoords}")
         print(f"{outOfBounds}")
 
-        dftDescaledTotal = [idx/k for idx in dftSubmittedTotal]
-        dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledTotal))
-        dftDebiasedTotal = [2*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1 for count, z in dftMergedTracker]
-        paddedTotal = dftDebiasedTotal + [0]*(d-m)
-        paddedTotal[0] = 1
-        finalTotal = (irfft(paddedTotal)).tolist()
+        dftDescaledVector = [idx/k for idx in dftSubmittedVector]
+        dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledVector))
+        print(f"\n{dftMergedTracker}")
+        dftDebiasedVector = [2*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1 for count, z in dftMergedTracker]
+        paddedVector = dftDebiasedVector + [0]*(d-m)
+        paddedVector[0] = 1
+        finalVector = (irfft(paddedVector, d)).tolist()
+
+        print(f"\n{finalVector}")
+        print(f"\n{len(finalVector)}")
+
+        dftMaxOutput = max(finalVector)
+        dftMinOutput = min(finalVector) 
+        print(f"{dftMaxOutput}")
+        print(f"{dftMinOutput}")  
 
         dftAverageVector = [idx/n for idx in dftTotalVector]        
-        dftErrorTuple = tuple(zip(finalTotal, dftAverageVector))
+        dftErrorTuple = tuple(zip(finalVector, dftAverageVector))
         dftMeanSquaredError = [(a - b)**2 for a, b in dftErrorTuple]
         totalDftMeanSquaredError.append(sum(dftMeanSquaredError))
 
@@ -337,9 +324,14 @@ for value in range(0, V):
     plt.savefig("fourier" + str(m) + ".png"); plt.clf(); plt.cla()
 
     plt.subplot(1, 2, 1)
-    (freq3, bins3, patches) = plt.hist(dftSampledList, weights = np.ones(len(dftSampledList)) / len(dftSampledList),\
+    (freq3, bins3, patches) = plt.hist(dftInputVector, weights = np.ones(len(dftInputVector)) / len(dftInputVector),\
         bins = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1],\
             alpha = 0.5, histtype = 'bar', color = 'g', edgecolor = 'k')
+
+    print(f"\n{freq3}")
+    print(f"{bins3}")
+    print(f"{np.ones(len(dftInputVector))}")
+    print(f"{np.ones(len(dftInputVector)) / len(dftInputVector)}")
 
     plt.xlim(0, 1)
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
@@ -347,8 +339,10 @@ for value in range(0, V):
 
     listFreq3 = freq3.tolist(); formattedFreq3 = list()
     for item in listFreq3:
-        formattedFreq3.append(int(float(item*(len(dftSampledList)))))
-    
+        formattedFreq3.append(int(float(item*(len(dftInputVector)))))
+
+    print(f"{formattedFreq3}")
+
     datafile.write(f"Frequencies of sampled coordinates in the Fourier domain: \n")
     datafile.write(f"{str(formattedFreq3)[1:-1]} \n")
     datafile.write(f"Total: {sum(formattedFreq3)} \n")
@@ -356,9 +350,14 @@ for value in range(0, V):
     datafile.write(f"Percentage of sampled coordinates between 0 and 1: {perc1}% \n\n")
 
     plt.subplot(1, 2, 2)
-    (freq4, bins4, patches) = plt.hist(dftDebiasedList, weights = np.ones(len(dftDebiasedList)) / len(dftDebiasedList),\
+    (freq4, bins4, patches) = plt.hist(finalVector, weights = np.ones(len(finalVector)) / len(finalVector),\
         bins = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1],\
             alpha = 0.5, histtype = 'bar', color = 'b', edgecolor = 'k')
+
+    print(f"\n{freq4}")
+    print(f"{bins4}")
+    print(f"{np.ones(len(dftDebiasedVector))}")
+    print(f"{np.ones(len(dftDebiasedVector)) / len(dftDebiasedVector)}")
 
     plt.xlim(0, 1)
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
@@ -366,7 +365,9 @@ for value in range(0, V):
 
     listFreq4 = freq4.tolist(); formattedFreq4 = list()
     for item in listFreq4:
-        formattedFreq4.append(int(float(item*(len(dftDebiasedList)))))
+        formattedFreq4.append(int(float(item*(len(finalVector)))))
+    
+    print(f"{formattedFreq4}")
 
     datafile.write(f"Frequencies of returned coordinates in the Fourier domain: \n")
     datafile.write(f"{str(formattedFreq4)[1:-1]} \n")
