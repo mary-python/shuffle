@@ -111,11 +111,11 @@ datafile = open("basic.txt", "w")
 datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
 comparison = (2*(14**(2/3))*(d**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
-datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 1)} \n")
-datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 2)} \n")
-error1 = round((100)*((averageMeanSquaredError)/comparison), 2)
+datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 3)} \n")
+datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 4)} \n")
+error1 = round((100)*((averageMeanSquaredError)/comparison), 1)
 datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
-datafile.write(f"Sum of squares of average vector: {round(averageSumofSquares, 2)} \n\n")
+datafile.write(f"Sum of squares of average vector: {round(averageSumofSquares, 5)} \n\n")
 
 plt.style.use('seaborn-white'); plt.tight_layout()
 plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)
@@ -299,23 +299,23 @@ for value in range(0, V):
     datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
     dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
-    datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 2)} \n")
-    datafile.write(f"Experimental perturbation error: {round(averageDftMeanSquaredError, 2)} \n")
-    error2 = round((100)*((averageDftMeanSquaredError)/dftComparison))
+    datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 4)} \n")
+    datafile.write(f"Experimental perturbation error: {round(averageDftMeanSquaredError, 4)} \n")
+    error2 = round((100)*((averageDftMeanSquaredError)/dftComparison), 1)
     datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
-    datafile.write(f"Standard deviation of perturbation error: {round(standardDeviationMeanSquaredError, 2)} \n")
-    datafile.write(f"Experimental reconstruction error: {round(averageReconstructionError, 2)} \n")
+    datafile.write(f"Standard deviation of perturbation error: {round(standardDeviationMeanSquaredError, 5)} \n")
+    datafile.write(f"Experimental reconstruction error: {round(averageReconstructionError, 5)} \n")
 
     perErrors.append(Decimal(averageDftMeanSquaredError))
     recErrors.append(Decimal(averageReconstructionError))
     perStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
     recStandardDeviation.append(Decimal(standardDeviationReconstructionError))
 
-    datafile.write(f"Total experimental MSE: {round((averageDftMeanSquaredError) + (averageReconstructionError), 2)} \n")
+    datafile.write(f"Total experimental MSE: {round((averageDftMeanSquaredError) + (averageReconstructionError), 4)} \n")
     error3 = round((100)*((averageReconstructionError)/((averageDftMeanSquaredError) + (averageReconstructionError))), 1)
     datafile.write(f"Reconstruction error was {error3}% of the total experimental MSE. \n")
-    datafile.write(f"Standard deviation of reconstruction error: {round(standardDeviationReconstructionError, 2)} \n")
-    datafile.write(f"Sum of squares of average vector: {round(averageDftSumofSquares, 2)} \n\n")
+    datafile.write(f"Standard deviation of reconstruction error: {round(standardDeviationReconstructionError, 5)} \n")
+    datafile.write(f"Sum of squares of average vector: {round(averageDftSumofSquares, 5)} \n\n")
 
     plt.style.use('seaborn-white'); plt.tight_layout()
     plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)
@@ -324,12 +324,12 @@ for value in range(0, V):
 
     plt.subplot(1, 2, 1)
     (freq3, bins3, patches) = plt.hist(dftSampledVector, weights = np.ones(len(dftSampledVector)) / len(dftSampledVector),\
-        bins = [-0.3, -0.275, -0.25, -0.225, -0.2, -0.175, -0.15, -0.125, -0.1, -0.075, -0.05, -0.025, 0, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25, 0.275, 0.3],\
+        bins = [-0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1, -0.05, 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4],\
             alpha = 0.5, histtype = 'bar', color = 'g', edgecolor = 'k')
 
     print(f"\n{freq3}")
 
-    plt.xlim(-0.3, 0.3)
+    plt.xlim(-0.4, 0.4)
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
     plt.gca().set(title = 'Histogram of sampled coordinates in the Fourier domain', xlabel = 'Value', ylabel = 'Frequency')
 
@@ -347,12 +347,12 @@ for value in range(0, V):
 
     plt.subplot(1, 2, 2)
     (freq4, bins4, patches) = plt.hist(finalVector, weights = np.ones(len(finalVector)) / len(finalVector),\
-        bins = [0.004, 0.0041, 0.0042, 0.0043, 0.0044, 0.0045, 0.0046, 0.0047, 0.0048, 0.0049, 0.005, 0.0051, 0.0052, 0.0053, 0.0054, 0.0055, 0.0056, 0.0057, 0.0058, 0.0059, 0.006],\
+        bins = [0.0015, 0.00185, 0.0022, 0.00255, 0.0029, 0.00325, 0.0036, 0.00395, 0.0043, 0.00465, 0.005, 0.00535, 0.0057, 0.00605, 0.0064, 0.00675, 0.0071, 0.00745, 0.0078, 0.00815, 0.0085],\
             alpha = 0.5, histtype = 'bar', color = 'b', edgecolor = 'k')
 
     print(f"\n{freq4}")
 
-    plt.xlim(0.004, 0.006)
+    plt.xlim(0.0015, 0.0085)
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
     plt.gca().set(title = 'Histogram of returned coordinates in the Fourier domain', xlabel = 'Value', ylabel = 'Frequency')
 
