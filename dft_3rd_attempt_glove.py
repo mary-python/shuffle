@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt; from matplotlib.ticker import PercentFormatter
 random.seed(2196018)
 np.random.seed(2196018)
 startTime = time.perf_counter()
-d = 200; k = 6; n = 400000; eps = 0.1; dta = 0.9832; V = 10; R = 3; t = 2
+d = 200; k = 7; n = 400000; eps = 0.1; dta = 0.9832; V = 10; R = 3; t = 2
 
 if t == 1:
     gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
@@ -105,7 +105,7 @@ for r in range(0, R):
     sumOfSquares += sum(averageSquares)
 
 averageMeanSquaredError = totalMeanSquaredError/R
-averageSumofSquares = sumOfSquares/R
+averageSumOfSquares = sumOfSquares/R
 
 datafile = open("basic.txt", "w")
 datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
@@ -115,7 +115,7 @@ datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 3)} \n")
 datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 4)} \n")
 error1 = round((100)*((averageMeanSquaredError)/comparison), 1)
 datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
-datafile.write(f"Sum of squares of average vector: {round(averageSumofSquares, 5)} \n\n")
+datafile.write(f"Sum of squares of average vector: {round(averageSumOfSquares, 5)} \n\n")
 
 plt.style.use('seaborn-white'); plt.tight_layout()
 plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)
@@ -182,7 +182,6 @@ for value in range(0, V):
     for r in range(0, R):
 
         print(f"\n Processing the optimal summation result with DFT for the value m = {m}, repeat {r+1}.")
-
         from progress.bar import FillingSquaresBar
         bar = FillingSquaresBar(max=n, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
@@ -235,7 +234,7 @@ for value in range(0, V):
                     if len(dftSubmittedCoords) < 10:
                         dftSubmittedCoords.append(dftSubmittedCoord)
 
-                    if dftSubmittedCoord > 6 or dftSubmittedCoord < 0:
+                    if dftSubmittedCoord > 7 or dftSubmittedCoord < 0:
                         if len(outOfBounds) == 0:
                             outOfBounds.append(dftRandomCoord)
                             outOfBounds.append(dftSlicedVector[dftRandomIndex])
@@ -286,7 +285,7 @@ for value in range(0, V):
         totalReconstructionError.append(sum(reconstructionError))
     
     averageDftMeanSquaredError = (sum(totalDftMeanSquaredError))/R
-    averageDftSumofSquares = dftSumOfSquares/R
+    averageDftSumOfSquares = dftSumOfSquares/R
     averageReconstructionError = (sum(totalReconstructionError))/R
 
     differencesMeanSquaredError = [(value - averageDftMeanSquaredError)**2 for value in totalDftMeanSquaredError]
@@ -315,7 +314,7 @@ for value in range(0, V):
     error3 = round((100)*((averageReconstructionError)/((averageDftMeanSquaredError) + (averageReconstructionError))), 1)
     datafile.write(f"Reconstruction error was {error3}% of the total experimental MSE. \n")
     datafile.write(f"Standard deviation of reconstruction error: {round(standardDeviationReconstructionError, 5)} \n")
-    datafile.write(f"Sum of squares of average vector: {round(averageDftSumofSquares, 5)} \n\n")
+    datafile.write(f"Sum of squares of average vector: {round(averageDftSumOfSquares, 5)} \n\n")
 
     plt.style.use('seaborn-white'); plt.tight_layout()
     plt.subplot(1, 2, 1); plt.subplot(1, 2, 2)
