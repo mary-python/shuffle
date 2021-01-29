@@ -12,8 +12,8 @@ if t == 1:
 else:
     gamma = (((56*d*k*(math.log(1/dta))*(math.log((2*t)/dta))))/((n-1)*(eps**2)))
 
-loopTotal = list(); perErrors = list(); recErrors = list()
-perStandardDeviation = list(); recStandardDeviation = list(); sampledVector = list()
+loopTotal = list(); perErrors = list(); recErrors = list(); totalErrors = list()
+totalStandardDeviation = list(); sampledVector = list()
 randomVector = [0]*d; normalisedVector = [0]*d; normalisedDebiasedVector = [0]*d; normalisedFinalVector = [0]*d
 indexTracker = [0]*d; submittedVector = [0]*d; totalVector = [0]*d
 totalMeanSquaredError = 0; sumOfSquares = 0
@@ -283,35 +283,39 @@ for value in range(0, V):
         reconstructionTuple = tuple(zip(exactVector, dftAverageVector))
         reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
         totalReconstructionError.append(sum(reconstructionError))
+        totalPerturbationError = totalDftMeanSquaredError - totalReconstructionError
     
     averageDftMeanSquaredError = (sum(totalDftMeanSquaredError))/R
     averageDftSumOfSquares = dftSumOfSquares/R
     averageReconstructionError = (sum(totalReconstructionError))/R
+    averagePerturbationError = (sum(totalPerturbationError))/R
 
-    differencesMeanSquaredError = [(value - averageDftMeanSquaredError)**2 for value in totalDftMeanSquaredError]
+    differencesMeanSquaredError = [(value - averageDftMeanSquaredError)**2 for value in totalDftMeanSquaredError] 
     differencesReconstructionError = [(value - averageReconstructionError)**2 for value in totalReconstructionError]
+    differencesPerturbationError = [(value - averagePerturbationError)**2 for value in totalPerturbationError]
     standardDeviationMeanSquaredError = math.sqrt((sum(differencesMeanSquaredError))/R)
     standardDeviationReconstructionError = math.sqrt((sum(differencesReconstructionError))/R)
-
+    standardDeviationPerturbationError = math.sqrt((sum(differencesPerturbationError))/R)
+    
     datafile = open("fourier" + str(m) + ".txt", "w")
     datafile.write(f"Number of Fourier coefficients m: {m} \n")
     datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
     dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
     datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 4)} \n")
-    datafile.write(f"Experimental perturbation error: {round(averageDftMeanSquaredError, 4)} \n")
-    error2 = round((100)*((averageDftMeanSquaredError)/dftComparison), 1)
+    datafile.write(f"Experimental perturbation error: {round(averagePerturbationError, 4)} \n")
+    error2 = round((100)*((averagePerturbationError)/dftComparison), 1)
     datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
-    datafile.write(f"Standard deviation of perturbation error: {round(standardDeviationMeanSquaredError, 5)} \n")
+    datafile.write(f"Standard deviation of perturbation error: {round(standardDeviationPerturbationError, 5)} \n")
     datafile.write(f"Experimental reconstruction error: {round(averageReconstructionError, 5)} \n")
 
-    perErrors.append(Decimal(averageDftMeanSquaredError))
+    perErrors.append(Decimal(averagePerturbationError))
     recErrors.append(Decimal(averageReconstructionError))
-    perStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
-    recStandardDeviation.append(Decimal(standardDeviationReconstructionError))
+    totalErrors.append(Decimal(averageDftMeanSquaredError))
+    totalStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
 
-    datafile.write(f"Total experimental MSE: {round((averageDftMeanSquaredError) + (averageReconstructionError), 4)} \n")
-    error3 = round((100)*((averageReconstructionError)/((averageDftMeanSquaredError) + (averageReconstructionError))), 1)
+    datafile.write(f"Total experimental MSE: {round(averageDftMeanSquaredError, 4)} \n")
+    error3 = round((100)*((averageReconstructionError)/(averageDftMeanSquaredError)), 1)
     datafile.write(f"Reconstruction error was {error3}% of the total experimental MSE. \n")
     datafile.write(f"Standard deviation of reconstruction error: {round(standardDeviationReconstructionError, 5)} \n")
     datafile.write(f"Sum of squares of average vector: {round(averageDftSumOfSquares, 5)} \n\n")
@@ -380,9 +384,9 @@ errorfile = open("errortemp.txt", "w")
 
 for value in range(0, V):
     if value != (V - 1):
-        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]} {perStandardDeviation[value]} {recStandardDeviation[value]} \n")
+        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]} {totalErrors[value]} {totalStandardDeviation[value]} \n")
     else:
-        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]} {perStandardDeviation[value]} {recStandardDeviation[value]}")
+        errorfile.write(f"{4*(value + 1)} {perErrors[value]} {recErrors[value]} {totalErrors[value]} {totalStandardDeviation[value]}")
 
 errorfile.close()
 

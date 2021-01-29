@@ -8,8 +8,8 @@ with open("errortemp.txt") as reader:
         labels.append(f'{int(tab[0])}%')
         perErrors.append((Decimal(tab[1])))
         recErrors.append((Decimal(tab[2])))
-        totalErrors.append((Decimal(tab[1])) + (Decimal(tab[2])))
-        totalStandardDeviation.append((Decimal(tab[3])) + (Decimal(tab[4])))
+        totalErrors.append((Decimal(tab[3])))
+        totalStandardDeviation.append((Decimal(tab[4])))
 
 plt.bar(labels, perErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
 plt.bar(labels, recErrors, width, bottom = perErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
