@@ -14,7 +14,7 @@ else:
 
 loopTotal = list(); perErrors = list(); recErrors = list(); totalErrors = list()
 totalStandardDeviation = list(); sampledVector = list()
-randomVector = [0]*d; normalisedVector = [0]*d; normalisedDebiasedVector = [0]*d; normalisedFinalVector = [0]*d
+randomVector = [0]*d; clippedVector = [0]*d; normalisedDebiasedVector = [0]*d; normalisedFinalVector = [0]*d
 indexTracker = [0]*d; submittedVector = [0]*d; totalVector = [0]*d
 totalMeanSquaredError = 0; sumOfSquares = 0
 
@@ -31,13 +31,19 @@ for r in range(0, R):
         for a in range(0, d):
             randomCoord = (math.cos((a/d)**2))*(random.random())
             randomVector[a] = randomCoord
-        
-        absoluteVector = [abs(coord) for coord in randomVector]
-        norm = sum(absoluteVector)
+
+        norm = 2
         normalisedVector = [coord/norm for coord in randomVector]
 
         for a in range(0, d):
-            totalVector[a] += normalisedVector[a]
+            if normalisedVector[a] > 1:
+                clippedVector[a] = 1
+            elif randomCoord < -1:
+                clippedVector[a] = -1
+            else:
+                clippedVector[a] = normalisedVector[a]
+
+            totalVector[a] += clippedVector[a]
 
         for a in range(0, t):
             randomIndex = random.randint(0, d-1)
@@ -45,7 +51,7 @@ for r in range(0, R):
             if len(randomIndices) < 10:
                 randomIndices.append(randomIndex)
 
-            sampledPair = (randomIndex, randomVector[randomIndex])
+            sampledPair = (randomIndex, clippedVector[randomIndex])
             sampledCoord = sampledPair[1]
             sampledVector.append(sampledCoord)
 
@@ -164,7 +170,7 @@ datafile.write(f"Percentage of returned coordinates between 0 and 1: {round((100
 plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
 plt.savefig("basic.png"); plt.clf(); plt.cla()
 
-dftRandomVector = [0]*d; dftNormalisedVector = [0]*d; dftNormalisedSlicedVector = [0]*d
+dftRandomVector = [0]*d; dftNormalisedVector = [0]*d; dftClippedVector = [0]*d
 
 for value in range(0, V):
 
@@ -188,14 +194,20 @@ for value in range(0, V):
                 dftRandomCoord = (math.cos((a/d)**2))*(random.random())
                 dftRandomVector[a] = dftRandomCoord
 
-            dftAbsoluteVector = [abs(coord) for coord in dftRandomVector]
-            dftNorm = sum(dftAbsoluteVector)
+            dftNorm = 20
             dftNormalisedVector = [coord/dftNorm for coord in dftRandomVector]
 
             for a in range(0, d):
-                dftTotalVector[a] += dftNormalisedVector[a]
+                if dftNormalisedVector[a] > 1:
+                    dftClippedVector[a] = 1
+                elif dftNormalisedVector[a] < -1:
+                    dftClippedVector[a] = -1
+                else:
+                    dftClippedVector[a] = dftNormalisedVector[a]
 
-            dftVector = (rfft(dftNormalisedVector)).tolist()
+                dftTotalVector[a] += dftClippedVector[a]
+ 
+            dftVector = (rfft(dftClippedVector)).tolist()
             dftPositiveVector = [(1 + coord)/2 for coord in dftVector]
             dftSlicedVector = dftPositiveVector[0:m]
 
