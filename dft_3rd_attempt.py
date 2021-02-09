@@ -30,18 +30,15 @@ for r in range(0, R):
 
         for a in range(0, d):
             randomCoord = (math.cos((a/d)**2))*(random.random())
-            randomVector[a] = randomCoord
-
-        norm = 2
-        normalisedVector = [coord/norm for coord in randomVector]
+            randomVector[a] = randomCoord/2
 
         for a in range(0, d):
-            if normalisedVector[a] > 1:
+            if randomVector[a] > 1:
                 clippedVector[a] = 1
-            elif randomCoord < -1:
+            elif randomVector[a] < -1:
                 clippedVector[a] = -1
             else:
-                clippedVector[a] = normalisedVector[a]
+                clippedVector[a] = randomVector[a]
 
             totalVector[a] += clippedVector[a]
 
@@ -192,18 +189,15 @@ for value in range(0, V):
             
             for a in range(0, d):
                 dftRandomCoord = (math.cos((a/d)**2))*(random.random())
-                dftRandomVector[a] = dftRandomCoord
-
-            dftNorm = 20
-            dftNormalisedVector = [coord/dftNorm for coord in dftRandomVector]
+                dftRandomVector[a] = dftRandomCoord/20
 
             for a in range(0, d):
-                if dftNormalisedVector[a] > 1:
+                if dftRandomVector[a] > 1:
                     dftClippedVector[a] = 1
-                elif dftNormalisedVector[a] < -1:
+                elif dftRandomVector[a] < -1:
                     dftClippedVector[a] = -1
                 else:
-                    dftClippedVector[a] = dftNormalisedVector[a]
+                    dftClippedVector[a] = dftRandomVector[a]
 
                 dftTotalVector[a] += dftClippedVector[a]
  
