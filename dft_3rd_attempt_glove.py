@@ -13,7 +13,7 @@ else:
     gamma = (((56*d*k*(math.log(1/dta))*(math.log((2*t)/dta))))/((n-1)*(eps**2)))
 
 loopTotal = list(); perErrors = list(); recErrors = list(); totalErrors = list()
-totalStandardDeviation = list(); sampledVector = list()
+totalStandardDeviation = list(); sampledVector = [0]*40
 randomVector = [0]*d; clippedVector = [0]*d; normalisedDebiasedVector = [0]*d; normalisedFinalVector = [0]*d
 indexTracker = [0]*d; submittedVector = [0]*d; totalVector = [0]*d
 totalMeanSquaredError = 0; sumOfSquares = 0
@@ -33,7 +33,7 @@ for r in range(0, R):
 
             for a in range(0, d):
                 randomCoord = float(tab[a + offset])
-                randomVector[a] = randomCoord/2
+                randomVector[a] = (2*randomCoord)/3
 
             for a in range(0, d):
                 if randomVector[a] > 1:
@@ -55,7 +55,13 @@ for r in range(0, R):
 
                 sampledPair = (randomIndex, positiveVector[randomIndex])
                 sampledCoord = sampledPair[1]
-                sampledVector.append(2*(sampledCoord)-1)
+                adjustedVector = 2*(sampledCoord)-1
+
+                for coord in range(0, 40):
+                    if adjustedVector >= ((0.05*coord)-1) and adjustedVector < ((0.05*coord)-0.95):
+                        sampledVector[coord] += 1
+                    if coord == 40 and adjustedVector == ((0.05*coord)-0.95):
+                        sampledVector[39] += 1
 
                 roundedPair = (randomIndex, (math.floor(sampledCoord*k)\
                     + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))))
@@ -126,30 +132,24 @@ mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
 plt.savefig("basic.png"); plt.clf(); plt.cla()
 
 plt.subplot(1, 2, 1)
-(freq1, bins1, patches) = plt.hist(sampledVector, weights = np.ones(len(sampledVector)) / len(sampledVector),\
-    bins = [-1, -0.95, -0.9, -0.85, -0.8, -0.75, -0.7, -0.65, -0.6, -0.55, -0.5, -0.45, -0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1, -0.05, 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1],\
-        alpha = 0.4, histtype = 'bar', color = 'g', edgecolor = 'k')
+barIntervals = ['-1 to -0.95', '-0.95 to -0.9', '-0.9 to -0.85', '-0.85 to -0.8', '-0.8 to -0.75', '-0.75 to -0.7', '-0.7 to -0.65', '-0.65 to -0.6', '-0.6 to -0.55', '-0.55 to -0.5', '-0.5 to -0.45', '-0.45 to -0.4', '-0.4 to -0.35', '-0.35 to -0.3', '-0.3 to -0.25', '-0.25 to -0.2', '-0.2 to -0.15', '-0.15 to -0.1', '-0.1 to -0.05', '-0.05 to 0', '0 to 0.05', '0.05 to 0.1', '0.1 to 0.15', '0.15 to 0.2', '0.2 to 0.25', '0.25 to 0.3', '0.3 to 0.35', '0.35 to 0.4', '0.4 to 0.45', '0.45 to 0.5', '0.5 to 0.55', '0.55 to 0.6', '0.6 to 0.65', '0.65 to 0.7', '0.7 to 0.75', '0.75 to 0.8', '0.8 to 0.85', '0.85 to 0.9', '0.9 to 0.95', '0.95 to 1']
+sampledVectorSum = sum(sampledVector)
+percentageVector = [coord/sampledVectorSum for coord in sampledVector]
+plt.bar(barIntervals, percentageVector, width = 1, alpha = 0.4, color = 'g', edgecolor = 'k')
+plt.xticks(rotation = 45)
 
-print(f"\n{freq1}")
+print(f"\n{percentageVector}")
 
-plt.xlim(-1, 1)
 plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
 plt.gca().set(title = 'Histogram of sampled coordinates in the original domain', xlabel = 'Value', ylabel = 'Frequency')
 
-listFreq1 = freq1.tolist(); formattedFreq1 = list()
-for item in listFreq1:
-    formattedFreq1.append(int(float(item*(len(sampledVector)))))
-
-print(f"{formattedFreq1}")
-
 datafile.write(f"Frequencies of sampled coordinates in the original domain: \n")
-datafile.write(f"{str(formattedFreq1)[1:-1]} \n")
-datafile.write(f"Total: {sum(formattedFreq1)} \n")
-datafile.write(f"Percentage of sampled coordinates between -1 and 1: {round((100)*(sum(formattedFreq1))/(len(sampledVector)))}% \n\n")
+datafile.write(f"{str(sampledVector)[1:-1]} \n")
+datafile.write(f"Total: {sampledVectorSum} \n")
 
 plt.subplot(1, 2, 2)
 (freq2, bins2, patches) = plt.hist(debiasedVector, weights = np.ones(len(debiasedVector)) / len(debiasedVector),\
-    bins = [-0.2, -0.1875, -0.175, -0.1625, -0.15, -0.1375, -0.125, -0.1125, -0.1, -0.0875, -0.075, -0.0625, -0.05, -0.0375, -0.025, -0.0125, 0, 0.0125, 0.025, 0.0265, 0.0375, 0.05, 0.0625, 0.075, 0.0875, 0.1, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.2, 0.2125, 0.225, 0.2375, 0.25, 0.2625, 0.275, 0.2875, 0.3],\
+    bins = [-0.3, -0.2875, -0.275, -0.2625, -0.25, -0.2375, -0.225, -0.2125, -0.2, -0.1875, -0.175, -0.1625, -0.15, -0.1375, -0.125, -0.1125, -0.1, -0.0875, -0.075, -0.0625, -0.05, -0.0375, -0.025, -0.0125, 0, 0.0125, 0.025, 0.0375, 0.05, 0.0625, 0.075, 0.0875, 0.1, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.2, 0.2125, 0.225, 0.2375, 0.25, 0.2625, 0.275, 0.2875, 0.3, 0.3125, 0.325, 0.3375, 0.35, 0.3625, 0.375, 0.3875, 0.4],\
         alpha = 0.4, histtype = 'bar', color = 'b', edgecolor = 'k')
 
 print(f"\n{freq2}")
@@ -167,7 +167,7 @@ print(f"{formattedFreq2}")
 datafile.write(f"Frequencies of returned coordinates in the original domain: \n")
 datafile.write(f"{str(formattedFreq2)[1:-1]} \n")
 datafile.write(f"Total: {sum(formattedFreq2)} \n")
-datafile.write(f"Percentage of returned coordinates between -0.4 and 0.6: {round((100)*(sum(formattedFreq2))/(len(debiasedVector)))}%")
+datafile.write(f"Percentage of returned coordinates between -0.2 and 0.3: {round((100)*(sum(formattedFreq2))/(len(debiasedVector)))}%")
 
 plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
 plt.savefig("basic.png"); plt.clf(); plt.cla()
@@ -177,7 +177,7 @@ dftRandomVector = [0]*d; dftNormalisedVector = [0]*d; dftClippedVector = [0]*d
 for value in range(0, V):
 
     loopTime = time.perf_counter(); m = (value + 1)*(int(d/25))
-    dftSampledVector = list(); dftDebiasedVector = list()
+    dftSampledVector = [0]*40; dftDebiasedVector = list()
     totalDftMeanSquaredError = list(); dftSumOfSquares = 0; totalReconstructionError = list(); totalPerturbationError = list()
     dftIndexTracker = [0]*m; dftSubmittedVector = [0]*m; dftTotalVector = [0]*d
     sampledError = 0; returnedError = 0
@@ -197,7 +197,7 @@ for value in range(0, V):
 
                 for a in range(0, d):
                     dftRandomCoord = float(tab[a + offset])
-                    dftRandomVector[a] = dftRandomCoord/20
+                    dftRandomVector[a] = dftRandomCoord/15
 
                 for a in range(0, d):
                     if dftRandomVector[a] > 1:
@@ -221,7 +221,13 @@ for value in range(0, V):
 
                     dftSampledPair = (dftRandomIndex, dftSlicedVector[dftRandomIndex])
                     dftSampledCoord = dftSampledPair[1]
-                    dftSampledVector.append(2*(dftSampledCoord)-1)
+                    dftAdjustedVector = 2*(dftSampledCoord)-1
+
+                    for coord in range(0, 40):
+                        if dftAdjustedVector >= ((0.05*coord)-1) and dftAdjustedVector < ((0.05*coord)-0.95):
+                            dftSampledVector[coord] += 1
+                        if coord == 40 and dftAdjustedVector == ((0.05*coord)-0.95):
+                            dftSampledVector[39] += 1
 
                     dftRoundedPair = (dftRandomIndex, (math.floor(dftSampledCoord*k)\
                         + np.random.binomial(1, dftSampledCoord*k - math.floor(dftSampledCoord*k))))
@@ -332,36 +338,29 @@ for value in range(0, V):
     plt.savefig("fourier" + str(m) + ".png"); plt.clf(); plt.cla()
 
     plt.subplot(1, 2, 1)
-    (freq3, bins3, patches) = plt.hist(dftSampledVector, weights = np.ones(len(dftSampledVector)) / len(dftSampledVector),\
-        bins = [-1, -0.95, -0.9, -0.85, -0.8, -0.75, -0.7, -0.65, -0.6, -0.55, -0.5, -0.45, -0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1, -0.05, 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1],\
-            alpha = 0.5, histtype = 'bar', color = 'g', edgecolor = 'k')
+    dftBarIntervals = ['-1 to -0.95', '-0.95 to -0.9', '-0.9 to -0.85', '-0.85 to -0.8', '-0.8 to -0.75', '-0.75 to -0.7', '-0.7 to -0.65', '-0.65 to -0.6', '-0.6 to -0.55', '-0.55 to -0.5', '-0.5 to -0.45', '-0.45 to -0.4', '-0.4 to -0.35', '-0.35 to -0.3', '-0.3 to -0.25', '-0.25 to -0.2', '-0.2 to -0.15', '-0.15 to -0.1', '-0.1 to -0.05', '-0.05 to 0', '0 to 0.05', '0.05 to 0.1', '0.1 to 0.15', '0.15 to 0.2', '0.2 to 0.25', '0.25 to 0.3', '0.3 to 0.35', '0.35 to 0.4', '0.4 to 0.45', '0.45 to 0.5', '0.5 to 0.55', '0.55 to 0.6', '0.6 to 0.65', '0.65 to 0.7', '0.7 to 0.75', '0.75 to 0.8', '0.8 to 0.85', '0.85 to 0.9', '0.9 to 0.95', '0.95 to 1']
+    dftSampledVectorSum = sum(dftSampledVector)
+    dftPercentageVector = [coord/dftSampledVectorSum for coord in dftSampledVector]
+    plt.bar(dftBarIntervals, dftPercentageVector, width = 1, alpha = 0.4, color = 'g', edgecolor = 'k')
+    plt.xticks(rotation = 45)
 
-    print(f"\n{freq3}")
+    print(f"\n{dftPercentageVector}")
 
-    plt.xlim(-1, 1)
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
     plt.gca().set(title = 'Histogram of sampled coordinates in the Fourier domain', xlabel = 'Value', ylabel = 'Frequency')
 
-    listFreq3 = freq3.tolist(); formattedFreq3 = list()
-    for item in listFreq3:
-        formattedFreq3.append(int(float(item*(len(dftSampledVector)))))
-
-    print(f"{formattedFreq3}")
-
     datafile.write(f"Frequencies of sampled coordinates in the Fourier domain: \n")
-    datafile.write(f"{str(formattedFreq3)[1:-1]} \n")
-    datafile.write(f"Total: {sum(formattedFreq3)} \n")
-    perc1 = round((100)*(sum(formattedFreq3))/(len(dftSampledVector)))
-    datafile.write(f"Percentage of sampled coordinates between -1 and 1: {perc1}% \n\n")
+    datafile.write(f"{str(dftSampledVector)[1:-1]} \n")
+    datafile.write(f"Total: {dftSampledVectorSum} \n")
 
     plt.subplot(1, 2, 2)
     (freq4, bins4, patches) = plt.hist(finalVector, weights = np.ones(len(finalVector)) / len(finalVector),\
-        bins = [-0.2, -0.1875, -0.175, -0.1625, -0.15, -0.1375, -0.125, -0.1125, -0.1, -0.0875, -0.075, -0.0625, -0.05, -0.0375, -0.025, -0.0125, 0, 0.0125, 0.025, 0.0265, 0.0375, 0.05, 0.0625, 0.075, 0.0875, 0.1, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.2],\
+        bins = [-0.0055, -0.005, -0.0045, -0.004, -0.0035, -0.003, -0.0025, -0.002, -0.0015, -0.001, -0.0005, 0, 0.0005, 0.001, 0.0015, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018],\
             alpha = 0.5, histtype = 'bar', color = 'b', edgecolor = 'k')
 
     print(f"\n{freq4}")
 
-    plt.xlim(-0.2, 0.2)
+    plt.xlim(-0.0055, 0.018)
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
     plt.gca().set(title = 'Histogram of returned coordinates in the Fourier domain', xlabel = 'Value', ylabel = 'Frequency')
 
@@ -375,7 +374,7 @@ for value in range(0, V):
     datafile.write(f"{str(formattedFreq4)[1:-1]} \n")
     datafile.write(f"Total: {sum(formattedFreq4)} \n")
     perc2 = round((100)*(sum(formattedFreq4))/(len(finalVector)))
-    datafile.write(f"Percentage of returned coordinates between -0.2 and 0.2: {perc2}% \n\n")
+    datafile.write(f"Percentage of returned coordinates between -0.0055 and 0.018: {perc2}% \n\n")
 
     plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
     plt.savefig("fourier" + str(m) + ".png")
