@@ -13,7 +13,7 @@ else:
     gamma = (((56*d*k*(math.log(1/dta))*(math.log((2*t)/dta))))/((n-1)*(eps**2)))
 
 loopTotal = list(); perErrors = list(); recErrors = list(); totalErrors = list()
-totalStandardDeviation = list(); sampledVector = [0]*40
+totalStandardDeviation = list(); sampledVector = [0]*40; outputVector = [0]*56
 randomVector = [0]*d; clippedVector = [0]*d; normalisedDebiasedVector = [0]*d; normalisedFinalVector = [0]*d
 indexTracker = [0]*d; submittedVector = [0]*d; totalVector = [0]*d
 totalMeanSquaredError = 0; sumOfSquares = 0
@@ -55,13 +55,13 @@ for r in range(0, R):
 
                 sampledPair = (randomIndex, positiveVector[randomIndex])
                 sampledCoord = sampledPair[1]
-                adjustedVector = 2*(sampledCoord)-1
+                adjustedSampledCoord = 2*(sampledCoord)-1
 
                 for coord in range(0, 40):
-                    if adjustedVector >= ((0.05*coord)-1) and adjustedVector < ((0.05*coord)-0.95):
+                    if adjustedSampledCoord >= ((0.05*coord)-1) and adjustedSampledCoord < ((0.05*coord)-0.95):
                         sampledVector[coord] += 1
-                    if coord == 40 and adjustedVector == ((0.05*coord)-0.95):
-                        sampledVector[39] += 1
+                    if coord == 39 and adjustedSampledCoord == ((0.05*coord)-0.95):
+                        sampledVector[coord] += 1
 
                 roundedPair = (randomIndex, (math.floor(sampledCoord*k)\
                     + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))))
@@ -103,7 +103,15 @@ for r in range(0, R):
     maxOutput = max(debiasedVector)
     minOutput = min(debiasedVector) 
     print(f"{maxOutput}")
-    print(f"{minOutput}")  
+    print(f"{minOutput}")
+
+    for vector in debiasedVector:
+        for coord in range(0, 56):
+            if vector >= ((0.0125*coord)-0.3) and vector < ((0.0125*coord)-0.2875):
+                outputVector[coord] += 1
+            if coord == 55 and vector == ((0.0125*coord)-0.2875):
+                outputVector[coord] += 1
+    print(f"\n{outputVector}")
 
     averageVector = [idx/n for idx in totalVector]
     errorTuple = tuple(zip(debiasedVector, averageVector))
@@ -132,13 +140,15 @@ mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
 plt.savefig("basic.png"); plt.clf(); plt.cla()
 
 plt.subplot(1, 2, 1)
-barIntervals = ['-1 to -0.95', '-0.95 to -0.9', '-0.9 to -0.85', '-0.85 to -0.8', '-0.8 to -0.75', '-0.75 to -0.7', '-0.7 to -0.65', '-0.65 to -0.6', '-0.6 to -0.55', '-0.55 to -0.5', '-0.5 to -0.45', '-0.45 to -0.4', '-0.4 to -0.35', '-0.35 to -0.3', '-0.3 to -0.25', '-0.25 to -0.2', '-0.2 to -0.15', '-0.15 to -0.1', '-0.1 to -0.05', '-0.05 to 0', '0 to 0.05', '0.05 to 0.1', '0.1 to 0.15', '0.15 to 0.2', '0.2 to 0.25', '0.25 to 0.3', '0.3 to 0.35', '0.35 to 0.4', '0.4 to 0.45', '0.45 to 0.5', '0.5 to 0.55', '0.55 to 0.6', '0.6 to 0.65', '0.65 to 0.7', '0.7 to 0.75', '0.75 to 0.8', '0.8 to 0.85', '0.85 to 0.9', '0.9 to 0.95', '0.95 to 1']
+sampledBarIntervals = ['-1 to -0.95', '-0.95 to -0.9', '-0.9 to -0.85', '-0.85 to -0.8', '-0.8 to -0.75', '-0.75 to -0.7', '-0.7 to -0.65', '-0.65 to -0.6', '-0.6 to -0.55', '-0.55 to -0.5', '-0.5 to -0.45', '-0.45 to -0.4', '-0.4 to -0.35', '-0.35 to -0.3', '-0.3 to -0.25', '-0.25 to -0.2', '-0.2 to -0.15', '-0.15 to -0.1', '-0.1 to -0.05', '-0.05 to 0', '0 to 0.05', '0.05 to 0.1', '0.1 to 0.15', '0.15 to 0.2', '0.2 to 0.25', '0.25 to 0.3', '0.3 to 0.35', '0.35 to 0.4', '0.4 to 0.45', '0.45 to 0.5', '0.5 to 0.55', '0.55 to 0.6', '0.6 to 0.65', '0.65 to 0.7', '0.7 to 0.75', '0.75 to 0.8', '0.8 to 0.85', '0.85 to 0.9', '0.9 to 0.95', '0.95 to 1']
 sampledVectorSum = sum(sampledVector)
-percentageVector = [coord/sampledVectorSum for coord in sampledVector]
-plt.bar(barIntervals, percentageVector, width = 1, alpha = 0.4, color = 'g', edgecolor = 'k')
+percentageSampledVector = [coord/sampledVectorSum for coord in sampledVector]
+print(f"\n{len(sampledBarIntervals)}")
+print(f"{len(percentageSampledVector)}")
+plt.bar(sampledBarIntervals, percentageSampledVector, width = 1, align = 'edge', alpha = 0.4, color = 'g', edgecolor = 'k')
 plt.xticks(rotation = 45)
 
-print(f"\n{percentageVector}")
+print(f"\n{percentageSampledVector}")
 
 plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
 plt.gca().set(title = 'Histogram of sampled coordinates in the original domain', xlabel = 'Value', ylabel = 'Frequency')
@@ -148,26 +158,22 @@ datafile.write(f"{str(sampledVector)[1:-1]} \n")
 datafile.write(f"Total: {sampledVectorSum} \n")
 
 plt.subplot(1, 2, 2)
-(freq2, bins2, patches) = plt.hist(debiasedVector, weights = np.ones(len(debiasedVector)) / len(debiasedVector),\
-    bins = [-0.3, -0.2875, -0.275, -0.2625, -0.25, -0.2375, -0.225, -0.2125, -0.2, -0.1875, -0.175, -0.1625, -0.15, -0.1375, -0.125, -0.1125, -0.1, -0.0875, -0.075, -0.0625, -0.05, -0.0375, -0.025, -0.0125, 0, 0.0125, 0.025, 0.0375, 0.05, 0.0625, 0.075, 0.0875, 0.1, 0.1125, 0.125, 0.1375, 0.15, 0.1625, 0.175, 0.1875, 0.2, 0.2125, 0.225, 0.2375, 0.25, 0.2625, 0.275, 0.2875, 0.3, 0.3125, 0.325, 0.3375, 0.35, 0.3625, 0.375, 0.3875, 0.4],\
-        alpha = 0.4, histtype = 'bar', color = 'b', edgecolor = 'k')
+outputBarIntervals = ['-0.3 to -0.2875', '-0.2875 to -0.275', '-0.275 to -0.2625', '-0.2625 to -0.25', '-0.25 to -0.2375', '-0.2375 to -0.225', '-0.225 to -0.2125', '-0.2125 to -0.2', '-0.2 to -0.1875', '-0.1875 to -0.175', '-0.175 to -0.1625', '-0.1625 to -0.15', '-0.15 to -0.1375', '-0.1375 to -0.125', '-0.125 to -0.1125', '-0.1125 to -0.1', '-0.1 to -0.0875', '-0.0875 to -0.075', '-0.075 to -0.0625', '-0.0625 to -0.05', '-0.05 to -0.375', '-0.375 to -0.25', '-0.25 to -0.125', '-0.125 to 0', '0 to 0.0125', '0.0125 to 0.025', '0.025 to 0.0375', '0.0375 to 0.05', '0.05 to 0.0625', '0.0625 to 0.075', '0.075 to 0.0875', '0.0875 to 0.1', '0.1 to 0.1125', '0.1125 to 0.125', '0.125 to 0.1375', '0.1375 to 0.15', '0.15 to 0.1625', '0.1625 to 0.175', '0.175 to 0.1875', '0.1875 to 0.2', '0.2 to 0.2125', '0.2125 to 0.225', '0.225 to 0.2375', '0.2375 to 0.25', '0.25 to 0.2625', '0.2625 to 0.275', '0.275 to 0.2875', '0.2875 to 0.3', '0.3 to 0.3125', '0.3125 to 0.325', '0.325 to 0.3375', '0.3375 to 0.35', '0.35 to 0.3625', '0.3625 to 0.375', '0.375 to 0.3875', '0.3875 to 0.4']
+outputVectorSum = sum(outputVector)
+percentageOutputVector = [coord/outputVectorSum for coord in outputVector]
+print(f"\n{len(outputBarIntervals)}")
+print(f"{len(percentageOutputVector)}")
+plt.bar(outputBarIntervals, percentageOutputVector, width = 1, align = 'edge', alpha = 0.4, color = 'b', edgecolor = 'k')
+plt.xticks(rotation = 45)
 
-print(f"\n{freq2}")
+print(f"\n{percentageOutputVector}")
 
-plt.xlim(-0.2, 0.3)
 plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
 plt.gca().set(title = 'Histogram of returned coordinates in the original domain', xlabel = 'Value', ylabel = 'Frequency')
 
-listFreq2 = freq2.tolist(); formattedFreq2 = list()
-for item in listFreq2:
-    formattedFreq2.append(int(float(item*(len(debiasedVector)))))
-
-print(f"{formattedFreq2}")
-
 datafile.write(f"Frequencies of returned coordinates in the original domain: \n")
-datafile.write(f"{str(formattedFreq2)[1:-1]} \n")
-datafile.write(f"Total: {sum(formattedFreq2)} \n")
-datafile.write(f"Percentage of returned coordinates between -0.2 and 0.3: {round((100)*(sum(formattedFreq2))/(len(debiasedVector)))}%")
+datafile.write(f"{str(outputVector)[1:-1]} \n")
+datafile.write(f"Total: {outputVectorSum} \n")
 
 plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
 plt.savefig("basic.png"); plt.clf(); plt.cla()
@@ -177,7 +183,7 @@ dftRandomVector = [0]*d; dftNormalisedVector = [0]*d; dftClippedVector = [0]*d
 for value in range(0, V):
 
     loopTime = time.perf_counter(); m = (value + 1)*(int(d/25))
-    dftSampledVector = [0]*40; dftDebiasedVector = list()
+    dftSampledVector = [0]*40; dftDebiasedVector = list(); dftOutputVector = [0]*47
     totalDftMeanSquaredError = list(); dftSumOfSquares = 0; totalReconstructionError = list(); totalPerturbationError = list()
     dftIndexTracker = [0]*m; dftSubmittedVector = [0]*m; dftTotalVector = [0]*d
     sampledError = 0; returnedError = 0
@@ -226,8 +232,8 @@ for value in range(0, V):
                     for coord in range(0, 40):
                         if dftAdjustedVector >= ((0.05*coord)-1) and dftAdjustedVector < ((0.05*coord)-0.95):
                             dftSampledVector[coord] += 1
-                        if coord == 40 and dftAdjustedVector == ((0.05*coord)-0.95):
-                            dftSampledVector[39] += 1
+                        if coord == 39 and dftAdjustedVector == ((0.05*coord)-0.95):
+                            dftSampledVector[coord] += 1
 
                     dftRoundedPair = (dftRandomIndex, (math.floor(dftSampledCoord*k)\
                         + np.random.binomial(1, dftSampledCoord*k - math.floor(dftSampledCoord*k))))
@@ -281,7 +287,15 @@ for value in range(0, V):
         dftMaxOutput = max(finalVector)
         dftMinOutput = min(finalVector) 
         print(f"{dftMaxOutput}")
-        print(f"{dftMinOutput}")  
+        print(f"{dftMinOutput}")
+
+        for vector in finalVector:
+            for coord in range(0, 47):
+                if vector >= ((0.0005*coord)-0.0055) and vector < ((0.0005*coord)-0.005):
+                    dftOutputVector[coord] += 1
+                if coord == 46 and vector == ((0.0005*coord)-0.005):
+                    dftOutputVector[coord] += 1
+        print(f"{dftOutputVector}")
 
         dftAverageVector = [idx/n for idx in dftTotalVector]        
         dftErrorTuple = tuple(zip(finalVector, dftAverageVector))
@@ -338,13 +352,15 @@ for value in range(0, V):
     plt.savefig("fourier" + str(m) + ".png"); plt.clf(); plt.cla()
 
     plt.subplot(1, 2, 1)
-    dftBarIntervals = ['-1 to -0.95', '-0.95 to -0.9', '-0.9 to -0.85', '-0.85 to -0.8', '-0.8 to -0.75', '-0.75 to -0.7', '-0.7 to -0.65', '-0.65 to -0.6', '-0.6 to -0.55', '-0.55 to -0.5', '-0.5 to -0.45', '-0.45 to -0.4', '-0.4 to -0.35', '-0.35 to -0.3', '-0.3 to -0.25', '-0.25 to -0.2', '-0.2 to -0.15', '-0.15 to -0.1', '-0.1 to -0.05', '-0.05 to 0', '0 to 0.05', '0.05 to 0.1', '0.1 to 0.15', '0.15 to 0.2', '0.2 to 0.25', '0.25 to 0.3', '0.3 to 0.35', '0.35 to 0.4', '0.4 to 0.45', '0.45 to 0.5', '0.5 to 0.55', '0.55 to 0.6', '0.6 to 0.65', '0.65 to 0.7', '0.7 to 0.75', '0.75 to 0.8', '0.8 to 0.85', '0.85 to 0.9', '0.9 to 0.95', '0.95 to 1']
+    dftSampledBarIntervals = ['-1 to -0.95', '-0.95 to -0.9', '-0.9 to -0.85', '-0.85 to -0.8', '-0.8 to -0.75', '-0.75 to -0.7', '-0.7 to -0.65', '-0.65 to -0.6', '-0.6 to -0.55', '-0.55 to -0.5', '-0.5 to -0.45', '-0.45 to -0.4', '-0.4 to -0.35', '-0.35 to -0.3', '-0.3 to -0.25', '-0.25 to -0.2', '-0.2 to -0.15', '-0.15 to -0.1', '-0.1 to -0.05', '-0.05 to 0', '0 to 0.05', '0.05 to 0.1', '0.1 to 0.15', '0.15 to 0.2', '0.2 to 0.25', '0.25 to 0.3', '0.3 to 0.35', '0.35 to 0.4', '0.4 to 0.45', '0.45 to 0.5', '0.5 to 0.55', '0.55 to 0.6', '0.6 to 0.65', '0.65 to 0.7', '0.7 to 0.75', '0.75 to 0.8', '0.8 to 0.85', '0.85 to 0.9', '0.9 to 0.95', '0.95 to 1']
     dftSampledVectorSum = sum(dftSampledVector)
-    dftPercentageVector = [coord/dftSampledVectorSum for coord in dftSampledVector]
-    plt.bar(dftBarIntervals, dftPercentageVector, width = 1, alpha = 0.4, color = 'g', edgecolor = 'k')
+    dftPercentageSampledVector = [coord/dftSampledVectorSum for coord in dftSampledVector]
+    print(f"\n{len(dftSampledBarIntervals)}")
+    print(f"{len(dftPercentageSampledVector)}")
+    plt.bar(dftSampledBarIntervals, dftPercentageSampledVector, width = 1, align = 'edge', alpha = 0.4, color = 'g', edgecolor = 'k')
     plt.xticks(rotation = 45)
 
-    print(f"\n{dftPercentageVector}")
+    print(f"\n{dftPercentageSampledVector}")
 
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
     plt.gca().set(title = 'Histogram of sampled coordinates in the Fourier domain', xlabel = 'Value', ylabel = 'Frequency')
@@ -354,27 +370,22 @@ for value in range(0, V):
     datafile.write(f"Total: {dftSampledVectorSum} \n")
 
     plt.subplot(1, 2, 2)
-    (freq4, bins4, patches) = plt.hist(finalVector, weights = np.ones(len(finalVector)) / len(finalVector),\
-        bins = [-0.0055, -0.005, -0.0045, -0.004, -0.0035, -0.003, -0.0025, -0.002, -0.0015, -0.001, -0.0005, 0, 0.0005, 0.001, 0.0015, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018],\
-            alpha = 0.5, histtype = 'bar', color = 'b', edgecolor = 'k')
+    dftOutputBarIntervals = ['-0.0055 to -0.005', '-0.005 to -0.0045', '-0.0045 to -0.004', '-0.004 to -0.0035', '-0.0035 to -0.003', '-0.003 to -0.0025', '-0.0025 to -0.002', '-0.002 to -0.0015', '-0.0015 to -0.001', '-0.001 to -0.0005', '-0.0005 to 0', '0 to 0.0005', '0.0005 to 0.001', '0.001 to 0.0015', '0.0015 to 0.002', '0.002 to 0.0025', '0.0025 to 0.003', '0.003 to 0.0035', '0.0035 to 0.004', '0.004 to 0.0045', '0.0045 to 0.005', '0.005 to 0.0055', '0.0055 to 0.006', '0.006 to 0.0065', '0.0065 to 0.007', '0.007 to 0.0075', '0.0075 to 0.008', '0.008 to 0.0085', '0.0085 to 0.009', '0.009 to 0.0095', '0.0095 to 0.01', '0.01 to 0.0105', '0.0105 to 0.011', '0.011 to 0.0115', '0.0115 to 0.012', '0.012 to 0.0125', '0.0125 to 0.013', '0.013 to 0.0135', '0.0135 to 0.014', '0.014 to 0.0145', '0.0145 to 0.015', '0.015 to 0.0155', '0.0155 to 0.016', '0.016 to 0.0165', '0.0165 to 0.017', '0.017 to 0.0175', '0.0175 to 0.018']
+    dftOutputVectorSum = sum(dftOutputVector)
+    dftPercentageOutputVector = [coord/dftOutputVectorSum for coord in dftOutputVector]
+    print(f"\n{len(dftOutputBarIntervals)}")
+    print(f"{len(dftPercentageOutputVector)}")
+    plt.bar(dftOutputBarIntervals, dftPercentageOutputVector, width = 1, align = 'edge', alpha = 0.4, color = 'b', edgecolor = 'k')
+    plt.xticks(rotation = 45)
 
-    print(f"\n{freq4}")
+    print(f"\n{dftPercentageOutputVector}")
 
-    plt.xlim(-0.0055, 0.018)
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
     plt.gca().set(title = 'Histogram of returned coordinates in the Fourier domain', xlabel = 'Value', ylabel = 'Frequency')
 
-    listFreq4 = freq4.tolist(); formattedFreq4 = list()
-    for item in listFreq4:
-        formattedFreq4.append(int(float(item*(len(finalVector)))))
-    
-    print(f"{formattedFreq4}")
-
     datafile.write(f"Frequencies of returned coordinates in the Fourier domain: \n")
-    datafile.write(f"{str(formattedFreq4)[1:-1]} \n")
-    datafile.write(f"Total: {sum(formattedFreq4)} \n")
-    perc2 = round((100)*(sum(formattedFreq4))/(len(finalVector)))
-    datafile.write(f"Percentage of returned coordinates between -0.0055 and 0.018: {perc2}% \n\n")
+    datafile.write(f"{str(dftOutputVector)[1:-1]} \n")
+    datafile.write(f"Total: {dftOutputVectorSum} \n")
 
     plt.tight_layout(); mng = plt.get_current_fig_manager(); mng.window.state('zoomed'); plt.draw()
     plt.savefig("fourier" + str(m) + ".png")
