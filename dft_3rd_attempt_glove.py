@@ -230,7 +230,7 @@ def runBasic(R):
     inputVectorSum = sum(inputVector)
     percentageInputVector = [coord/inputVectorSum for coord in inputVector]
     plt.bar(inputBarIntervals, percentageInputVector, width = 1, align = 'edge', alpha = 0.4, color = 'g', edgecolor = 'k')
-    plt.tick_params(length = 4)
+    plt.tick_params(length = 3)
 
     selectiveInputFormatter = FixedFormatter(["-0.15", "-0.1", "-0.05", "0", "0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45"])
     selectiveInputLocator = FixedLocator([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48])
@@ -249,7 +249,7 @@ def runBasic(R):
     outputVectorSum = sum(outputVector)
     percentageOutputVector = [coord/outputVectorSum for coord in outputVector]
     plt.bar(outputBarIntervals, percentageOutputVector, width = 1, align = 'edge', alpha = 0.4, color = 'b', edgecolor = 'k')
-    plt.tick_params(length = 4)
+    plt.tick_params(length = 3)
 
     selectiveOutputFormatter = FixedFormatter(["-0.15", "-0.1", "-0.05", "0", "0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45"])
     selectiveOutputLocator = FixedLocator([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48])
@@ -434,7 +434,7 @@ def runDft(R,V):
         dftInputVectorSum = sum(dftInputVector)
         dftPercentageInputVector = [coord/dftInputVectorSum for coord in dftInputVector]
         plt.bar(dftInputBarIntervals, dftPercentageInputVector, width = 1, align = 'edge', alpha = 0.4, color = 'g', edgecolor = 'k')
-        plt.tick_params(length = 4)
+        plt.tick_params(length = 3)
 
         selectiveDftInputFormatter = FixedFormatter(["-0.015", "-0.01", "-0.005", "0", "0.005", "0.01", "0.015", "0.02", "0.025", "0.03", "0.035", "0.04", "0.045"])
         selectiveDftInputLocator = FixedLocator([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48])
@@ -453,7 +453,7 @@ def runDft(R,V):
         dftOutputVectorSum = sum(dftOutputVector)
         dftPercentageOutputVector = [coord/dftOutputVectorSum for coord in dftOutputVector]
         plt.bar(dftOutputBarIntervals, dftPercentageOutputVector, width = 1, align = 'edge', alpha = 0.4, color = 'b', edgecolor = 'k')
-        plt.tick_params(length = 4)
+        plt.tick_params(length = 3)
 
         selectiveDftOutputFormatter = FixedFormatter(["-0.0095", "-0.0075", "-0.0055", "-0.0035", "-0.0015", "0.0005", "0.0025", "0.0045", "0.0065", "0.0085", "0.0105", "0.0125", "0.0145"])
         selectiveDftOutputLocator = FixedLocator([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48])
