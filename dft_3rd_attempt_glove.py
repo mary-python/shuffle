@@ -3,7 +3,7 @@ import numpy as np
 from decimal import *
 from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt
-from matplotlib.ticker import PercentFormatter
+from matplotlib.ticker import PercentFormatter, FixedLocator, FixedFormatter
 
 # initialization
 random.seed(2196018)
@@ -113,8 +113,8 @@ def runBasic(R):
 
     # global glove data
     global totalVector
-    numBuckets = 40
-    sampledVector = [0]*(numBuckets)
+    numBuckets = 48
+    inputVector = [0]*(numBuckets)
     outputVector = [0]*(numBuckets)
     indexTracker = [0]*d
     submittedVector = [0]*d
@@ -142,9 +142,6 @@ def runBasic(R):
                     randomIndices.append(randomIndex)
 
                 sampledCoord = (1 + clippedVector[randomIndex])/2
-                inputBucketCoord = int(math.floor(numBuckets*sampledCoord))
-                sampledVector[min(inputBucketCoord, numBuckets - 1)] += 1
-
                 roundedCoord = math.floor(sampledCoord*k) + np.random.binomial(1, sampledCoord*k - math.floor(sampledCoord*k))
                 b = np.random.binomial(1, gamma)
 
@@ -168,10 +165,20 @@ def runBasic(R):
         print(f"{randomisedResponse}")
         print(f"{submittedCoords}")
     
-        maxInput = max(sampledVector)
-        minInput = min(sampledVector) 
+        averageVector = [idx/n for idx in totalVector]
+
+        maxInput = max(averageVector)
+        minInput = min(averageVector) 
         print(f"{maxInput}")
-        print(f"{minInput}")  
+        print(f"{minInput}")
+
+        # generating statistics for the true average vectors
+        for vector in averageVector:
+            inputBucketCoord = int((numBuckets/4) + math.floor((5/3)*numBuckets*vector))
+            inputVector[min(inputBucketCoord, numBuckets - 1)] += 1
+            print(f"{vector}")
+            print(f"{inputBucketCoord}")
+            print(f"{inputVector}")
 
         descaledVector = [idx/k for idx in submittedVector]
         mergedTracker = tuple(zip(indexTracker, descaledVector))
@@ -182,12 +189,11 @@ def runBasic(R):
         print(f"{maxOutput}")
         print(f"{minOutput}")
 
-        # generating statistics for the R aggregated, debiased vectors
+        # generating statistics for the reconstructed unbiased vectors
         for vector in debiasedVector:
-            outputBucketCoord = int((numBuckets/2) + math.floor(numBuckets*vector))
+            outputBucketCoord = int((numBuckets/4) + math.floor((5/3)*numBuckets*vector))
             outputVector[min(outputBucketCoord, numBuckets - 1)] += 1
 
-        averageVector = [idx/n for idx in totalVector]
         errorTuple = tuple(zip(debiasedVector, averageVector))
         meanSquaredError = [(a - b)**2 for a, b in errorTuple]
         totalMeanSquaredError += sum(meanSquaredError)
@@ -220,30 +226,40 @@ def runBasic(R):
     plt.cla()
 
     plt.subplot(1, 2, 1)
-    sampledBarIntervals = ['-1 to -0.95', '-0.95 to -0.9', '-0.9 to -0.85', '-0.85 to -0.8', '-0.8 to -0.75', '-0.75 to -0.7', '-0.7 to -0.65', '-0.65 to -0.6', '-0.6 to -0.55', '-0.55 to -0.5', '-0.5 to -0.45', '-0.45 to -0.4', '-0.4 to -0.35', '-0.35 to -0.3', '-0.3 to -0.25', '-0.25 to -0.2', '-0.2 to -0.15', '-0.15 to -0.1', '-0.1 to -0.05', '-0.05 to 0', '0 to 0.05', '0.05 to 0.1', '0.1 to 0.15', '0.15 to 0.2', '0.2 to 0.25', '0.25 to 0.3', '0.3 to 0.35', '0.35 to 0.4', '0.4 to 0.45', '0.45 to 0.5', '0.5 to 0.55', '0.55 to 0.6', '0.6 to 0.65', '0.65 to 0.7', '0.7 to 0.75', '0.75 to 0.8', '0.8 to 0.85', '0.85 to 0.9', '0.9 to 0.95', '0.95 to 1']
-    sampledVectorSum = sum(sampledVector)
-    percentageSampledVector = [coord/sampledVectorSum for coord in sampledVector]
-    plt.bar(sampledBarIntervals, percentageSampledVector, width = 1, align = 'edge', alpha = 0.4, color = 'g', edgecolor = 'k')
-    plt.xticks(rotation = 45)
+    inputBarIntervals = ['-0.15 to -0.1375', '-0.1375 to -0.125', '-0.125 to -0.1125', '-0.1125 to -0.1', '-0.1 to -0.0875', '-0.0875 to -0.075', '-0.075 to -0.0625', '-0.0625 to -0.05', '-0.05 to -0.0375', '-0.0375 to -0.025', '-0.025 to -0.0125', '-0.0125 to 0', '0 to 0.0125', '0.0125 to 0.025', '0.025 to 0.0375', '0.0375 to 0.05', '0.05 to 0.0625', '0.0625 to 0.075', '0.075 to 0.0875', '0.0875 to 0.1', '0.1 to 0.1125', '0.1125 to 0.125', '0.125 to 0.1375', '0.1375 to 0.15', '0.15 to 0.1625', '0.1625 to 0.175', '0.175 to 0.1875', '0.1875 to 0.2', '0.2 to 0.2125', '0.2125 to 0.225', '0.225 to 0.2375', '0.2375 to 0.25', '0.25 to 0.2625', '0.2625 to 0.275', '0.275 to 0.2875', '0.2875 to 0.3', '0.3 to 0.3125', '0.3125 to 0.325', '0.325 to 0.3375', '0.3375 to 0.35', '0.35 to 0.3625', '0.3625 to 0.375', '0.375 to 0.3875', '0.3875 to 0.4', '0.4 to 0.4125', '0.4125 to 0.425', '0.425 to 0.4375', '0.4375 to 0.45']
+    inputVectorSum = sum(inputVector)
+    percentageInputVector = [coord/inputVectorSum for coord in inputVector]
+    plt.bar(inputBarIntervals, percentageInputVector, width = 1, align = 'edge', alpha = 0.4, color = 'g', edgecolor = 'k')
+    plt.tick_params(length = 4)
+
+    selectiveInputFormatter = FixedFormatter(["-0.15", "-0.1", "-0.05", "0", "0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45"])
+    selectiveInputLocator = FixedLocator([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48])
+    plt.gca().xaxis.set_major_formatter(selectiveInputFormatter)
+    plt.gca().xaxis.set_major_locator(selectiveInputLocator)
 
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-    plt.gca().set(title = 'Histogram of sampled coordinates in the original domain', xlabel = 'Value', ylabel = 'Frequency')
+    plt.gca().set(title = 'Histogram of true average vectors in the basic case', xlabel = 'Value', ylabel = 'Frequency')
 
-    datafile.write(f"Frequencies of sampled coordinates in the original domain: \n")
-    datafile.write(f"{str(sampledVector)[1:-1]} \n")
-    datafile.write(f"Total: {sampledVectorSum} \n\n")
+    datafile.write(f"Frequencies of true average vectors in the basic case: \n")
+    datafile.write(f"{str(inputVector)[1:-1]} \n")
+    datafile.write(f"Total: {inputVectorSum} \n\n")
 
     plt.subplot(1, 2, 2)
-    outputBarIntervals = ['-0.5 to -0.475', '-0.475 to -0.45', '-0.45 to -0.425', '-0.425 to -0.4', '-0.4 to -0.375', '-0.375 to -0.35', '-0.35 to -0.325', '-0.325 to -0.3', '-0.3 to -0.275', '-0.275 to -0.25', '-0.25 to -0.225', '-0.225 to -0.2', '-0.2 to -0.175', '-0.175 to -0.15', '-0.15 to -0.125', '-0.125 to -0.1', '-0.1 to -0.075', '-0.075 to -0.05', '-0.05 to -0.025', '-0.025 to 0', '0 to 0.025', '0.025 to 0.05', '0.05 to 0.075', '0.075 to 0.1', '0.1 to 0.125', '0.125 to 0.15', '0.15 to 0.175', '0.175 to 0.2', '0.2 to 0.225', '0.225 to 0.25', '0.25 to 0.275', '0.275 to 0.3', '0.3 to 0.325', '0.325 to 0.35', '0.35 to 0.375', '0.375 to 0.4', '0.4 to 0.425', '0.425 to 0.45', '0.45 to 0.475', '0.475 to 0.5']
+    outputBarIntervals = ['-0.15 to -0.1375', '-0.1375 to -0.125', '-0.125 to -0.1125', '-0.1125 to -0.1', '-0.1 to -0.0875', '-0.0875 to -0.075', '-0.075 to -0.0625', '-0.0625 to -0.05', '-0.05 to -0.0375', '-0.0375 to -0.025', '-0.025 to -0.0125', '-0.0125 to 0', '0 to 0.0125', '0.0125 to 0.025', '0.025 to 0.0375', '0.0375 to 0.05', '0.05 to 0.0625', '0.0625 to 0.075', '0.075 to 0.0875', '0.0875 to 0.1', '0.1 to 0.1125', '0.1125 to 0.125', '0.125 to 0.1375', '0.1375 to 0.15', '0.15 to 0.1625', '0.1625 to 0.175', '0.175 to 0.1875', '0.1875 to 0.2', '0.2 to 0.2125', '0.2125 to 0.225', '0.225 to 0.2375', '0.2375 to 0.25', '0.25 to 0.2625', '0.2625 to 0.275', '0.275 to 0.2875', '0.2875 to 0.3', '0.3 to 0.3125', '0.3125 to 0.325', '0.325 to 0.3375', '0.3375 to 0.35', '0.35 to 0.3625', '0.3625 to 0.375', '0.375 to 0.3875', '0.3875 to 0.4', '0.4 to 0.4125', '0.4125 to 0.425', '0.425 to 0.4375', '0.4375 to 0.45']
     outputVectorSum = sum(outputVector)
     percentageOutputVector = [coord/outputVectorSum for coord in outputVector]
     plt.bar(outputBarIntervals, percentageOutputVector, width = 1, align = 'edge', alpha = 0.4, color = 'b', edgecolor = 'k')
-    plt.xticks(rotation = 45)
+    plt.tick_params(length = 4)
+
+    selectiveOutputFormatter = FixedFormatter(["-0.15", "-0.1", "-0.05", "0", "0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45"])
+    selectiveOutputLocator = FixedLocator([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48])
+    plt.gca().xaxis.set_major_formatter(selectiveOutputFormatter)
+    plt.gca().xaxis.set_major_locator(selectiveOutputLocator)
 
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-    plt.gca().set(title = 'Histogram of returned coordinates in the original domain', xlabel = 'Value', ylabel = 'Frequency')
+    plt.gca().set(title = 'Histogram of reconstructed unbiased vectors in the basic case', xlabel = 'Value', ylabel = 'Frequency')
 
-    datafile.write(f"Frequencies of returned coordinates in the original domain: \n")
+    datafile.write(f"Frequencies of reconstructed unbiased vectors in the basic case: \n")
     datafile.write(f"{str(outputVector)[1:-1]} \n")
     datafile.write(f"Total: {outputVectorSum} \n")
 
@@ -267,8 +283,8 @@ def runDft(R,V):
 
         loopTime = time.perf_counter()
         m = (value + 1)*(int(d/25))
-        numBuckets = 40
-        dftSampledVector = [0]*(numBuckets)
+        numBuckets = 48
+        dftInputVector = [0]*(numBuckets)
         dftOutputVector = [0]*(numBuckets)
         dftDebiasedVector = list()
         totalReconstructionError = list()
@@ -302,11 +318,6 @@ def runDft(R,V):
                         dftRandomIndices.append(dftRandomIndex)
 
                     dftSampledCoord = (1 + dftVector[dftRandomIndex])/2
-                    dftAdjustedVector = dftVector[dftRandomIndex]
-
-                    dftBucketCoord = int(math.floor(numBuckets*dftSampledCoord))
-                    dftSampledVector[min(dftBucketCoord, numBuckets - 1)] += 1
-
                     dftRoundedCoord = math.floor(dftSampledCoord*k) + np.random.binomial(1, dftSampledCoord*k - math.floor(dftSampledCoord*k))
                     b = np.random.binomial(1, gamma)
 
@@ -330,10 +341,19 @@ def runDft(R,V):
             print(f"{dftRandomisedResponse}")
             print(f"{dftSubmittedCoords}")
 
-            dftMaxInput = max(dftSampledVector)
-            dftMinInput = min(dftSampledVector) 
+            dftAverageVector = [idx/n for idx in dftTotalVector]
+
+            dftMaxInput = max(dftAverageVector)
+            dftMinInput = min(dftAverageVector) 
             print(f"{dftMaxInput}")
             print(f"{dftMinInput}")  
+
+            for vector in dftAverageVector:
+                dftInputBucketCoord = int((numBuckets/4) + math.floor(10*(5/3)*numBuckets*vector))
+                dftInputVector[min(dftInputBucketCoord, numBuckets - 1)] += 1
+                print(f"{vector}")
+                print(f"{dftInputBucketCoord}")
+                print(f"{dftInputVector}")
 
             dftDescaledVector = [idx/k for idx in dftSubmittedVector]
             dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledVector))
@@ -347,10 +367,9 @@ def runDft(R,V):
             print(f"{dftMinOutput}")
 
             for vector in finalVector:
-                dftOutputBucketCoord = int((numBuckets/2) + math.floor((numBuckets**2)*vector))
+                dftOutputBucketCoord = int(((numBuckets/2) - 5) + math.floor(25*(5/3)*numBuckets*vector))
                 dftOutputVector[min(dftOutputBucketCoord, numBuckets - 1)] += 1
-
-            dftAverageVector = [idx/n for idx in dftTotalVector]        
+      
             dftErrorTuple = tuple(zip(finalVector, dftAverageVector))
             dftMeanSquaredError = [(a - b)**2 for a, b in dftErrorTuple]
             totalDftMeanSquaredError.append(sum(dftMeanSquaredError))
@@ -411,30 +430,40 @@ def runDft(R,V):
         plt.cla()
 
         plt.subplot(1, 2, 1)
-        dftSampledBarIntervals = ['-1 to -0.95', '-0.95 to -0.9', '-0.9 to -0.85', '-0.85 to -0.8', '-0.8 to -0.75', '-0.75 to -0.7', '-0.7 to -0.65', '-0.65 to -0.6', '-0.6 to -0.55', '-0.55 to -0.5', '-0.5 to -0.45', '-0.45 to -0.4', '-0.4 to -0.35', '-0.35 to -0.3', '-0.3 to -0.25', '-0.25 to -0.2', '-0.2 to -0.15', '-0.15 to -0.1', '-0.1 to -0.05', '-0.05 to 0', '0 to 0.05', '0.05 to 0.1', '0.1 to 0.15', '0.15 to 0.2', '0.2 to 0.25', '0.25 to 0.3', '0.3 to 0.35', '0.35 to 0.4', '0.4 to 0.45', '0.45 to 0.5', '0.5 to 0.55', '0.55 to 0.6', '0.6 to 0.65', '0.65 to 0.7', '0.7 to 0.75', '0.75 to 0.8', '0.8 to 0.85', '0.85 to 0.9', '0.9 to 0.95', '0.95 to 1']
-        dftSampledVectorSum = sum(dftSampledVector)
-        dftPercentageSampledVector = [coord/dftSampledVectorSum for coord in dftSampledVector]
-        plt.bar(dftSampledBarIntervals, dftPercentageSampledVector, width = 1, align = 'edge', alpha = 0.4, color = 'g', edgecolor = 'k')
-        plt.xticks(rotation = 45)
+        dftInputBarIntervals = ['-0.015 to -0.01375', '-0.01375 to -0.0125', '-0.0125 to -0.01125', '-0.01125 to -0.01', '-0.01 to -0.00875', '-0.00875 to -0.0075', '-0.0075 to -0.00625', '-0.00625 to -0.005', '-0.005 to -0.00375', '-0.00375 to -0.0025', '-0.0025 to -0.00125', '-0.00125 to 0', '0 to 0.00125', '0.00125 to 0.0025', '0.0025 to 0.00375', '0.00375 to 0.005', '0.005 to 0.00625', '0.00625 to 0.0075', '0.0075 to 0.00875', '0.00875 to 0.01', '0.01 to 0.01125', '0.01125 to 0.0125', '0.0125 to 0.01375', '0.01375 to 0.015', '0.015 to 0.01625', '0.01625 to 0.0175', '0.0175 to 0.01875', '0.01875 to 0.02', '0.02 to 0.02125', '0.02125 to 0.0225', '0.0225 to 0.02375', '0.02375 to 0.025', '0.025 to 0.02625', '0.02625 to 0.0275', '0.0275 to 0.02875', '0.02875 to 0.03', '0.03 to 0.03125', '0.03125 to 0.0325', '0.0325 to 0.03375', '0.03375 to 0.035', '0.035 to 0.03625', '0.03625 to 0.0375', '0.0375 to 0.03875', '0.03875 to 0.04', '0.04 to 0.04125', '0.04125 to 0.0425', '0.0425 to 0.04375', '0.04375 to 0.045']
+        dftInputVectorSum = sum(dftInputVector)
+        dftPercentageInputVector = [coord/dftInputVectorSum for coord in dftInputVector]
+        plt.bar(dftInputBarIntervals, dftPercentageInputVector, width = 1, align = 'edge', alpha = 0.4, color = 'g', edgecolor = 'k')
+        plt.tick_params(length = 4)
+
+        selectiveDftInputFormatter = FixedFormatter(["-0.015", "-0.01", "-0.005", "0", "0.005", "0.01", "0.015", "0.02", "0.025", "0.03", "0.035", "0.04", "0.045"])
+        selectiveDftInputLocator = FixedLocator([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48])
+        plt.gca().xaxis.set_major_formatter(selectiveDftInputFormatter)
+        plt.gca().xaxis.set_major_locator(selectiveDftInputLocator)
 
         plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-        plt.gca().set(title = 'Histogram of sampled coordinates in the Fourier domain', xlabel = 'Value', ylabel = 'Frequency')
+        plt.gca().set(title = 'Histogram of true average vectors in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
 
-        datafile.write(f"Frequencies of sampled coordinates in the Fourier domain: \n")
-        datafile.write(f"{str(dftSampledVector)[1:-1]} \n")
-        datafile.write(f"Total: {dftSampledVectorSum} \n\n")
+        datafile.write(f"Frequencies of true average vectors in the Fourier case: \n")
+        datafile.write(f"{str(dftInputVector)[1:-1]} \n")
+        datafile.write(f"Total: {dftInputVectorSum} \n\n")
 
         plt.subplot(1, 2, 2)
-        dftOutputBarIntervals = ['-0.0125 to -0.011875', '-0.011875 to -0.01125', '-0.01125 to -0.010625', '-0.010625 to -0.01', '-0.01 to -0.009375', '-0.009375 to -0.00875', '-0.00875 to -0.008125', '-0.008125 to -0.0075', '-0.0075 to -0.006875', '-0.006875 to -0.00625', '-0.00625 to -0.005625', '-0.005625 to -0.005', '-0.005 to -0.004375', '-0.004375 to -0.00375', '-0.00375 to -0.003125', '-0.003125 to -0.0025', '-0.0025 to -0.001875', '-0.001875 to -0.00125', '-0.00125 to -0.000625', '-0.000625 to 0', '0 to 0.000625', '0.000625 to 0.00125', '0.00125 to 0.001875', '0.001875 to 0.0025', '0.0025 to 0.003125', '0.003125 to 0.00375', '0.00375 to 0.004375', '0.004375 to 0.005', '0.005 to 0.005625', '0.005625 to 0.00625', '0.00625 to 0.006875', '0.006875 to 0.0075', '0.0075 to 0.008125', '0.008125 to 0.00875', '0.00875 to 0.009375', '0.009375 to 0.01', '0.01 to 0.010625', '0.010625 to 0.01125', '0.01125 to 0.011875', '0.011875 to 0.0125']
+        dftOutputBarIntervals = ['-0.0095 to -0.009', '-0.009 to -0.0085', '-0.0085 to -0.008', '-0.008 to -0.0075', '-0.0075 to -0.007', '-0.007 to -0.0065', '-0.0065 to -0.006', '-0.006 to -0.0055', '-0.0055 to -0.005', '-0.005 to -0.0045', '-0.0045 to -0.004', '-0.004 to -0.0035', '-0.0035 to -0.003', '-0.003 to -0.0025', '-0.0025 to -0.002', '-0.002 to -0.0015', '-0.0015 to -0.001', '-0.001 to -0.0005', '-0.0005 to 0', '0 to 0.0005', '0.0005 to 0.001', '0.001 to 0.0015', '0.0015 to 0.002', '0.002 to 0.0025', '0.0025 to 0.003', '0.003 to 0.0035', '0.0035 to 0.004', '0.004 to 0.0045', '0.0045 to 0.005', '0.005 to 0.0055', '0.0055 to 0.006', '0.006 to 0.0065', '0.0065 to 0.007', '0.007 to 0.0075', '0.0075 to 0.008', '0.008 to 0.0085', '0.0085 to 0.009', '0.009 to 0.0095', '0.0095 to 0.01', '0.01 to 0.0105', '0.0105 to 0.011', '0.011 to 0.0115', '0.0115 to 0.012', '0.012 to 0.0125', '0.0125 to 0.013', '0.013 to 0.0135', '0.0135 to 0.014', '0.014 to 0.0145']
         dftOutputVectorSum = sum(dftOutputVector)
         dftPercentageOutputVector = [coord/dftOutputVectorSum for coord in dftOutputVector]
         plt.bar(dftOutputBarIntervals, dftPercentageOutputVector, width = 1, align = 'edge', alpha = 0.4, color = 'b', edgecolor = 'k')
-        plt.xticks(rotation = 45)
+        plt.tick_params(length = 4)
+
+        selectiveDftOutputFormatter = FixedFormatter(["-0.0095", "-0.0075", "-0.0055", "-0.0035", "-0.0015", "0.0005", "0.0025", "0.0045", "0.0065", "0.0085", "0.0105", "0.0125", "0.0145"])
+        selectiveDftOutputLocator = FixedLocator([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48])
+        plt.gca().xaxis.set_major_formatter(selectiveDftOutputFormatter)
+        plt.gca().xaxis.set_major_locator(selectiveDftOutputLocator)
 
         plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
-        plt.gca().set(title = 'Histogram of returned coordinates in the Fourier domain', xlabel = 'Value', ylabel = 'Frequency')
+        plt.gca().set(title = 'Histogram of reconstructed unbiased vectors in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
 
-        datafile.write(f"Frequencies of returned coordinates in the Fourier domain: \n")
+        datafile.write(f"Frequencies of reconstructed unbiased vectors in the Fourier case: \n")
         datafile.write(f"{str(dftOutputVector)[1:-1]} \n")
         datafile.write(f"Total: {dftOutputVectorSum} \n\n")
 
