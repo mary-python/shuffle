@@ -1,11 +1,11 @@
 import math, re; import matplotlib.pyplot as plt; from decimal import *
-d = 188; t = 2; V = 10; width = 0.35
+d = 150; t = 1; width = 0.35
 labels = list(); perErrors = list(); recErrors = list(); totalErrors = list(); totalStandardDeviation = list()
 
 with open("errortemp.txt") as reader:
     for line in reader:
         tab = line.split()
-        labels.append(f'{round(float(tab[0]), 1)}%')
+        labels.append(f'{int(tab[0])}%')
         perErrors.append((Decimal(tab[1])))
         recErrors.append((Decimal(tab[2])))
         totalErrors.append((Decimal(tab[3])))
@@ -16,7 +16,7 @@ plt.bar(labels, recErrors, width, bottom = perErrors, label = 'Reconstruction er
 plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
 plt.ticklabel_format(axis = 'y', style = 'plain')
-plt.xticks(['2.1%', '4.3%', '6.4%', '8.5%', '10.6%', '12.8%', '14.9%', '17.0%', '19.1%', '21.3%'])
+plt.xticks(['10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'])
 plt.ylabel('Total experimental MSE')
 plt.xlabel('% of Fourier coefficients retained', labelpad = 8)
 

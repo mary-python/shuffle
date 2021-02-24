@@ -10,14 +10,18 @@ random.seed(2196018)
 np.random.seed(2196018)
 startTime = time.perf_counter()
 
-d = 188
+d = 150
 k = 7
-n = 87554
+n = 123998
+n1 = 21892
+n2 = 87554
+n3 = 10506
+n4 = 4046
 eps = 0.1
-dta = 0.998
+dta = 0.16
 V = 10
 R = 3
-t = 2
+t = 1
 
 if t == 1:
     gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
@@ -28,7 +32,7 @@ else:
 heartbeatData = np.zeros((n,d))
 totalVector = np.zeros(d)
 
-def readData():
+def readTestingData():
 
     global heartbeatData
     global totalVector
@@ -36,11 +40,11 @@ def readData():
     coordCount = 0
     rowCount = 0
 
-    with open("mitbih_train.csv", encoding = "utf8") as reader:
+    with open("mitbih_test.csv", encoding = "utf8") as reader:
 
-        print(f"\n Reading in the data file...")
+        print(f"\n Reading in the testing data file...")
         from progress.bar import FillingSquaresBar
-        bar = FillingSquaresBar(max=n-1, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
+        bar = FillingSquaresBar(max=n1-1, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
         for line in reader:
             coordCount = 0
@@ -57,6 +61,138 @@ def readData():
 
                 newVector[coordCount] = clippedCoord
                 coordCount += 1
+
+                if coordCount >= d:
+                    break
+
+            totalVector += newVector
+            heartbeatData[rowCount] = newVector
+            rowCount += 1
+
+            if rowCount >= n1:
+                break
+
+            bar.next()
+        bar.finish()
+
+def readTrainingData():
+
+    global heartbeatData
+    global totalVector
+    newVector = np.zeros(d)
+    coordCount = 0
+    rowCount = n1
+
+    with open("mitbih_train.csv", encoding = "utf8") as reader:
+
+        print(f"\n Reading in the training data file...")
+        from progress.bar import FillingSquaresBar
+        bar = FillingSquaresBar(max=n2-1, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
+
+        for line in reader:
+            coordCount = 0
+
+            for numString in line.split(","):    
+                newCoord = float(numString)
+
+                if newCoord > 1:
+                    clippedCoord = 1
+                elif newCoord < -1:
+                    clippedCoord = -1
+                else:
+                    clippedCoord = newCoord
+
+                newVector[coordCount] = clippedCoord
+                coordCount += 1
+
+                if coordCount >= d:
+                    break
+
+            totalVector += newVector
+            heartbeatData[rowCount] = newVector
+            rowCount += 1
+
+            if rowCount >= n1 + n2:
+                break
+
+            bar.next()
+        bar.finish()
+
+def readAbnormalData():
+
+    global heartbeatData
+    global totalVector
+    newVector = np.zeros(d)
+    coordCount = 0
+    rowCount = n1 + n2
+
+    with open("mitbih_train.csv", encoding = "utf8") as reader:
+
+        print(f"\n Reading in the abnormal data file...")
+        from progress.bar import FillingSquaresBar
+        bar = FillingSquaresBar(max=n3-1, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
+
+        for line in reader:
+            coordCount = 0
+
+            for numString in line.split(","):    
+                newCoord = float(numString)
+
+                if newCoord > 1:
+                    clippedCoord = 1
+                elif newCoord < -1:
+                    clippedCoord = -1
+                else:
+                    clippedCoord = newCoord
+
+                newVector[coordCount] = clippedCoord
+                coordCount += 1
+
+                if coordCount >= d:
+                    break
+
+            totalVector += newVector
+            heartbeatData[rowCount] = newVector
+            rowCount += 1
+
+            if rowCount >= n1 + n2 + n3:
+                break
+
+            bar.next()
+        bar.finish()
+
+def readNormalData():
+
+    global heartbeatData
+    global totalVector
+    newVector = np.zeros(d)
+    coordCount = 0
+    rowCount = n1 + n2 + n3
+
+    with open("mitbih_train.csv", encoding = "utf8") as reader:
+
+        print(f"\n Reading in the normal data file...")
+        from progress.bar import FillingSquaresBar
+        bar = FillingSquaresBar(max=n4-1, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
+
+        for line in reader:
+            coordCount = 0
+
+            for numString in line.split(","):    
+                newCoord = float(numString)
+
+                if newCoord > 1:
+                    clippedCoord = 1
+                elif newCoord < -1:
+                    clippedCoord = -1
+                else:
+                    clippedCoord = newCoord
+
+                newVector[coordCount] = clippedCoord
+                coordCount += 1
+
+                if coordCount >= d:
+                    break
 
             totalVector += newVector
             heartbeatData[rowCount] = newVector
@@ -171,7 +307,9 @@ def runBasic(R):
     datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 4)} \n")
     error1 = round((100)*((averageMeanSquaredError)/comparison), 1)
     datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
-    datafile.write(f"Sum of squares of average vector: {round(averageSumOfSquares, 3)} \n\n")
+    datafile.write(f"Sum of squares of the average vector: {round(averageSumOfSquares, 2)} \n")
+    error2 = round((100)*((averageMeanSquaredError)/(averageSumOfSquares)), 2)
+    datafile.write(f"Total experimental MSE was {error2}% of the sum of squares of the average vector. \n\n")
 
     plt.style.use('seaborn-white')
     plt.tight_layout()
@@ -241,7 +379,7 @@ def runDft(R,V):
     for value in range(0, V):
 
         loopTime = time.perf_counter()
-        m = (value + 1)*(int(d/47))
+        m = (value + 1)*(int(d/10))
         numBuckets = 40
         dftInputVector = [0]*(numBuckets)
         dftOutputVector = [0]*(numBuckets)
@@ -361,8 +499,8 @@ def runDft(R,V):
         dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
         datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 4)} \n")
         datafile.write(f"Experimental perturbation error: {round(averagePerturbationError, 4)} \n")
-        error2 = round((100)*((averagePerturbationError)/dftComparison), 1)
-        datafile.write(f"Experimental perturbation error was {error2}% of the theoretical upper bound for perturbation error. \n")
+        error3 = round((100)*((averagePerturbationError)/dftComparison), 1)
+        datafile.write(f"Experimental perturbation error was {error3}% of the theoretical upper bound for perturbation error. \n")
         datafile.write(f"Standard deviation of perturbation error: {round(standardDeviationPerturbationError, 5)} \n")
         datafile.write(f"Experimental reconstruction error: {round(averageReconstructionError, 5)} \n")
 
@@ -372,10 +510,12 @@ def runDft(R,V):
         totalStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
 
         datafile.write(f"Total experimental MSE: {round(averageDftMeanSquaredError, 4)} \n")
-        error3 = round((100)*((averageReconstructionError)/(averageDftMeanSquaredError)), 1)
-        datafile.write(f"Reconstruction error was {error3}% of the total experimental MSE. \n")
+        error4 = round((100)*((averageReconstructionError)/(averageDftMeanSquaredError)), 1)
+        datafile.write(f"Reconstruction error was {error4}% of the total experimental MSE. \n")
         datafile.write(f"Standard deviation of reconstruction error: {round(standardDeviationReconstructionError, 5)} \n")
-        datafile.write(f"Sum of squares of average vector: {round(averageDftSumOfSquares, 5)} \n\n")
+        datafile.write(f"Sum of squares of the average vector: {round(averageDftSumOfSquares, 2)} \n")
+        error5 = round((100)*((averageDftMeanSquaredError)/(averageDftSumOfSquares)), 2)
+        datafile.write(f"Total experimental MSE was {error5}% of the sum of squares of the average vector. \n\n")
 
         plt.style.use('seaborn-white')
         plt.tight_layout()
@@ -443,9 +583,9 @@ def runDft(R,V):
 
     for value in range(0, V):
         if value != (V - 1):
-            errorfile.write(f"{(100/47)*(value + 1)} {perErrors[value]} {recErrors[value]} {totalErrors[value]} {totalStandardDeviation[value]} \n")
+            errorfile.write(f"{10*(value + 1)} {perErrors[value]} {recErrors[value]} {totalErrors[value]} {totalStandardDeviation[value]} \n")
         else:
-            errorfile.write(f"{(100/47)*(value + 1)} {perErrors[value]} {recErrors[value]} {totalErrors[value]} {totalStandardDeviation[value]}")
+            errorfile.write(f"{10*(value + 1)} {perErrors[value]} {recErrors[value]} {totalErrors[value]} {totalStandardDeviation[value]}")
 
     errorfile.close()
 
@@ -460,7 +600,10 @@ def runDft(R,V):
 
 # gamma is probability of reporting a false value
 print(f"gamma = {gamma}") 
-readData()
+readTestingData()
+readTrainingData()
+readAbnormalData()
+readNormalData()
 runBasic(R)
 runDft(R,V)
 print("Thank you for using the Shuffle Model for Vectors.")
