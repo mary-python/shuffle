@@ -17,14 +17,14 @@ n1 = 21892
 n2 = 87554
 n3 = 10506
 n4 = 4046
-eps = 0.1
-dta = 0.16
+eps = 0.85
+dta = 0.85
 V = 10
 R = 3
 t = 1
 
 if t == 1:
-    gamma = max((((14*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*k)/((n-1)*eps))
+    gamma = max((((14*d*k*(math.log(2/dta))))/((n-1)*(eps**2))), (27*d*k)/((n-1)*eps))
 else:
     gamma = (((56*d*k*(math.log(1/dta))*(math.log((2*t)/dta))))/((n-1)*(eps**2)))
 
@@ -302,8 +302,12 @@ def runBasic(R):
     datafile = open("basic.txt", "w")
     datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
-    comparison = (2*(14**(2/3))*(d**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
-    datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 3)} \n")
+    if t == 1:
+        comparison = max((((98*(1/3))*(d**(2/3))*(n**(1/3))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))), (18*(d**(2/3))*(n**(1/3)))/(((1-gamma)**2)*((4*eps)**(2/3))))
+    else:
+        comparison = (2*(14**(2/3))*(d**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
+
+    datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison)} \n")
     datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 4)} \n")
     error1 = round((100)*((averageMeanSquaredError)/comparison), 1)
     datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
@@ -496,7 +500,11 @@ def runDft(R,V):
         datafile.write(f"Number of Fourier coefficients m: {m} \n")
         datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
-        dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
+        if t == 1:
+            dftComparison = max((((98*(1/3))*(m**(2/3))*(n**(1/3))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))), (18*(m**(2/3))*(n**(1/3)))/(((1-gamma)**2)*((4*eps)**(2/3))))
+        else:
+            dftComparison = (2*(14**(2/3))*(m**(2/3))*(n**(1/3))*t*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))/n
+
         datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 4)} \n")
         datafile.write(f"Experimental perturbation error: {round(averagePerturbationError, 4)} \n")
         error3 = round((100)*((averagePerturbationError)/dftComparison), 1)
