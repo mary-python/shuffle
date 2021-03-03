@@ -312,7 +312,7 @@ def runBasic(R):
     error1 = round((100)*((averageMeanSquaredError)/comparison), 1)
     datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
     datafile.write(f"Sum of squares of the average vector: {round(averageSumOfSquares, 2)} \n")
-    error2 = round((100)*((averageMeanSquaredError)/(averageSumOfSquares)), 2)
+    error2 = round((100)*((averageMeanSquaredError)/(averageSumOfSquares)), 3)
     datafile.write(f"Total experimental MSE was {error2}% of the sum of squares of the average vector. \n\n")
 
     plt.style.use('seaborn-white')
@@ -522,7 +522,7 @@ def runDft(R,V):
         datafile.write(f"Reconstruction error was {error4}% of the total experimental MSE. \n")
         datafile.write(f"Standard deviation of reconstruction error: {round(standardDeviationReconstructionError, 5)} \n")
         datafile.write(f"Sum of squares of the average vector: {round(averageDftSumOfSquares, 2)} \n")
-        error5 = round((100)*((averageDftMeanSquaredError)/(averageDftSumOfSquares)), 2)
+        error5 = round((100)*((averageDftMeanSquaredError)/(averageDftSumOfSquares)), 3)
         datafile.write(f"Total experimental MSE was {error5}% of the sum of squares of the average vector. \n\n")
 
         plt.style.use('seaborn-white')
