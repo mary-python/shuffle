@@ -25,13 +25,13 @@ n2vary = 87554
 n3 = 10506
 n4 = 48
 
-tset = {1, 2, 3, 4, 5}
-kset = {4, 5, 6, 7, 8, 9, 10}
-mset = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
-dset = {50, 100, 150}
-epsset = {1, 1.5, 2, 2.5, 3, 3.5, 4}
-nset = {20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000}
-rset = {1, 2, 3, 4, 5}
+tset = [1, 2, 3, 4, 5]
+kset = [4, 5, 6, 7, 8, 9, 10]
+mset = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+dset = [50, 100, 150]
+epsset = [1, 1.5, 2, 2.5, 3, 3.5, 4]
+nset = [20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000]
+rset = [1, 2, 3, 4, 5]
 R = len(rset)
 
 # set up some global variables
@@ -39,7 +39,7 @@ heartbeatDataConstDConstN = np.zeros((nconst, dconst))
 heartbeatDataVaryDConstN = np.zeros((nconst, dmax))
 heartbeatDataConstDVaryN = np.zeros((nmax, dconst))
 totalVectorConstDConstN = np.zeros(dconst)
-totalVectorVaryDConstN = np.zeros(dconst)
+totalVectorVaryDConstN = np.zeros(dmax)
 totalVectorConstDVaryN = np.zeros(dconst)
 
 def readTestingDataConstDConstN():
@@ -401,7 +401,7 @@ def runBasicVaryT(rset, tset):
         indexTracker = [0]*dconst
         submittedVector = [0]*dconst
         checkLength = 10
-        totalMeanSquaredError = 0
+        totalMeanSquaredError = list()
         sumOfSquares = 0
 
         # gamma is probability of reporting a false value
@@ -486,19 +486,19 @@ def runBasicVaryT(rset, tset):
 
             errorTuple = tuple(zip(debiasedVector, averageVector))
             meanSquaredError = [(a - b)**2 for a, b in errorTuple]
-            totalMeanSquaredError += sum(meanSquaredError)
+            totalMeanSquaredError.append(sum(meanSquaredError))
 
             averageSquares = [idx**2 for idx in averageVector]
             sumOfSquares += sum(averageSquares)
 
-        averageMeanSquaredError = totalMeanSquaredError/R
+        averageMeanSquaredError = (sum(totalMeanSquaredError))/R
         averageSumOfSquares = sumOfSquares/R
         differencesMeanSquaredError = [(value - averageMeanSquaredError)**2 for value in totalMeanSquaredError] 
         standardDeviationMeanSquaredError = math.sqrt((sum(differencesMeanSquaredError))/R)
         totalErrors.append(Decimal(averageMeanSquaredError))
         totalStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
 
-        datafile = open("basic" + str(t) + ".txt", "w")
+        datafile = open("basic" + str(t) + "t.txt", "w")
         datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
         if t == 1:
@@ -521,7 +521,7 @@ def runBasicVaryT(rset, tset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(t) + ".png")
+        plt.savefig("basic" + str(t) + "t.png")
         plt.clf()
         plt.cla()
 
@@ -567,12 +567,12 @@ def runBasicVaryT(rset, tset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(t) + ".png")
+        plt.savefig("basic" + str(t) + "t.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[t])
+        casetime = round(loopTotal[t-1])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case t = {t}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -580,13 +580,13 @@ def runBasicVaryT(rset, tset):
 
     for t in tset:
         if t != 5:
-            errorfile.write(f"{t} {totalErrors[t]} {totalStandardDeviation[t]} \n")
+            errorfile.write(f"{t} {totalErrors[t-1]} {totalStandardDeviation[t-1]} \n")
         else:
-            errorfile.write(f"{t} {totalErrors[t]} {totalStandardDeviation[t]}")
+            errorfile.write(f"{t} {totalErrors[t-1]} {totalStandardDeviation[t-1]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(10))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -610,7 +610,7 @@ def runBasicVaryK(rset, kset):
         indexTracker = [0]*dconst
         submittedVector = [0]*dconst
         checkLength = 10
-        totalMeanSquaredError = 0
+        totalMeanSquaredError = list()
         sumOfSquares = 0
 
         gamma = max((((14*dconst*k*(math.log(2/dta))))/((nconst-1)*(epsconst**2))), (27*dconst*k)/((nconst-1)*epsconst))
@@ -689,19 +689,19 @@ def runBasicVaryK(rset, kset):
 
             errorTuple = tuple(zip(debiasedVector, averageVector))
             meanSquaredError = [(a - b)**2 for a, b in errorTuple]
-            totalMeanSquaredError += sum(meanSquaredError)
+            totalMeanSquaredError.append(sum(meanSquaredError))
 
             averageSquares = [idx**2 for idx in averageVector]
             sumOfSquares += sum(averageSquares)
 
-        averageMeanSquaredError = totalMeanSquaredError/R
+        averageMeanSquaredError = (sum(totalMeanSquaredError))/R
         averageSumOfSquares = sumOfSquares/R
         differencesMeanSquaredError = [(value - averageMeanSquaredError)**2 for value in totalMeanSquaredError] 
         standardDeviationMeanSquaredError = math.sqrt((sum(differencesMeanSquaredError))/R)
         totalErrors.append(Decimal(averageMeanSquaredError))
         totalStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
 
-        datafile = open("basic" + str(k) + ".txt", "w")
+        datafile = open("basic" + str(k) + "k.txt", "w")
         datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
         comparison = max((((98*(1/3))*(dconst**(2/3))*(nconst**(1/3))*(np.log(2/dta)))/(((1-gamma)**2)*(epsconst**(4/3)))), (18*(dconst**(2/3))*(nconst**(1/3)))/(((1-gamma)**2)*((4*epsconst)**(2/3))))
@@ -721,7 +721,7 @@ def runBasicVaryK(rset, kset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(k) + ".png")
+        plt.savefig("basic" + str(k) + "k.png")
         plt.clf()
         plt.cla()
 
@@ -767,12 +767,12 @@ def runBasicVaryK(rset, kset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(k) + ".png")
+        plt.savefig("basic" + str(k) + "k.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[k])
+        casetime = round(loopTotal[k-4])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case k = {k}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -780,13 +780,13 @@ def runBasicVaryK(rset, kset):
 
     for k in kset:
         if k != 10:
-            errorfile.write(f"{k} {totalErrors[k]} {totalStandardDeviation[k]} \n")
+            errorfile.write(f"{k} {totalErrors[k-4]} {totalStandardDeviation[k-4]} \n")
         else:
-            errorfile.write(f"{k} {totalErrors[k]} {totalStandardDeviation[k]}")
+            errorfile.write(f"{k} {totalErrors[k-4]} {totalStandardDeviation[k-4]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(10))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -810,7 +810,7 @@ def runBasicVaryD(rset, dset):
         indexTracker = [0]*d
         submittedVector = [0]*d
         checkLength = 10
-        totalMeanSquaredError = 0
+        totalMeanSquaredError = list()
         sumOfSquares = 0
 
         gamma = max((((14*d*kconst*(math.log(2/dta))))/((nconst-1)*(epsconst**2))), (27*d*kconst)/((nconst-1)*epsconst))
@@ -889,19 +889,19 @@ def runBasicVaryD(rset, dset):
 
             errorTuple = tuple(zip(debiasedVector, averageVector))
             meanSquaredError = [(a - b)**2 for a, b in errorTuple]
-            totalMeanSquaredError += sum(meanSquaredError)
+            totalMeanSquaredError.append(sum(meanSquaredError))
 
             averageSquares = [idx**2 for idx in averageVector]
             sumOfSquares += sum(averageSquares)
 
-        averageMeanSquaredError = totalMeanSquaredError/R
+        averageMeanSquaredError = (sum(totalMeanSquaredError))/R
         averageSumOfSquares = sumOfSquares/R
         differencesMeanSquaredError = [(value - averageMeanSquaredError)**2 for value in totalMeanSquaredError] 
         standardDeviationMeanSquaredError = math.sqrt((sum(differencesMeanSquaredError))/R)
         totalErrors.append(Decimal(averageMeanSquaredError))
         totalStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
 
-        datafile = open("basic" + str(d) + ".txt", "w")
+        datafile = open("basic" + str(d) + "d.txt", "w")
         datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
         comparison = max((((98*(1/3))*(d**(2/3))*(nconst**(1/3))*(np.log(2/dta)))/(((1-gamma)**2)*(epsconst**(4/3)))), (18*(d**(2/3))*(nconst**(1/3)))/(((1-gamma)**2)*((4*epsconst)**(2/3))))
@@ -921,7 +921,7 @@ def runBasicVaryD(rset, dset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(d) + ".png")
+        plt.savefig("basic" + str(d) + "d.png")
         plt.clf()
         plt.cla()
 
@@ -967,12 +967,12 @@ def runBasicVaryD(rset, dset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(d) + ".png")
+        plt.savefig("basic" + str(d) + "d.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[d])
+        casetime = round(loopTotal[int((d/50)-1)])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case d = {d}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -980,13 +980,13 @@ def runBasicVaryD(rset, dset):
 
     for d in dset:
         if d != dmax:
-            errorfile.write(f"{d} {totalErrors[d]} {totalStandardDeviation[d]} \n")
+            errorfile.write(f"{d} {totalErrors[int((d/50)-1)]} {totalStandardDeviation[int((d/50)-1)]} \n")
         else:
-            errorfile.write(f"{d} {totalErrors[d]} {totalStandardDeviation[d]}")
+            errorfile.write(f"{d} {totalErrors[int((d/50)-1)]} {totalStandardDeviation[int((d/50)-1)]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(10))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -1010,7 +1010,7 @@ def runBasicVaryEps(rset, epsset):
         indexTracker = [0]*dconst
         submittedVector = [0]*dconst
         checkLength = 10
-        totalMeanSquaredError = 0
+        totalMeanSquaredError = list()
         sumOfSquares = 0
 
         gamma = max((((14*dconst*kconst*(math.log(2/dta))))/((nconst-1)*(eps**2))), (27*dconst*kconst)/((nconst-1)*eps))
@@ -1089,19 +1089,19 @@ def runBasicVaryEps(rset, epsset):
 
             errorTuple = tuple(zip(debiasedVector, averageVector))
             meanSquaredError = [(a - b)**2 for a, b in errorTuple]
-            totalMeanSquaredError += sum(meanSquaredError)
+            totalMeanSquaredError.append(sum(meanSquaredError))
 
             averageSquares = [idx**2 for idx in averageVector]
             sumOfSquares += sum(averageSquares)
 
-        averageMeanSquaredError = totalMeanSquaredError/R
+        averageMeanSquaredError = (sum(totalMeanSquaredError))/R
         averageSumOfSquares = sumOfSquares/R
         differencesMeanSquaredError = [(value - averageMeanSquaredError)**2 for value in totalMeanSquaredError] 
         standardDeviationMeanSquaredError = math.sqrt((sum(differencesMeanSquaredError))/R)
         totalErrors.append(Decimal(averageMeanSquaredError))
         totalStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
 
-        datafile = open("basic" + str(eps) + ".txt", "w")
+        datafile = open("basic" + str(eps) + "eps.txt", "w")
         datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
         comparison = max((((98*(1/3))*(dconst**(2/3))*(nconst**(1/3))*(np.log(2/dta)))/(((1-gamma)**2)*(eps**(4/3)))), (18*(dconst**(2/3))*(nconst**(1/3)))/(((1-gamma)**2)*((4*eps)**(2/3))))
@@ -1121,7 +1121,7 @@ def runBasicVaryEps(rset, epsset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(eps) + ".png")
+        plt.savefig("basic" + str(eps) + "eps.png")
         plt.clf()
         plt.cla()
 
@@ -1167,12 +1167,12 @@ def runBasicVaryEps(rset, epsset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(eps) + ".png")
+        plt.savefig("basic" + str(eps) + "eps.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[eps])
+        casetime = round(loopTotal[int((2*eps)-2)])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case eps = {eps}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -1180,13 +1180,13 @@ def runBasicVaryEps(rset, epsset):
 
     for eps in epsset:
         if eps != 2.5:
-            errorfile.write(f"{eps} {totalErrors[eps]} {totalStandardDeviation[eps]} \n")
+            errorfile.write(f"{eps} {totalErrors[int((2*eps)-2)]} {totalStandardDeviation[int((2*eps)-2)]} \n")
         else:
-            errorfile.write(f"{eps} {totalErrors[eps]} {totalStandardDeviation[eps]}")
+            errorfile.write(f"{eps} {totalErrors[int((2*eps)-2)]} {totalStandardDeviation[int((2*eps)-2)]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(10))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -1210,7 +1210,7 @@ def runBasicVaryN(rset, nset):
         indexTracker = [0]*dconst
         submittedVector = [0]*dconst
         checkLength = 10
-        totalMeanSquaredError = 0
+        totalMeanSquaredError = list()
         sumOfSquares = 0
 
         gamma = max((((14*dconst*kconst*(math.log(2/dta))))/((n-1)*(epsconst**2))), (27*dconst*kconst)/((n-1)*epsconst))
@@ -1226,8 +1226,8 @@ def runBasicVaryN(rset, nset):
             randomisedResponse = list()
             submittedCoords = list()
             outputList = list()
-
-            for newVector in heartbeatDataConstDVaryN:
+            
+            for newVector in heartbeatDataConstDVaryN[0:n]:
     
                 randomIndex = random.randint(0, dconst - 1)
 
@@ -1289,19 +1289,19 @@ def runBasicVaryN(rset, nset):
 
             errorTuple = tuple(zip(debiasedVector, averageVector))
             meanSquaredError = [(a - b)**2 for a, b in errorTuple]
-            totalMeanSquaredError += sum(meanSquaredError)
+            totalMeanSquaredError.append(sum(meanSquaredError))
 
             averageSquares = [idx**2 for idx in averageVector]
             sumOfSquares += sum(averageSquares)
 
-        averageMeanSquaredError = totalMeanSquaredError/R
+        averageMeanSquaredError = (sum(totalMeanSquaredError))/R
         averageSumOfSquares = sumOfSquares/R
         differencesMeanSquaredError = [(value - averageMeanSquaredError)**2 for value in totalMeanSquaredError] 
         standardDeviationMeanSquaredError = math.sqrt((sum(differencesMeanSquaredError))/R)
         totalErrors.append(Decimal(averageMeanSquaredError))
         totalStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
 
-        datafile = open("basic" + str(n) + ".txt", "w")
+        datafile = open("basic" + str(n) + "n.txt", "w")
         datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
         comparison = max((((98*(1/3))*(dconst**(2/3))*(n**(1/3))*(np.log(2/dta)))/(((1-gamma)**2)*(epsconst**(4/3)))), (18*(dconst**(2/3))*(n**(1/3)))/(((1-gamma)**2)*((4*epsconst)**(2/3))))
@@ -1321,7 +1321,7 @@ def runBasicVaryN(rset, nset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(n) + ".png")
+        plt.savefig("basic" + str(n) + "n.png")
         plt.clf()
         plt.cla()
 
@@ -1367,12 +1367,12 @@ def runBasicVaryN(rset, nset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("basic" + str(n) + ".png")
+        plt.savefig("basic" + str(n) + "n.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[n])
+        casetime = round(loopTotal[int((n/10000)-2)])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case n = {n}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -1380,13 +1380,13 @@ def runBasicVaryN(rset, nset):
 
     for n in nset:
         if n != nmax:
-            errorfile.write(f"{n} {totalErrors[n]} {totalStandardDeviation[n]} \n")
+            errorfile.write(f"{n} {totalErrors[int((n/10000)-2)]} {totalStandardDeviation[int((n/10000)-2)]} \n")
         else:
-            errorfile.write(f"{n} {totalErrors[n]} {totalStandardDeviation[n]}")
+            errorfile.write(f"{n} {totalErrors[int((n/10000)-2)]} {totalStandardDeviation[int((n/10000)-2)]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(10))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -1524,7 +1524,7 @@ def runDftVaryT(rset, tset):
         standardDeviationReconstructionError = math.sqrt((sum(differencesReconstructionError))/R)
         standardDeviationPerturbationError = math.sqrt((sum(differencesPerturbationError))/R)
     
-        datafile = open("fourier" + str(t) + ".txt", "w")
+        datafile = open("fourier" + str(t) + "t.txt", "w")
         datafile.write(f"Number of coordinates t retained: {t} \n")
         datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
@@ -1560,7 +1560,7 @@ def runDftVaryT(rset, tset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(t) + ".png")
+        plt.savefig("fourier" + str(t) + "t.png")
         plt.clf()
         plt.cla()
 
@@ -1606,12 +1606,12 @@ def runDftVaryT(rset, tset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(t) + ".png")
+        plt.savefig("fourier" + str(t) + "t.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[t])
+        casetime = round(loopTotal[t-1])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case t = {t}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -1619,13 +1619,13 @@ def runDftVaryT(rset, tset):
 
     for t in tset:
         if t != 5:
-            errorfile.write(f"{t} {perErrors[t]} {recErrors[t]} {totalDftErrors[t]} {totalDftStandardDeviation[t]} \n")
+            errorfile.write(f"{t} {perErrors[t-1]} {recErrors[t-1]} {totalDftErrors[t-1]} {totalDftStandardDeviation[t-1]} \n")
         else:
-            errorfile.write(f"{t} {perErrors[t]} {recErrors[t]} {totalDftErrors[t]} {totalDftStandardDeviation[t]}")
+            errorfile.write(f"{t} {perErrors[t-1]} {recErrors[t-1]} {totalDftErrors[t-1]} {totalDftStandardDeviation[t-1]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(R))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -1757,7 +1757,7 @@ def runDftVaryK(rset, kset):
         standardDeviationReconstructionError = math.sqrt((sum(differencesReconstructionError))/R)
         standardDeviationPerturbationError = math.sqrt((sum(differencesPerturbationError))/R)
     
-        datafile = open("fourier" + str(k) + ".txt", "w")
+        datafile = open("fourier" + str(k) + "k.txt", "w")
         datafile.write(f"Number of buckets k used: {k} \n")
         datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
@@ -1790,7 +1790,7 @@ def runDftVaryK(rset, kset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(k) + ".png")
+        plt.savefig("fourier" + str(k) + "k.png")
         plt.clf()
         plt.cla()
 
@@ -1836,12 +1836,12 @@ def runDftVaryK(rset, kset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(k) + ".png")
+        plt.savefig("fourier" + str(k) + "k.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[k])
+        casetime = round(loopTotal[k-4])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case k = {k}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -1849,13 +1849,13 @@ def runDftVaryK(rset, kset):
 
     for k in kset:
         if k != 10:
-            errorfile.write(f"{k} {perErrors[k]} {recErrors[k]} {totalDftErrors[k]} {totalDftStandardDeviation[k]} \n")
+            errorfile.write(f"{k} {perErrors[k-4]} {recErrors[k-4]} {totalDftErrors[k-4]} {totalDftStandardDeviation[k-4]} \n")
         else:
-            errorfile.write(f"{k} {perErrors[k]} {recErrors[k]} {totalDftErrors[k]} {totalDftStandardDeviation[k]}")
+            errorfile.write(f"{k} {perErrors[k-4]} {recErrors[k-4]} {totalDftErrors[k-4]} {totalDftStandardDeviation[k-4]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(R))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -1987,7 +1987,7 @@ def runDftVaryM(rset, mset):
         standardDeviationReconstructionError = math.sqrt((sum(differencesReconstructionError))/R)
         standardDeviationPerturbationError = math.sqrt((sum(differencesPerturbationError))/R)
     
-        datafile = open("fourier" + str(m) + ".txt", "w")
+        datafile = open("fourier" + str(m) + "m.txt", "w")
         datafile.write(f"Number of Fourier coefficients m: {m} \n")
         datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
@@ -2020,7 +2020,7 @@ def runDftVaryM(rset, mset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(m) + ".png")
+        plt.savefig("fourier" + str(m) + "m.png")
         plt.clf()
         plt.cla()
 
@@ -2066,12 +2066,12 @@ def runDftVaryM(rset, mset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(m) + ".png")
+        plt.savefig("fourier" + str(m) + "m.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[m])
+        casetime = round(loopTotal[int((m/10)-1)])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case m = {m}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -2079,13 +2079,13 @@ def runDftVaryM(rset, mset):
 
     for m in mset:
         if m != 100:
-            errorfile.write(f"{10*m} {perErrors[m]} {recErrors[m]} {totalDftErrors[m]} {totalDftStandardDeviation[m]} \n")
+            errorfile.write(f"{m} {perErrors[int((m/10)-1)]} {recErrors[int((m/10)-1)]} {totalDftErrors[int((m/10)-1)]} {totalDftStandardDeviation[int((m/10)-1)]} \n")
         else:
-            errorfile.write(f"{10*m} {perErrors[m]} {recErrors[m]} {totalDftErrors[m]} {totalDftStandardDeviation[m]}")
+            errorfile.write(f"{m} {perErrors[int((m/10)-1)]} {recErrors[int((m/10)-1)]} {totalDftErrors[int((m/10)-1)]} {totalDftStandardDeviation[int((m/10)-1)]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(R))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -2217,7 +2217,7 @@ def runDftVaryD(rset, dset):
         standardDeviationReconstructionError = math.sqrt((sum(differencesReconstructionError))/R)
         standardDeviationPerturbationError = math.sqrt((sum(differencesPerturbationError))/R)
     
-        datafile = open("fourier" + str(d) + ".txt", "w")
+        datafile = open("fourier" + str(d) + "d.txt", "w")
         datafile.write(f"Dimension of vector d: {d} \n")
         datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
@@ -2250,7 +2250,7 @@ def runDftVaryD(rset, dset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(d) + ".png")
+        plt.savefig("fourier" + str(d) + "d.png")
         plt.clf()
         plt.cla()
 
@@ -2296,12 +2296,12 @@ def runDftVaryD(rset, dset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(d) + ".png")
+        plt.savefig("fourier" + str(d) + "d.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[d])
+        casetime = round(loopTotal[int((d/50)-1)])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case d = {d}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -2309,13 +2309,13 @@ def runDftVaryD(rset, dset):
 
     for d in dset:
         if d != dmax:
-            errorfile.write(f"{d} {perErrors[d]} {recErrors[d]} {totalDftErrors[d]} {totalDftStandardDeviation[d]} \n")
+            errorfile.write(f"{d} {perErrors[int((d/50)-1)]} {recErrors[int((d/50)-1)]} {totalDftErrors[int((d/50)-1)]} {totalDftStandardDeviation[int((d/50)-1)]} \n")
         else:
-            errorfile.write(f"{d} {perErrors[d]} {recErrors[d]} {totalDftErrors[d]} {totalDftStandardDeviation[d]}")
+            errorfile.write(f"{d} {perErrors[int((d/50)-1)]} {recErrors[int((d/50)-1)]} {totalDftErrors[int((d/50)-1)]} {totalDftStandardDeviation[int((d/50)-1)]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(R))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -2447,7 +2447,7 @@ def runDftVaryEps(rset, epsset):
         standardDeviationReconstructionError = math.sqrt((sum(differencesReconstructionError))/R)
         standardDeviationPerturbationError = math.sqrt((sum(differencesPerturbationError))/R)
     
-        datafile = open("fourier" + str(eps) + ".txt", "w")
+        datafile = open("fourier" + str(eps) + "eps.txt", "w")
         datafile.write(f"Value of epsilon: {eps} \n")
         datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
@@ -2480,7 +2480,7 @@ def runDftVaryEps(rset, epsset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(eps) + ".png")
+        plt.savefig("fourier" + str(eps) + "eps.png")
         plt.clf()
         plt.cla()
 
@@ -2526,12 +2526,12 @@ def runDftVaryEps(rset, epsset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(eps) + ".png")
+        plt.savefig("fourier" + str(eps) + "eps.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[eps])
+        casetime = round(loopTotal[int((2*eps)-2)])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case eps = {eps}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -2539,13 +2539,13 @@ def runDftVaryEps(rset, epsset):
 
     for eps in epsset:
         if eps != 4:
-            errorfile.write(f"{eps} {perErrors[eps]} {recErrors[eps]} {totalDftErrors[eps]} {totalDftStandardDeviation[eps]} \n")
+            errorfile.write(f"{eps} {perErrors[int((2*eps)-2)]} {recErrors[int((2*eps)-2)]} {totalDftErrors[int((2*eps)-2)]} {totalDftStandardDeviation[int((2*eps)-2)]} \n")
         else:
-            errorfile.write(f"{eps} {perErrors[eps]} {recErrors[eps]} {totalDftErrors[eps]} {totalDftStandardDeviation[eps]}")
+            errorfile.write(f"{eps} {perErrors[int((2*eps)-2)]} {recErrors[int((2*eps)-2)]} {totalDftErrors[int((2*eps)-2)]} {totalDftStandardDeviation[int((2*eps)-2)]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(R))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
@@ -2591,7 +2591,7 @@ def runDftVaryN(rset, nset):
             dftRandomisedResponse = list()
             dftSubmittedCoords = list()
 
-            for newVector in heartbeatDataConstDVaryN:
+            for newVector in heartbeatDataConstDVaryN[0:n]:
             
                 dftVector = (rfft(newVector)).tolist()
                 dftRandomIndex = random.randint(0, mconst - 1)
@@ -2677,7 +2677,7 @@ def runDftVaryN(rset, nset):
         standardDeviationReconstructionError = math.sqrt((sum(differencesReconstructionError))/R)
         standardDeviationPerturbationError = math.sqrt((sum(differencesPerturbationError))/R)
     
-        datafile = open("fourier" + str(n) + ".txt", "w")
+        datafile = open("fourier" + str(n) + "n.txt", "w")
         datafile.write(f"Number of vectors n used: {n} \n")
         datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
@@ -2710,7 +2710,7 @@ def runDftVaryN(rset, nset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(n) + ".png")
+        plt.savefig("fourier" + str(n) + "n.png")
         plt.clf()
         plt.cla()
 
@@ -2756,12 +2756,12 @@ def runDftVaryN(rset, nset):
         mng = plt.get_current_fig_manager()
         mng.window.state('zoomed')
         plt.draw()
-        plt.savefig("fourier" + str(n) + ".png")
+        plt.savefig("fourier" + str(n) + "n.png")
         plt.clf()
         plt.cla()
 
         loopTotal.append(time.perf_counter() - loopTime)
-        casetime = round(loopTotal[n])
+        casetime = round(loopTotal[int((n/10000)-2)])
         casemins = math.floor(casetime/60)
         datafile.write(f"Total time for case n = {n}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -2769,13 +2769,13 @@ def runDftVaryN(rset, nset):
 
     for n in nset:
         if n != nmax:
-            errorfile.write(f"{n} {perErrors[n]} {recErrors[n]} {totalDftErrors[n]} {totalDftStandardDeviation[n]} \n")
+            errorfile.write(f"{n} {perErrors[int((n/10000)-2)]} {recErrors[int((n/10000)-2)]} {totalDftErrors[int((n/10000)-2)]} {totalDftStandardDeviation[int((n/10000)-2)]} \n")
         else:
-            errorfile.write(f"{n} {perErrors[n]} {recErrors[n]} {totalDftErrors[n]} {totalDftStandardDeviation[n]}")
+            errorfile.write(f"{n} {perErrors[int((n/10000)-2)]} {recErrors[int((n/10000)-2)]} {totalDftErrors[int((n/10000)-2)]} {totalDftStandardDeviation[int((n/10000)-2)]}")
 
     errorfile.close()
 
-    avgtime = round((sum(loopTotal))/(R))
+    avgtime = round((sum(loopTotal))/(len(loopTotal)))
     avgmins = math.floor(avgtime/60)
     datafile.write(f"\nAverage time for each case: {avgmins}m {avgtime - (avgmins*60)}s \n")
     totaltime = round(time.perf_counter() - startTime)
