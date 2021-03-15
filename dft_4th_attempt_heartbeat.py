@@ -29,7 +29,7 @@ tset = [1, 2, 3, 4, 5]
 kset = [4, 5, 6, 7, 8, 9, 10]
 mset = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 dset = [50, 100, 150]
-epsset = [1, 1.5, 2, 2.5, 3, 3.5, 4]
+epsset = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 nset = [20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000]
 rset = [1, 2, 3, 4, 5]
 R = len(rset)
@@ -1179,7 +1179,7 @@ def runBasicVaryEps(rset, epsset):
     errorfile = open("errorvaryeps.txt", "w")
 
     for eps in epsset:
-        if eps != 2.5:
+        if eps != 4:
             errorfile.write(f"{eps} {totalErrors[int((2*eps)-2)]} {totalStandardDeviation[int((2*eps)-2)]} \n")
         else:
             errorfile.write(f"{eps} {totalErrors[int((2*eps)-2)]} {totalStandardDeviation[int((2*eps)-2)]}")
@@ -1380,9 +1380,9 @@ def runBasicVaryN(rset, nset):
 
     for n in nset:
         if n != nmax:
-            errorfile.write(f"{n} {totalErrors[int((n/10000)-2)]} {totalStandardDeviation[int((n/10000)-2)]} \n")
+            errorfile.write(f"{int(n/10000)} {totalErrors[int((n/10000)-2)]} {totalStandardDeviation[int((n/10000)-2)]} \n")
         else:
-            errorfile.write(f"{n} {totalErrors[int((n/10000)-2)]} {totalStandardDeviation[int((n/10000)-2)]}")
+            errorfile.write(f"{int(n/10000)} {totalErrors[int((n/10000)-2)]} {totalStandardDeviation[int((n/10000)-2)]}")
 
     errorfile.close()
 
@@ -2769,9 +2769,9 @@ def runDftVaryN(rset, nset):
 
     for n in nset:
         if n != nmax:
-            errorfile.write(f"{n} {perErrors[int((n/10000)-2)]} {recErrors[int((n/10000)-2)]} {totalDftErrors[int((n/10000)-2)]} {totalDftStandardDeviation[int((n/10000)-2)]} \n")
+            errorfile.write(f"{int(n/10000)} {perErrors[int((n/10000)-2)]} {recErrors[int((n/10000)-2)]} {totalDftErrors[int((n/10000)-2)]} {totalDftStandardDeviation[int((n/10000)-2)]} \n")
         else:
-            errorfile.write(f"{n} {perErrors[int((n/10000)-2)]} {recErrors[int((n/10000)-2)]} {totalDftErrors[int((n/10000)-2)]} {totalDftStandardDeviation[int((n/10000)-2)]}")
+            errorfile.write(f"{int(n/10000)} {perErrors[int((n/10000)-2)]} {recErrors[int((n/10000)-2)]} {totalDftErrors[int((n/10000)-2)]} {totalDftStandardDeviation[int((n/10000)-2)]}")
 
     errorfile.close()
 

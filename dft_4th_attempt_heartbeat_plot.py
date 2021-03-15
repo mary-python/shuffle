@@ -16,19 +16,24 @@ def plotBasicVaryT():
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'r', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.xticks(['1', '2', '3', '4', '5'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Number of coordinates retained', labelpad = 8)
-
     plt.title('Experimental error by number of coordinates retained')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("errorchartvaryt.png")
+
+    plt.legend()
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig("errorchartvaryt.png")
+    plt.clf()
+    plt.cla()
 
 def plotBasicVaryK():
-
+    
     labels = list()
     totalErrors = list()
     totalStandardDeviation = list()
@@ -40,16 +45,21 @@ def plotBasicVaryK():
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'r', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.xticks(['4', '5', '6', '7', '8', '9', '10'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Number of buckets used', labelpad = 8)
-
     plt.title('Experimental error by number of buckets used')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("errorchartvaryk.png")
+
+    plt.legend()
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig("errorchartvaryk.png")
+    plt.clf()
+    plt.cla()
 
 def plotBasicVaryD():
 
@@ -64,16 +74,21 @@ def plotBasicVaryD():
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'r', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.xticks(['50', '100', '150'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Dimension of vector', labelpad = 8)
-
     plt.title('Experimental error by dimension of vector')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("errorchartvaryd.png")
+
+    plt.legend()
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig("errorchartvaryd.png")
+    plt.clf()
+    plt.cla()
 
 def plotBasicVaryEps():
 
@@ -84,20 +99,25 @@ def plotBasicVaryEps():
     with open("errorvaryeps.txt") as reader:
         for line in reader:
             tab = line.split()
-            labels.append(f'{int(tab[0])}')
+            labels.append(f'{float(tab[0])}')
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'r', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.xticks(['1', '1.5', '2', '2.5', '3', '3.5', '4'])
+    plt.xticks(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Value of epsilon', labelpad = 8)
-
     plt.title('Experimental error by value of epsilon')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("errorchartvaryeps.png")
+
+    plt.legend()
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig("errorchartvaryeps.png")
+    plt.clf()
+    plt.cla()
 
 def plotBasicVaryN():
 
@@ -112,16 +132,21 @@ def plotBasicVaryN():
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'r', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.xticks(['1', '1.5', '2', '2.5', '3', '3.5', '4'])
+    plt.xticks(['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
     plt.ylabel('Total experimental MSE')
-    plt.xlabel('Number of vectors used', labelpad = 8)
-
+    plt.xlabel('Number of vectors used' + ' ' + 'x' + ' ' + '$10^{4}$', labelpad = 8)
     plt.title('Experimental error by number of vectors used')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("errorchartvaryn.png")
+
+    plt.legend()
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig("errorchartvaryn.png")
+    plt.clf()
+    plt.cla()
 
 def plotDftVaryT():
 
@@ -148,9 +173,14 @@ def plotDftVaryT():
     plt.xticks(['1', '2', '3', '4', '5'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Number of coordinates retained', labelpad = 8)
-
     plt.title('Ratio between experimental errors by number of coordinates retained')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("dfterrorchartvaryt.png")
+
+    plt.legend()
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig("dfterrorchartvaryt.png")
+    plt.clf()
+    plt.cla()
 
 def plotDftVaryK():
 
@@ -159,6 +189,7 @@ def plotDftVaryK():
     recErrors = list()
     totalErrors = list()
     totalStandardDeviation = list()
+
 
     with open("dfterrorvaryk.txt") as reader:
         for line in reader:
@@ -177,9 +208,14 @@ def plotDftVaryK():
     plt.xticks(['4', '5', '6', '7', '8', '9', '10'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Number of buckets used', labelpad = 8)
-
     plt.title('Ratio between experimental errors by number of buckets used')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("dfterrorchartvaryk.png")
+
+    plt.legend()
+    plt.tight_layout() 
+    plt.draw()
+    plt.savefig("dfterrorchartvaryk.png")
+    plt.clf()
+    plt.cla()
 
 def plotDftVaryM():
 
@@ -206,9 +242,14 @@ def plotDftVaryM():
     plt.xticks(['10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('% of Fourier coefficients retained', labelpad = 8)
-
     plt.title('Ratio between experimental errors by % of Fourier coefficients retained')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("dfterrorchartvarym.png")
+
+    plt.legend()
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig("dfterrorchartvarym.png")
+    plt.clf()
+    plt.cla()
 
 def plotDftVaryD():
 
@@ -235,9 +276,14 @@ def plotDftVaryD():
     plt.xticks(['50', '100', '150'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Dimension of vector', labelpad = 8)
-
     plt.title('Ratio between experimental errors by dimension of vector')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("dfterrorchartvaryd.png")
+
+    plt.legend()
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig("dfterrorchartvaryd.png")
+    plt.clf()
+    plt.cla()
 
 def plotDftVaryEps():
 
@@ -250,7 +296,7 @@ def plotDftVaryEps():
     with open("dfterrorvaryeps.txt") as reader:
         for line in reader:
             tab = line.split()
-            labels.append(f'{int(tab[0])}')
+            labels.append(f'{float(tab[0])}')
             perErrors.append((Decimal(tab[1])))
             recErrors.append((Decimal(tab[2])))
             totalErrors.append((Decimal(tab[3])))
@@ -261,12 +307,17 @@ def plotDftVaryEps():
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.xticks(['1', '1.5', '2', '2.5', '3', '3.5', '4'])
+    plt.xticks(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Value of epsilon', labelpad = 8)
-
     plt.title('Ratio between experimental errors by value of epsilon')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("dfterrorchartvaryeps.png")
+
+    plt.legend()
+    plt.tight_layout() 
+    plt.draw()
+    plt.savefig("dfterrorchartvaryeps.png")
+    plt.clf()
+    plt.cla()
 
 def plotDftVaryN():
 
@@ -290,12 +341,17 @@ def plotDftVaryN():
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.xticks(['1', '1.5', '2', '2.5', '3', '3.5', '4'])
+    plt.xticks(['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
     plt.ylabel('Total experimental MSE')
-    plt.xlabel('Number of vectors used', labelpad = 8)
-
+    plt.xlabel('Number of vectors used' + ' ' + 'x' + ' ' + '$10^{4}$', labelpad = 8)
     plt.title('Ratio between experimental errors by number of vectors used')
-    plt.legend(); plt.tight_layout; plt.draw(); plt.savefig("dfterrorchartvaryn.png")
+
+    plt.legend()
+    plt.tight_layout
+    plt.draw()
+    plt.savefig("dfterrorchartvaryn.png")
+    plt.clf()
+    plt.cla()
 
 plotBasicVaryT()
 plotBasicVaryK()
