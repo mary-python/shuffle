@@ -16,7 +16,7 @@ def plotBasicVaryT():
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
@@ -25,7 +25,6 @@ def plotBasicVaryT():
     plt.xlabel('Number of coordinates retained', labelpad = 8)
     plt.title('Experimental error by number of coordinates retained')
 
-    plt.legend()
     plt.tight_layout()
     plt.draw()
     plt.savefig("errorchartvaryt.png")
@@ -45,7 +44,7 @@ def plotBasicVaryK():
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
@@ -54,7 +53,6 @@ def plotBasicVaryK():
     plt.xlabel('Number of buckets used', labelpad = 8)
     plt.title('Experimental error by number of buckets used')
 
-    plt.legend()
     plt.tight_layout()
     plt.draw()
     plt.savefig("errorchartvaryk.png")
@@ -74,16 +72,15 @@ def plotBasicVaryD():
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.xticks(['50', '100', '150'])
+    plt.xticks(['80', '90', '100', '110', '120', '130', '140', '150'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Dimension of vector', labelpad = 8)
     plt.title('Experimental error by dimension of vector')
 
-    plt.legend()
     plt.tight_layout()
     plt.draw()
     plt.savefig("errorchartvaryd.png")
@@ -103,7 +100,7 @@ def plotBasicVaryEps():
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
@@ -112,7 +109,6 @@ def plotBasicVaryEps():
     plt.xlabel('Value of epsilon', labelpad = 8)
     plt.title('Experimental error by value of epsilon')
 
-    plt.legend()
     plt.tight_layout()
     plt.draw()
     plt.savefig("errorchartvaryeps.png")
@@ -132,16 +128,15 @@ def plotBasicVaryN():
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
 
-    plt.bar(labels, totalErrors, width, label = 'Total error', alpha = 0.6, color = 'm', edgecolor = 'k')
+    plt.bar(labels, totalErrors, width, alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.xticks(['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
+    plt.xticks(['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Number of vectors used' + ' ' + 'x' + ' ' + '$10^{4}$', labelpad = 8)
     plt.title('Experimental error by number of vectors used')
 
-    plt.legend()
     plt.tight_layout()
     plt.draw()
     plt.savefig("errorchartvaryn.png")
@@ -273,7 +268,7 @@ def plotDftVaryD():
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.xticks(['50', '100', '150'])
+    plt.xticks(['80', '90', '100', '110', '120', '130', '140', '150'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Dimension of vector', labelpad = 8)
     plt.title('Ratio between experimental errors by dimension of vector')
@@ -341,7 +336,7 @@ def plotDftVaryN():
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.xticks(['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
+    plt.xticks(['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
     plt.ylabel('Total experimental MSE')
     plt.xlabel('Number of vectors used' + ' ' + 'x' + ' ' + '$10^{4}$', labelpad = 8)
     plt.title('Ratio between experimental errors by number of vectors used')
