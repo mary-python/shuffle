@@ -31,7 +31,7 @@ mset = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 dset = [80, 90, 100, 110, 120, 130, 140, 150]
 epsset = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 nset = [30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000]
-rset = [1, 2, 3, 4, 5]
+rset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 R = len(rset)
 
 # set up some global variables
@@ -2196,6 +2196,11 @@ def runDftVaryD(rset, dset):
             dftMeanSquaredError = [(a - b)**2 for a, b in dftErrorTuple]
             totalDftMeanSquaredError.append(sum(dftMeanSquaredError))
 
+            print(f"{finalVector}")
+            print(f"{dftAverageVector}")
+            print(f"{dftMeanSquaredError}")
+            print(f"{totalDftMeanSquaredError}")
+
             dftAverageSquares = [idx**2 for idx in dftAverageVector]
             dftSumOfSquares += sum(dftAverageSquares)
 
@@ -2204,6 +2209,11 @@ def runDftVaryD(rset, dset):
             reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
             totalReconstructionError.append(sum(reconstructionError))
             totalPerturbationError.append((sum(dftMeanSquaredError)) - (sum(reconstructionError)))
+
+            print(f"{exactVector}")
+            print(f"{reconstructionError}")
+            print(f"{totalReconstructionError}")
+            print(f"{totalPerturbationError}")
     
         averageDftMeanSquaredError = (sum(totalDftMeanSquaredError))/R
         averageDftSumOfSquares = dftSumOfSquares/R
