@@ -476,6 +476,12 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
         dftAverageSquares = [idx**2 for idx in dftAverageVector]
         dftSumOfSquares += sum(dftAverageSquares)
 
+        exactVector = irfft(rfft(dftAverageVector).tolist()[0:mchoice] + [0]*(dchoice-mchoice)).tolist()
+        reconstructionTuple = tuple(zip(exactVector, dftAverageVector))
+        reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
+        totalReconstructionError = sum(reconstructionError)
+        totalPerturbationError = totalDftMeanSquaredError - totalReconstructionError
+
         bar.next()
     bar.finish()
 
