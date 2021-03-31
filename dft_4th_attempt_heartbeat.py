@@ -172,7 +172,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     print(f"\ngamma = {gamma}")
 
     from progress.bar import FillingSquaresBar
-    bar = FillingSquaresBar(max=nchoice, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
+    bar = FillingSquaresBar(max=R, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
     # REPEATING THE ALGORITHM
     for r in rset:
@@ -422,7 +422,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
     print(f"\ngamma = {gamma}")
 
     from progress.bar import FillingSquaresBar
-    bar = FillingSquaresBar(max=nchoice, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
+    bar = FillingSquaresBar(max=R, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
 
     # REPEATING THE ALGORITHM
     for r in rset:
@@ -455,7 +455,8 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
                 dftIndexTracker[dftRandomIndex] += 1
     
         # GENERATING STATISTICS FOR THE TRUE AVERAGE VECTORS
-        dftAverageVector = [idx/nchoice for idx in total]  
+        dftAverageVector = [idx/nchoice for idx in total]
+        print(f"\n{dftAverageVector}")  
         for vector in dftAverageVector:
             dftInputBucketCoord = math.floor(numBuckets*vector)
             dftInputVector[min(dftInputBucketCoord, numBuckets - 1)] += 1
@@ -463,24 +464,36 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
         dftDescaledVector = [idx/kchoice for idx in dftSubmittedVector]
         dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledVector))
         dftDebiasedVector = [2*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1 for count, z in dftMergedTracker]
+        print(f"\n{dftDescaledVector}")
+        print(f"\n{dftDebiasedVector}")
 
         # GENERATING STATISTICS FOR THE RECONSTRUCTED UNBIASED VECTORS
         for vector in dftDebiasedVector:
             dftOutputBucketCoord = math.floor(numBuckets*vector)
             dftOutputVector[min(dftOutputBucketCoord, numBuckets - 1)] += 1
+            print(f"\n{vector}")
+            print(f"\n{dftOutputBucketCoord}")
+            print(f"\n{dftOutputVector}")
 
         errorTuple = tuple(zip(dftDebiasedVector, dftAverageVector))
         dftMeanSquaredError = [(a - b)**2 for a, b in errorTuple]
-        totalDftMeanSquaredError.append(sum(dftMeanSquaredError))
-
+        sumDftMeanSquaredError = sum(dftMeanSquaredError)
+        totalDftMeanSquaredError.append(sumDftMeanSquaredError)
+        
         dftAverageSquares = [idx**2 for idx in dftAverageVector]
         dftSumOfSquares += sum(dftAverageSquares)
 
         exactVector = irfft(rfft(dftAverageVector).tolist()[0:mchoice] + [0]*(dchoice-mchoice)).tolist()
         reconstructionTuple = tuple(zip(exactVector, dftAverageVector))
         reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
-        totalReconstructionError = sum(reconstructionError)
-        totalPerturbationError = totalDftMeanSquaredError - totalReconstructionError
+        sumReconstructionError = sum(reconstructionError)
+        totalReconstructionError.append(sumReconstructionError)
+        print(f"\n{reconstructionError}")
+        print(f"\n{totalReconstructionError}")
+
+        sumPerturbationError = sumDftMeanSquaredError - sumReconstructionError
+        totalPerturbationError.append(sumPerturbationError)
+        print(f"\n{totalPerturbationError}")
 
         bar.next()
     bar.finish()
