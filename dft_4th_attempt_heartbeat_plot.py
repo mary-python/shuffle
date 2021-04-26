@@ -24,7 +24,7 @@ def custom(index, dft):
 
     # VARYING THE NUMBER OF BUCKETS K USED
     elif index == 1:
-        plt.xticks(['4', '5', '6', '7', '8', '9', '10'])
+        plt.xticks(['1', '2', '3', '4', '5', '6', '7'])
         plt.xlabel('Number of buckets used', labelpad = 8)
 
         if dft == 0:
@@ -34,7 +34,7 @@ def custom(index, dft):
 
     # VARYING THE NUMBER OF FOURIER COEFFICIENTS M
     elif index == 2:
-        plt.xticks(['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'])
+        plt.xticks(['50', '55', '60', '65', '70', '75', '80', '85', '90', '95'])
         plt.xlabel('% of Fourier coefficients retained', labelpad = 8)
 
         if dft == 0:
@@ -54,7 +54,7 @@ def custom(index, dft):
     
     # VARYING THE VALUE OF EPSILON
     elif index == 4:
-        plt.xticks(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0'])
+        plt.xticks(['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5'])
         plt.xlabel('Value of epsilon', labelpad = 8)
 
         if dft == 0:
@@ -168,7 +168,12 @@ def saveDft(index):
 
 # MAIN PLOTTING FUNCTION IN THE FOURIER CASE: COMBINING THE ABOVE
 def plotDft():
+
+    # LEAVING OUT THE PARAMETER D AS IT IS NOT USED HERE
     for index in range(6):
+        if index == 3:
+            continue
+
         drawDft(index)
         custom(index, 1)
         saveDft(index)
