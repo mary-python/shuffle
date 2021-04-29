@@ -12,19 +12,19 @@ np.random.seed(2196018)
 startTime = time.perf_counter()
 
 # INITIALISING PARAMETERS/CONSTANTS OF THE ALGORITHM
-tset = [1, 2, 3, 4, 5]
+tset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 tconst = tset[0]
-kset = [1, 2, 3, 4, 5, 6, 7]
+kset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 kconst = kset[2]
 mset = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95]
 mconst = mset[8]
 
 # INITIALISING PARAMETERS/CONSTANTS OF THE DATA
-dset = [80, 90, 100, 110, 120, 130, 140, 150]
-dconst = dset[2]
-dmax = dset[7]
-epsset = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]
-epsconst = epsset[2]
+dset = [60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
+dconst = dset[4]
+dmax = dset[9]
+epsset = [0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75]
+epsconst = epsset[4]
 nset = [30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000]
 nconst = nset[2]
 nmax = nset[9]
@@ -35,7 +35,7 @@ rset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 R = len(rset)
 dta = 0.25
 n1 = 21892
-n2const = 18108
+n2const = 28108
 n2vary = 87554
 n3 = 10506
 n4 = 48
@@ -348,9 +348,9 @@ def runBasicVaryD():
 
     for d in dset:
         print(f"\nProcessing the basic optimal summation result for the value d = {d}.")
-        runBasic(3, d, dset, dconst, tconst, kconst, d, epsconst, nconst, heartbeatDataVaryDConstN, totalVectorVaryDConstN, 0.1, 8, totalErrors, totalStandardDeviation, loopTotal)
+        runBasic(3, d, dset, dconst, tconst, kconst, d, epsconst, nconst, heartbeatDataVaryDConstN, totalVectorVaryDConstN, 0.1, 6, totalErrors, totalStandardDeviation, loopTotal)
     
-    afterBasicLoopStats(3, d, dset, dconst, 0.1, 8, totalErrors, totalStandardDeviation, loopTotal)
+    afterBasicLoopStats(3, d, dset, dconst, 0.1, 6, totalErrors, totalStandardDeviation, loopTotal)
 
 # VARYING THE VALUE OF EPSILON
 def runBasicVaryEps():
@@ -360,9 +360,9 @@ def runBasicVaryEps():
 
     for eps in epsset:
         print(f"\nProcessing the basic optimal summation result for the value eps = {eps}.")
-        runBasic(4, eps, epsset, epsconst, tconst, kconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 2, 1.5, totalErrors, totalStandardDeviation, loopTotal)
+        runBasic(4, eps, epsset, epsconst, tconst, kconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 4, 2, totalErrors, totalStandardDeviation, loopTotal)
 
-    afterBasicLoopStats(4, eps, epsset, epsconst, 2, 1.5, totalErrors, totalStandardDeviation, loopTotal)
+    afterBasicLoopStats(4, eps, epsset, epsconst, 4, 2, totalErrors, totalStandardDeviation, loopTotal)
 
 # VARYING THE NUMBER OF VECTORS N USED
 def runBasicVaryN():
@@ -661,9 +661,9 @@ def runDftVaryEps():
 
     for eps in epsset:
         print(f"\nProcessing the optimal summation result with DFT for the value eps = {eps}.")
-        runDft(4, eps, epsset, epsconst, tconst, kconst, mconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 2, 1.5, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+        runDft(4, eps, epsset, epsconst, tconst, kconst, mconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 4, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
-    afterDftLoopStats(4, eps, epsset, epsconst, 2, 1.5, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+    afterDftLoopStats(4, eps, epsset, epsconst, 4, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
 # VARYING THE NUMBER OF VECTORS N USED
 def runDftVaryN():

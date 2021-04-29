@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 from decimal import *
 width = 0.35
 parset = ['t', 'k', 'm', 'd', 'eps', 'n']
-limitset = [5, 7, 10, 8, 7, 10]
+limitset = [10, 10, 10, 10, 10, 10]
 
 # THE X-AXIS, TICKET AND TITLE ARE INDIVIDUALLY TAILORED FOR EACH PARAMETER AND WHETHER DISCRETE FOURIER TRANSFORM IS USED
 def custom(index, dft):
 
     # VARYING THE NUMBER OF COORDINATES T RETAINED
     if index == 0:
-        plt.xticks(['1', '2', '3', '4', '5']) 
+        plt.xticks(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
         plt.xlabel('Number of coordinates retained', labelpad = 8)
 
         # A SINGLE EXPERIMENTAL ERROR IS PLOTTED IN THE BASIC CASE
@@ -24,7 +24,7 @@ def custom(index, dft):
 
     # VARYING THE NUMBER OF BUCKETS K USED
     elif index == 1:
-        plt.xticks(['1', '2', '3', '4', '5', '6', '7'])
+        plt.xticks(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
         plt.xlabel('Number of buckets used', labelpad = 8)
 
         if dft == 0:
@@ -44,7 +44,7 @@ def custom(index, dft):
 
     # VARYING THE DIMENSION OF VECTOR D
     elif index == 3:
-        plt.xticks(['80', '90', '100', '110', '120', '130', '140', '150'])
+        plt.xticks(['60', '70', '80', '90', '100', '110', '120', '130', '140', '150'])
         plt.xlabel('Dimension of vector', labelpad = 8)
 
         if dft == 0:
@@ -54,7 +54,7 @@ def custom(index, dft):
     
     # VARYING THE VALUE OF EPSILON
     elif index == 4:
-        plt.xticks(['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5'])
+        plt.xticks(['0.5', '0.75', '1.0', '1.25', '1.5', '1.75', '2.0', '2.25', '2.5', '2.75'])
         plt.xlabel('Value of epsilon', labelpad = 8)
 
         if dft == 0:
