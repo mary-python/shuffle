@@ -239,9 +239,9 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
     if tchoice == 1:
-        comparison = max((((98*(1/3))*(dchoice**(2/3))*(nchoice**(1/3))*(np.log(2/dta)))/(((1-gamma)**2)*(epschoice**(4/3)))), (18*(dchoice**(2/3))*(nchoice**(1/3)))/(((1-gamma)**2)*((4*epschoice)**(2/3))))
+        comparison = max((((98*(1/3))*(dchoice**(2/3))*(np.log(2/dta)))/(((1-gamma)**2)*(nchoice**(2/3))*(epschoice**(4/3)))), (18*(dchoice**(2/3))*(nchoice**(1/3)))/(((1-gamma)**2)*((4*epschoice)**(2/3))))
     else:
-        comparison = (2*(14**(2/3))*(dchoice**(2/3))*(nchoice**(1/3))*tchoice*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(epschoice**(4/3)))/nchoice
+        comparison = (2*(14**(2/3))*(dchoice**(2/3))*tchoice*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(nchoice**(2/3))*(epschoice**(4/3)))
 
     datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison)} \n")
     datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 4)} \n")
@@ -524,9 +524,9 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
     datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
     if tchoice == 1:
-        dftComparison = max((((98*(1/3))*(mchoice**(2/3))*(nchoice**(1/3))*(np.log(2/dta)))/(((1-gamma)**2)*(epschoice**(4/3)))), (18*(mchoice**(2/3))*(nchoice**(1/3)))/(((1-gamma)**2)*((4*epschoice)**(2/3))))
+        dftComparison = max((((98*(1/3))*(mchoice**(2/3))*(np.log(2/dta)))/(((1-gamma)**2)*(nchoice**(2/3))*(epschoice**(4/3)))), (18*(mchoice**(2/3))*(nchoice**(1/3)))/(((1-gamma)**2)*((4*epschoice)**(2/3))))
     else:
-        dftComparison = (2*(14**(2/3))*(mchoice**(2/3))*(nchoice**(1/3))*tchoice*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(epschoice**(4/3)))/nchoice
+        dftComparison = (2*(14**(2/3))*(mchoice**(2/3))*tchoice*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(nchoice**(2/3))*(epschoice**(4/3)))
 
     datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 4)} \n")
     datafile.write(f"Experimental perturbation error: {round(averageDftMeanSquaredError, 4)} \n")
