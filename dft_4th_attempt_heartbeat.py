@@ -528,7 +528,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
     else:
         dftComparison = (2*(14**(2/3))*(mchoice**(2/3))*tchoice*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(nchoice**(2/3))*(epschoice**(4/3)))
 
-    datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 4)} \n")
+    datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison)} \n")
     datafile.write(f"Experimental perturbation error: {round(averageDftMeanSquaredError, 4)} \n")
     error3 = round((100)*((averagePerturbationError)/dftComparison), 1)
     datafile.write(f"Experimental perturbation error was {error3}% of the theoretical upper bound for perturbation error. \n")
