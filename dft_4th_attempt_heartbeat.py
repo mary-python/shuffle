@@ -244,7 +244,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
         comparison = (2*(14**(2/3))*(dchoice**(2/3))*tchoice*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(nchoice**(2/3))*(epschoice**(4/3)))
 
     datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison)} \n")
-    datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 4)} \n")
+    datafile.write(f"Experimental MSE: {round(averageMeanSquaredError)} \n")
     error1 = round((100)*((averageMeanSquaredError)/comparison), 1)
     datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
     datafile.write(f"Sum of squares of the average vector: {round(averageSumOfSquares, 2)} \n")
