@@ -4,7 +4,7 @@ import numpy as np
 from decimal import *
 from scipy.fftpack import rfft, irfft
 import matplotlib.pyplot as plt
-from matplotlib.ticker import PercentFormatter, FixedLocator, FixedFormatter
+from matplotlib.ticker import PercentFormatter, FixedFormatter, FixedLocator
 
 # INITIALISING SEEDS AND START TIME
 random.seed(2196018)

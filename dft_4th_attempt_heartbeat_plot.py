@@ -2,6 +2,7 @@
 import math, re
 import matplotlib.pyplot as plt
 from decimal import *
+from matplotlib.ticker import FixedFormatter, FixedLocator
 width = 0.35
 parset = ['t', 'k', 'm', 'd', 'eps', 'n']
 limitset = [10, 10, 10, 10, 10, 10]
@@ -101,6 +102,14 @@ def drawBasic(index):
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental MSE')
+
+    if index == 4:
+        plt.yscale('log')
+        plt.ylim(0.005, 1)
+        selectiveFormatter = FixedFormatter(["0.01", "0.1", "1"])
+        selectiveLocator = FixedLocator([0.01, 0.1, 1])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
 
 # THE SKELETON SAVING FUNCTION IN THE BASIC CASE
 def saveBasic(index):
