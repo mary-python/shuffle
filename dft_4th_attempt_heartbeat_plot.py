@@ -106,7 +106,7 @@ def drawBasic(index):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON DEPENDENCY
     if index == 4:
         plt.yscale('log')
-        plt.ylim(0.01, 2)
+        plt.ylim(0.02, 1.2)
         selectiveFormatter = FixedFormatter(["0.01", "0.1", "1"])
         selectiveLocator = FixedLocator([0.01, 0.1, 1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
