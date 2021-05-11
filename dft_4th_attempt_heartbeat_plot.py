@@ -103,6 +103,7 @@ def drawBasic(index):
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental MSE')
 
+    # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON DEPENDENCY
     if index == 4:
         plt.yscale('log')
         plt.ylim(0.005, 1)

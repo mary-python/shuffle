@@ -158,8 +158,6 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     numBuckets = 40
     inputVector = [0]*(numBuckets)
     outputVector = [0]*(numBuckets)
-    indexTracker = [0]*dchoice
-    submittedVector = [0]*dchoice
     totalMeanSquaredError = list()
     sumOfSquares = 0
 
@@ -176,6 +174,9 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
 
     # REPEATING THE ALGORITHM
     for r in rset:
+
+        indexTracker = [0]*dchoice
+        submittedVector = [0]*dchoice
 
         # APPLYING THE ALGORITHM TO EACH NEW VECTOR
         for newVector in data:
@@ -202,7 +203,11 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
                 indexTracker[randomIndex] += 1
     
         # GENERATING STATISTICS FOR THE TRUE AVERAGE VECTORS
-        averageVector = [idx/nchoice for idx in total]   
+        if index == 5:
+            averageVector = [idx/nmax for idx in total]
+        else:
+            averageVector = [idx/nchoice for idx in total]
+
         for vector in averageVector:
             inputBucketCoord = math.floor(numBuckets*vector)
             inputVector[min(inputBucketCoord, numBuckets - 1)] += 1
@@ -397,7 +402,7 @@ def afterDftLoopStats(index, var, varset, varconst, multiplier, offset, perError
     errorfile.close()
 
 # MAIN SHUFFLING ALGORITHM WITH DISCRETE FOURIER TRANSFORM
-def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, epschoice, nchoice, data, total, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal):
+def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, nchoice, data, total, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal):
 
     loopTime = time.perf_counter()
     numBuckets = 40
@@ -407,17 +412,15 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
     totalReconstructionError = list()
     totalPerturbationError = list()
     totalDftMeanSquaredError = list()
-    dftIndexTracker = [0]*mchoice
-    dftSubmittedVector = [0]*mchoice
     dftSumOfSquares = 0
     sampledError = 0
     returnedError = 0
 
     # SETTING GAMMA: PROBABILITY OF A FALSE VALUE
     if tchoice == 1:
-        gamma = max((((14*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*dchoice*kchoice)/((nchoice-1)*epschoice))
+        gamma = max((((14*dconst*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*dconst*kchoice)/((nchoice-1)*epschoice))
     else:
-        gamma = (((56*dchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
+        gamma = (((56*dconst*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
    
     print(f"\ngamma = {gamma}")
 
@@ -426,6 +429,9 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
 
     # REPEATING THE ALGORITHM
     for r in rset:
+
+        dftIndexTracker = [0]*mchoice
+        dftSubmittedVector = [0]*mchoice
 
         # APPLYING THE ALGORITHM TO EACH NEW VECTOR
         for newVector in data:
@@ -455,7 +461,11 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
                 dftIndexTracker[dftRandomIndex] += 1
     
         # GENERATING STATISTICS FOR THE TRUE AVERAGE VECTORS
-        dftAverageVector = [idx/nchoice for idx in total]
+        if index == 5:
+            dftAverageVector = [idx/nmax for idx in total]
+        else:
+            dftAverageVector = [idx/nchoice for idx in total]
+
         for vector in dftAverageVector:
             dftInputBucketCoord = math.floor(numBuckets*vector)
             dftInputVector[min(dftInputBucketCoord, numBuckets - 1)] += 1
@@ -463,9 +473,9 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
         dftDescaledVector = [idx/kchoice for idx in dftSubmittedVector]
         dftMergedTracker = tuple(zip(dftIndexTracker, dftDescaledVector))
         dftDebiasedVector = [2*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1 for count, z in dftMergedTracker]
-        paddedVector = dftDebiasedVector + [0]*(dchoice - mchoice)
-        finalVector = (irfft(paddedVector, dchoice)).tolist()
-
+        paddedVector = dftDebiasedVector + [0]*(dconst - mchoice)
+        finalVector = (irfft(paddedVector, dconst)).tolist()
+        
         # GENERATING STATISTICS FOR THE RECONSTRUCTED UNBIASED VECTORS
         for vector in finalVector:
             dftOutputBucketCoord = math.floor(numBuckets*vector)
@@ -478,7 +488,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, dchoice, eps
         dftAverageSquares = [idx**2 for idx in dftAverageVector]
         dftSumOfSquares += sum(dftAverageSquares)
 
-        exactVector = irfft(rfft(dftAverageVector).tolist()[0:mchoice] + [0]*(dchoice-mchoice)).tolist()
+        exactVector = irfft(rfft(dftAverageVector).tolist()[0:mchoice] + [0]*(dconst-mchoice)).tolist()
         reconstructionTuple = tuple(zip(exactVector, dftAverageVector))
         reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
         totalReconstructionError.append(sum(reconstructionError))
@@ -619,7 +629,7 @@ def runDftVaryT():
 
     for t in tset:
         print(f"\nProcessing the optimal summation result with DFT for the value t = {t}.")
-        runDft(0, t, tset, tconst, t, kconst, mconst, dconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+        runDft(0, t, tset, tconst, t, kconst, mconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
     
     afterDftLoopStats(0, t, tset, tconst, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
@@ -633,7 +643,7 @@ def runDftVaryK():
 
     for k in kset:
         print(f"\nProcessing the optimal summation result with DFT for the value k = {k}.")
-        runDft(1, k, kset, kconst, tconst, k, mconst, dconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+        runDft(1, k, kset, kconst, tconst, k, mconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
     afterDftLoopStats(1, k, kset, kconst, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
@@ -647,7 +657,7 @@ def runDftVaryM():
 
     for m in mset:
         print(f"\nProcessing the optimal summation result with DFT for the value m = {m}.")
-        runDft(2, m, mset, mconst, tconst, kconst, m, dconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 0.2, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+        runDft(2, m, mset, mconst, tconst, kconst, m, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 0.2, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
     afterDftLoopStats(2, m, mset, mconst, 0.2, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
@@ -661,7 +671,7 @@ def runDftVaryEps():
 
     for eps in epsset:
         print(f"\nProcessing the optimal summation result with DFT for the value eps = {eps}.")
-        runDft(4, eps, epsset, epsconst, tconst, kconst, mconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 4, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+        runDft(4, eps, epsset, epsconst, tconst, kconst, mconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 4, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
     afterDftLoopStats(4, eps, epsset, epsconst, 4, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
@@ -675,7 +685,7 @@ def runDftVaryN():
 
     for n in nset:
         print(f"\nProcessing the optimal summation result with DFT for the value n = {n}.")
-        runDft(5, n, nset, nconst, tconst, kconst, mconst, dconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.0001, 3, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+        runDft(5, n, nset, nconst, tconst, kconst, mconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.0001, 3, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
     afterDftLoopStats(5, n, nset, nconst, 0.0001, 3, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
