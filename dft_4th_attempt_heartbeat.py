@@ -249,11 +249,11 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
         comparison = (2*(14**(2/3))*(dchoice**(2/3))*tchoice*(np.log(1/dta))*(np.log(2/dta)))/(((1-gamma)**2)*(nchoice**(2/3))*(epschoice**(4/3)))
 
     datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison)} \n")
-    datafile.write(f"Experimental MSE: {round(averageMeanSquaredError)} \n")
-    error1 = round((100)*((averageMeanSquaredError)/comparison), 1)
+    datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 4)} \n")
+    error1 = round((100)*((averageMeanSquaredError)/comparison), 3)
     datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
     datafile.write(f"Sum of squares of the average vector: {round(averageSumOfSquares, 2)} \n")
-    error2 = round((100)*((averageMeanSquaredError)/(averageSumOfSquares)), 3)
+    error2 = round((100)*((averageMeanSquaredError)/(averageSumOfSquares)), 2)
     datafile.write(f"Total experimental MSE was {error2}% of the sum of squares of the average vector. \n\n")
 
     # PLOTTING THE DISTRIBUTION OF THE TRUE AVERAGE VECTORS
@@ -475,7 +475,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
         dftDebiasedVector = [2*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1 for count, z in dftMergedTracker]
         paddedVector = dftDebiasedVector + [0]*(dconst - mchoice)
         finalVector = (irfft(paddedVector, dconst)).tolist()
-        
+
         # GENERATING STATISTICS FOR THE RECONSTRUCTED UNBIASED VECTORS
         for vector in finalVector:
             dftOutputBucketCoord = math.floor(numBuckets*vector)
