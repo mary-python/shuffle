@@ -5,7 +5,7 @@ from decimal import *
 from matplotlib.ticker import FixedFormatter, FixedLocator
 width = 0.35
 parset = ['t', 'k', 'm', 'd', 'eps', 'n']
-limitset = [10, 10, 10, 10, 10, 10]
+limit = 10
 
 # THE X-AXIS, TICKET AND TITLE ARE INDIVIDUALLY TAILORED FOR EACH PARAMETER AND WHETHER DISCRETE FOURIER TRANSFORM IS USED
 def custom(index, dft):
@@ -94,7 +94,7 @@ def drawBasic(index):
             totalStandardDeviation.append((Decimal(tab[2])))
 
             rowCount += 1
-            if rowCount >= limitset[index]:
+            if rowCount >= limit:
                 break
 
     # THE BARS PLOTTED AND THE Y-AXIS ARE THE SAME FOR EACH PARAMETER
@@ -157,7 +157,7 @@ def drawDft(index):
             totalStandardDeviation.append((Decimal(tab[4])))
 
             rowCount += 1
-            if rowCount >= limitset[index]:
+            if rowCount >= limit:
                 break
 
     # THE BARS PLOTTED AND THE Y-AXIS ARE THE SAME FOR EACH PARAMETER
