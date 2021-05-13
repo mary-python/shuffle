@@ -161,8 +161,8 @@ def drawDft(index):
                 break
 
     # THE BARS PLOTTED AND THE Y-AXIS ARE THE SAME FOR EACH PARAMETER
-    plt.bar(labels, recErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
-    plt.bar(labels, perErrors, width, bottom = recErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
+    plt.bar(labels, perErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
+    plt.bar(labels, recErrors, width, bottom = perErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental MSE')
