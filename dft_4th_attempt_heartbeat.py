@@ -248,7 +248,13 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     else:
         comparison = (2*(14**(2/3))*(dchoice**(8/3))*tchoice*(np.log(1/dta))*(np.log((2*tchoice)/dta)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
 
-    datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison), 4} \n")
+    if comparison < 1:
+        datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 4)} \n")
+    elif comparison < 10:
+        datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 2)} \n")
+    else:
+        datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 1)} \n")
+
     datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 4)} \n")
     error1 = round((100)*((averageMeanSquaredError)/comparison), 1)
     datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
@@ -538,8 +544,14 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     else:
         dftComparison = (2*(14**(2/3))*(mchoice**(8/3))*tchoice*(np.log(1/dta))*(np.log((2*tchoice)/dta)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
 
-    datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison)} \n")
-    datafile.write(f"Experimental perturbation error: {round(averageDftMeanSquaredError, 4)} \n")
+    if dftComparison < 1:
+        datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 4)} \n")
+    elif dftComparison < 10:
+        datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 2)} \n")
+    else:
+        datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 1)} \n")
+
+    datafile.write(f"Experimental perturbation error: {round(averagePerturbationError, 4)} \n")
     error3 = round((100)*((averagePerturbationError)/dftComparison), 1)
     datafile.write(f"Experimental perturbation error was {error3}% of the theoretical upper bound for perturbation error. \n")
     datafile.write(f"Standard deviation of perturbation error: {round(standardDeviationPerturbationError, 5)} \n")
@@ -548,7 +560,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     datafile.write(f"Total experimental MSE: {round(averageDftMeanSquaredError, 4)} \n")
     error4 = round((100)*((averageReconstructionError)/(averageDftMeanSquaredError)), 1)
     datafile.write(f"Reconstruction error was {error4}% of the total experimental MSE. \n")
-    datafile.write(f"Standard deviation of reconstruction error: {round(standardDeviationReconstructionError, 8)} \n")
+    datafile.write(f"Standard deviation of reconstruction error: {round(standardDeviationReconstructionError, 10)} \n")
 
     datafile.write(f"Sum of squares of the average vector: {round(averageDftSumOfSquares, 2)} \n")
     error5 = round((100)*((averageDftMeanSquaredError)/(averageDftSumOfSquares)), 3)
