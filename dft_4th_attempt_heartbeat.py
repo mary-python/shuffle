@@ -240,7 +240,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     totalStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
 
     # WRITING THE STATISTICS ON A DATAFILE
-    datafile = open("basic" + str(index) + "%s" + str(var) + ".txt" % parset[index], "w")
+    datafile = open("basic" + str(index) + "%s" % parset[index] + str(var) + ".txt", "w")
     datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
     if tchoice == 1:
@@ -264,7 +264,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
     plt.draw()
-    plt.savefig("basic" + str(index) + "%s" + str(var) + ".png" % parset[index])
+    plt.savefig("basic" + str(index) + "%s" % parset[index] + str(var) + ".png")
     plt.clf()
     plt.cla()
 
@@ -311,7 +311,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
     plt.draw()
-    plt.savefig("basic" + str(index) + "%s" + str(var) + ".png" % parset[index])
+    plt.savefig("basic" + str(index) + "%s" % parset[index] + str(var) + ".png")
     plt.clf()
     plt.cla()
 
@@ -516,7 +516,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     totalDftStandardDeviation.append(Decimal(standardDeviationDftMeanSquaredError))
 
     # WRITING THE STATISTICS ON A DATAFILE
-    datafile = open("fourier" + str(index) + "%s" + str(var) + ".txt" % parset[index], "w")
+    datafile = open("fourier" + str(index) + "%s" % parset[index] + str(var) + ".txt", "w")
 
     if index == 0:
         datafile.write(f"Number of coordinates t retained: {var} \n")
@@ -562,7 +562,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
     plt.draw()
-    plt.savefig("fourier" + str(index) + "%s" + str(var) + ".png" % parset[index])
+    plt.savefig("fourier" + str(index) + "%s" % parset[index] + str(var) + ".png")
     plt.clf()
     plt.cla()
 
@@ -609,7 +609,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
     plt.draw()
-    plt.savefig("fourier" + str(index) + "%s" + str(var) + ".png" % parset[index])
+    plt.savefig("fourier" + str(index) + "%s" % parset[index] + str(var) + ".png")
     plt.clf()
     plt.cla()
 
