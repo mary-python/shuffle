@@ -167,7 +167,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     else:
         gamma = (((56*dchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
    
-    print(f"\ngamma = {gamma}")
+    print(f"\ngamma = {round(gamma, 4)}")
 
     from progress.bar import FillingSquaresBar
     bar = FillingSquaresBar(max=R, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
@@ -248,7 +248,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     else:
         comparison = (2*(14**(2/3))*(dchoice**(8/3))*tchoice*(np.log(1/dta))*(np.log((2*tchoice)/dta)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
 
-    datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison)} \n")
+    datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison), 4} \n")
     datafile.write(f"Experimental MSE: {round(averageMeanSquaredError, 4)} \n")
     error1 = round((100)*((averageMeanSquaredError)/comparison), 1)
     datafile.write(f"Experimental MSE was {error1}% of the theoretical upper bound for MSE. \n")
@@ -422,7 +422,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     else:
         gamma = (((56*dconst*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
    
-    print(f"\ngamma = {gamma}")
+    print(f"\ngamma = {round(gamma, 4)}")
 
     from progress.bar import FillingSquaresBar
     bar = FillingSquaresBar(max=R, suffix = '%(percent) d%% : %(elapsed)ds elapsed')
