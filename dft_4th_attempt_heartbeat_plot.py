@@ -81,7 +81,7 @@ def drawBasic(index):
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
-    with open("errorvary%s.txt" % parset[index]) as reader:
+    with open("errorvary" + index + "%s.txt" % parset[index]) as reader:
         for line in reader:
             tab = line.split()
             
@@ -116,7 +116,7 @@ def drawBasic(index):
 def saveBasic(index):
     plt.tight_layout()
     plt.draw()
-    plt.savefig("errorchartvary%s.png" % parset[index])
+    plt.savefig("errorchartvary" + index + "%s.png" % parset[index])
     plt.clf()
     plt.cla()
 
@@ -142,7 +142,7 @@ def drawDft(index):
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
-    with open("dfterrorvary%s.txt" % parset[index]) as reader:
+    with open("dfterrorvary" + index + "%s.txt" % parset[index]) as reader:
         for line in reader:
             tab = line.split()
 
@@ -161,8 +161,8 @@ def drawDft(index):
                 break
 
     # THE BARS PLOTTED AND THE Y-AXIS ARE THE SAME FOR EACH PARAMETER
-    plt.bar(labels, recErrors, width, label = 'Perturbation error', alpha = 0.6, color = 'r', edgecolor = 'k')
-    plt.bar(labels, perErrors, width, bottom = recErrors, label = 'Reconstruction error', alpha = 0.6, color = 'c', edgecolor = 'k')
+    plt.bar(labels, recErrors, width, label = 'Reconstruction error', alpha = 0.6, color = 'r', edgecolor = 'k')
+    plt.bar(labels, perErrors, width, bottom = recErrors, label = 'Perturbation error', alpha = 0.6, color = 'c', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental MSE')
@@ -172,7 +172,7 @@ def saveDft(index):
     plt.legend()
     plt.tight_layout()
     plt.draw()
-    plt.savefig("dfterrorchartvary%s.png" % parset[index])
+    plt.savefig("dfterrorchartvary" + index + "%s.png" % parset[index])
     plt.clf()
     plt.cla()
 
