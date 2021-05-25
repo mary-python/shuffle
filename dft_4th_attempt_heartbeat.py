@@ -133,7 +133,7 @@ def readDataConstDVaryN():
 # WRITING IN ERROR FILE AFTER THE MAIN BASIC LOOP
 def afterBasicLoopStats(index, var, varset, varconst, multiplier, offset, totalErrors, totalStandardDeviation, loopTotal):
 
-    errorfile = open("errorvary" + index + "%s.txt" % parset[index], "w")
+    errorfile = open("errorvary" + str(index) + "%s.txt" % parset[index], "w")
 
     for var in varset:
         if index == 5:
@@ -240,7 +240,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     totalStandardDeviation.append(Decimal(standardDeviationMeanSquaredError))
 
     # WRITING THE STATISTICS ON A DATAFILE
-    datafile = open("basic" + index + "%s" + str(var) + ".txt" % parset[index], "w")
+    datafile = open("basic" + str(index) + "%s" + str(var) + ".txt" % parset[index], "w")
     datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
     if tchoice == 1:
@@ -264,7 +264,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
     plt.draw()
-    plt.savefig("basic" + index + "%s" + str(var) + ".png" % parset[index])
+    plt.savefig("basic" + str(index) + "%s" + str(var) + ".png" % parset[index])
     plt.clf()
     plt.cla()
 
@@ -311,7 +311,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
     plt.draw()
-    plt.savefig("basic" + index + "%s" + str(var) + ".png" % parset[index])
+    plt.savefig("basic" + str(index) + "%s" + str(var) + ".png" % parset[index])
     plt.clf()
     plt.cla()
 
@@ -383,7 +383,7 @@ def runBasicVaryN():
 
 # WRITING IN ERROR FILE AFTER THE MAIN DFT LOOP
 def afterDftLoopStats(index, var, varset, varconst, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal):
-    errorfile = open("dfterrorvary" + index + "%s.txt" % parset[index], "w")
+    errorfile = open("dfterrorvary" + str(index) + "%s.txt" % parset[index], "w")
 
     for var in varset:
         if index == 5:
@@ -516,7 +516,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     totalDftStandardDeviation.append(Decimal(standardDeviationDftMeanSquaredError))
 
     # WRITING THE STATISTICS ON A DATAFILE
-    datafile = open("fourier" + index + "%s" + str(var) + ".txt" % parset[index], "w")
+    datafile = open("fourier" + str(index) + "%s" + str(var) + ".txt" % parset[index], "w")
 
     if index == 0:
         datafile.write(f"Number of coordinates t retained: {var} \n")
@@ -562,7 +562,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
     plt.draw()
-    plt.savefig("fourier" + index + "%s" + str(var) + ".png" % parset[index])
+    plt.savefig("fourier" + str(index) + "%s" + str(var) + ".png" % parset[index])
     plt.clf()
     plt.cla()
 
@@ -609,7 +609,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     mng = plt.get_current_fig_manager()
     mng.window.state('zoomed')
     plt.draw()
-    plt.savefig("fourier" + index + "%s" + str(var) + ".png" % parset[index])
+    plt.savefig("fourier" + str(index) + "%s" + str(var) + ".png" % parset[index])
     plt.clf()
     plt.cla()
 

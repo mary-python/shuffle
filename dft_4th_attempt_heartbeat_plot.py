@@ -81,7 +81,7 @@ def drawBasic(index):
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
-    with open("errorvary" + index + "%s.txt" % parset[index]) as reader:
+    with open("errorvary" + str(index) + "%s.txt" % parset[index]) as reader:
         for line in reader:
             tab = line.split()
             
@@ -116,7 +116,7 @@ def drawBasic(index):
 def saveBasic(index):
     plt.tight_layout()
     plt.draw()
-    plt.savefig("errorchartvary" + index + "%s.png" % parset[index])
+    plt.savefig("errorchartvary" + str(index) + "%s.png" % parset[index])
     plt.clf()
     plt.cla()
 
@@ -142,7 +142,7 @@ def drawDft(index):
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
-    with open("dfterrorvary" + index + "%s.txt" % parset[index]) as reader:
+    with open("dfterrorvary" + str(index) + "%s.txt" % parset[index]) as reader:
         for line in reader:
             tab = line.split()
 
@@ -172,7 +172,7 @@ def saveDft(index):
     plt.legend()
     plt.tight_layout()
     plt.draw()
-    plt.savefig("dfterrorchartvary" + index + "%s.png" % parset[index])
+    plt.savefig("dfterrorchartvary" + str(index) + "%s.png" % parset[index])
     plt.clf()
     plt.cla()
 
