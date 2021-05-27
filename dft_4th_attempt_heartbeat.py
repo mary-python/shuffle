@@ -351,7 +351,7 @@ def runBasicVaryK():
 
     afterBasicLoopStats(1, k, kset, kconst, 1, 1, totalErrors, totalStandardDeviation, loopTotal)
 
-# VARYING THE DIMENSION OF VECTOR D
+# VARYING THE VECTOR DIMENSION D
 def runBasicVaryD():
     totalErrors = list()
     totalStandardDeviation = list()
@@ -531,7 +531,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     elif index == 2:
         datafile.write(f"Number of Fourier coefficients m: {var} \n") 
     elif index == 3:
-        datafile.write(f"Dimension of vector d: {var} \n")
+        datafile.write(f"Vector dimension d: {var} \n")
     elif index == 4:
         datafile.write(f"Value of epsilon: {var} \n")
     else:

@@ -43,15 +43,15 @@ def custom(index, dft):
         else:
             plt.title('Ratio between experimental errors by % of Fourier coefficients retained')
 
-    # VARYING THE DIMENSION OF VECTOR D
+    # VARYING THE VECTOR DIMENSION D
     elif index == 3:
         plt.xticks(['60', '70', '80', '90', '100', '110', '120', '130', '140', '150'])
-        plt.xlabel('Dimension of vector', labelpad = 8)
+        plt.xlabel('Vector dimension', labelpad = 8)
 
         if dft == 0:
-            plt.title('Experimental error by dimension of vector')
+            plt.title('Experimental error by vector dimension')
         else:
-            plt.title('Ratio between experimental errors by dimension of vector')
+            plt.title('Ratio between experimental errors by vector dimension')
     
     # VARYING THE VALUE OF EPSILON
     elif index == 4:
