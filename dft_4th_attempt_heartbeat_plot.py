@@ -6,6 +6,7 @@ from matplotlib.ticker import FixedFormatter, FixedLocator
 width = 0.35
 parset = ['t', 'k', 'm', 'd', 'eps', 'n']
 limit = 10
+nlimit = 12
 
 # THE X-AXIS, TICKET AND TITLE ARE INDIVIDUALLY TAILORED FOR EACH PARAMETER AND WHETHER DISCRETE FOURIER TRANSFORM IS USED
 def custom(index, dft):
@@ -35,7 +36,7 @@ def custom(index, dft):
 
     # VARYING THE NUMBER OF FOURIER COEFFICIENTS M
     elif index == 2:
-        plt.xticks(['50', '55', '60', '65', '70', '75', '80', '85', '90', '95'])
+        plt.xticks(['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'])
         plt.xlabel('% of Fourier coefficients retained', labelpad = 8)
 
         if dft == 0:
@@ -65,7 +66,7 @@ def custom(index, dft):
 
     # VARYING THE NUMBER OF VECTORS N USED
     else:
-        plt.xticks(['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
+        plt.xticks(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
         plt.xlabel('Number of vectors used' + ' ' + 'x' + ' ' + '$10^{4}$', labelpad = 8)
 
         if dft == 0:
@@ -92,11 +93,17 @@ def drawBasic(index):
 
             totalErrors.append((Decimal(tab[1])))
             totalStandardDeviation.append((Decimal(tab[2])))
-
             rowCount += 1
-            if rowCount >= limit:
-                break
 
+            if index == 5:
+                if rowCount >= nlimit:
+                    break
+            else:
+                if rowCount >= limit:
+                    break
+
+
+            
     # THE BARS PLOTTED AND THE Y-AXIS ARE THE SAME FOR EACH PARAMETER
     plt.bar(labels, totalErrors, width, alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
@@ -155,10 +162,14 @@ def drawDft(index):
             recErrors.append((Decimal(tab[2])))
             totalErrors.append((Decimal(tab[3])))
             totalStandardDeviation.append((Decimal(tab[4])))
-
             rowCount += 1
-            if rowCount >= limit:
-                break
+
+            if index == 5:
+                if rowCount >= nlimit:
+                    break
+            else:
+                if rowCount >= limit:
+                    break
 
     # THE BARS PLOTTED AND THE Y-AXIS ARE THE SAME FOR EACH PARAMETER
     plt.bar(labels, recErrors, width, label = 'Reconstruction error', alpha = 0.6, color = 'r', edgecolor = 'k')
