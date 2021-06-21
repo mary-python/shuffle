@@ -6,7 +6,6 @@ from matplotlib.ticker import FixedFormatter, FixedLocator
 width = 0.35
 parset = ['t', 'k', 'm', 'd', 'eps', 'n']
 limit = 10
-nlimit = 12
 
 # THE X-AXIS, TICKET AND TITLE ARE INDIVIDUALLY TAILORED FOR EACH PARAMETER AND WHETHER DISCRETE FOURIER TRANSFORM IS USED
 def custom(index, dft):
@@ -56,7 +55,7 @@ def custom(index, dft):
     
     # VARYING THE VALUE OF EPSILON
     elif index == 4:
-        plt.xticks(['0.5', '0.75', '1.0', '1.25', '1.5', '1.75', '2.0', '2.25', '2.5', '2.75'])
+        plt.xticks(['0.5', '0.6', '0.7', '0.8', '0.9', '1.0', '1.5', '2.0', '2.5', '3.0'])
         plt.xlabel('Value of epsilon', labelpad = 8)
 
         if dft == 0:
@@ -66,8 +65,8 @@ def custom(index, dft):
 
     # VARYING THE NUMBER OF VECTORS N USED
     else:
-        plt.xticks(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
-        plt.xlabel('Number of vectors used' + ' ' + 'x' + ' ' + '$10^{4}$', labelpad = 8)
+        plt.xticks(['6', '7', '8', '9', '10', '20', '30', '40', '50', '60'])
+        plt.xlabel('Number of vectors used' + ' ' + 'x' + ' ' + '$10^{3}$', labelpad = 8)
 
         if dft == 0:
             plt.title('Experimental error by number of vectors used')
@@ -95,12 +94,8 @@ def drawBasic(index):
             totalStandardDeviation.append((Decimal(tab[2])))
             rowCount += 1
 
-            if index == 5:
-                if rowCount >= nlimit:
-                    break
-            else:
-                if rowCount >= limit:
-                    break
+            if rowCount >= limit:
+                break
 
 
             
@@ -164,12 +159,8 @@ def drawDft(index):
             totalStandardDeviation.append((Decimal(tab[4])))
             rowCount += 1
 
-            if index == 5:
-                if rowCount >= nlimit:
-                    break
-            else:
-                if rowCount >= limit:
-                    break
+            if rowCount >= limit:
+                break
 
     # THE BARS PLOTTED AND THE Y-AXIS ARE THE SAME FOR EACH PARAMETER
     plt.bar(labels, recErrors, width, label = 'Reconstruction error', alpha = 0.6, color = 'r', edgecolor = 'k')

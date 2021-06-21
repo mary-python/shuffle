@@ -23,11 +23,11 @@ mconst = mset[8]
 dset = [60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
 dconst = dset[4]
 dmax = dset[9]
-epsset = [0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25, 2.50, 2.75]
-epsconst = epsset[4]
-nset = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000]
-nconst = nset[4]
-nmax = nset[11]
+epsset = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.5, 2.0, 2.5, 3.0]
+epsconst = epsset[6]
+nset = [6000, 7000, 8000, 9000, 10000, 20000, 30000, 40000, 50000, 60000]
+nconst = nset[8]
+nmax = nset[9]
 
 # INITIALISING OTHER PARAMETERS/CONSTANTS
 parset = ['t', 'k', 'm', 'd', 'eps', 'n']
@@ -36,9 +36,7 @@ R = len(rset)
 dta = 0.25
 n1 = 21892
 n2const = 28108
-n2vary = 87554
-n3 = 10506
-n4 = 48
+n2vary = 38108
 
 # INITIALISING GLOBAL VARIABLES
 heartbeatDataConstDConstN = np.zeros((nconst, dconst))
@@ -122,13 +120,8 @@ def readDataConstDVaryN():
     readData(dconst, 0, "mitbih_test.csv", n1, heartbeatDataConstDVaryN, totalVectorConstDVaryN, n1)
 
     print(f"\nReading in the training data file for constant d and varying n...")
-    readData(dconst, n1, "mitbih_train.csv", n2vary, heartbeatDataConstDVaryN, totalVectorConstDVaryN, n1 + n2vary)
-
-    print(f"\nReading in the abnormal data file for constant d and varying n...")
-    readData(dconst, n1 + n2vary, "ptbdb_abnormal.csv", n3, heartbeatDataConstDVaryN, totalVectorConstDVaryN, n1 + n2vary + n3)
-
-    print(f"\nReading in the normal data file for constant d and varying n... \n")
-    readData(dconst, n1 + n2vary + n3, "ptbdb_normal.csv", n4, heartbeatDataConstDVaryN, totalVectorConstDVaryN, nmax)
+    readData(dconst, n1, "mitbih_train.csv", n2vary, heartbeatDataConstDVaryN, totalVectorConstDVaryN, nmax)
+    
 
 # WRITING IN ERROR FILE AFTER THE MAIN BASIC LOOP
 def afterBasicLoopStats(index, var, varset, varconst, multiplier, offset, totalErrors, totalStandardDeviation, loopTotal):
@@ -136,8 +129,16 @@ def afterBasicLoopStats(index, var, varset, varconst, multiplier, offset, totalE
     errorfile = open("errorvary" + str(index) + "%s.txt" % parset[index], "w")
 
     for var in varset:
-        if index == 5:
-            errorfile.write(f"{int(var*multiplier)} {totalErrors[int((var*multiplier)-offset)]} {totalStandardDeviation[int((var*multiplier)-offset)]} \n")
+        if index == 4:
+            if var <= 1.0:
+                errorfile.write(f"{var} {totalErrors[int((var*multiplier)-offset)]} {totalStandardDeviation[int((var*multiplier)-offset)]} \n")
+            else:
+                errorfile.write(f"{var} {totalErrors[int((var*2) + 3)]} {totalStandardDeviation[int((var*2) + 3)]} \n")
+        elif index == 5:
+            if var <= 10000:
+                errorfile.write(f"{int(var*multiplier)} {totalErrors[int((var*multiplier)-offset)]} {totalStandardDeviation[int((var*multiplier)-offset)]} \n")
+            else:
+                errorfile.write(f"{int(var*0.001)} {totalErrors[int((var*0.0001) + 3)]} {totalStandardDeviation[int((var*0.0001) + 3)]} \n")
 
         else:
             errorfile.write(f"{var} {totalErrors[int((var*multiplier)-offset)]} {totalStandardDeviation[int((var*multiplier)-offset)]} \n")
@@ -322,8 +323,8 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
     plt.cla()
 
     # COMPUTING THE TIME TAKEN FOR EACH CASE
-    loopTotal.append(time.perf_counter() - loopTime)
-    casetime = round(loopTotal[int((var*multiplier)-offset)])
+    casetime = time.perf_counter() - loopTime
+    loopTotal.append(casetime)
     casemins = math.floor(casetime/60)
     datafile.write(f"\nTotal time for case {parset[index]} = {var}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -371,9 +372,9 @@ def runBasicVaryEps():
 
     for eps in epsset:
         print(f"\nProcessing the basic optimal summation result for the value eps = {eps}.")
-        runBasic(4, eps, epsset, epsconst, tconst, kconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 4, 2, totalErrors, totalStandardDeviation, loopTotal)
+        runBasic(4, eps, epsset, epsconst, tconst, kconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 10, 5, totalErrors, totalStandardDeviation, loopTotal)
 
-    afterBasicLoopStats(4, eps, epsset, epsconst, 4, 2, totalErrors, totalStandardDeviation, loopTotal)
+    afterBasicLoopStats(4, eps, epsset, epsconst, 10, 5, totalErrors, totalStandardDeviation, loopTotal)
 
 # VARYING THE NUMBER OF VECTORS N USED
 def runBasicVaryN():
@@ -383,18 +384,25 @@ def runBasicVaryN():
 
     for n in nset:
         print(f"\nProcessing the basic optimal summation result for the value n = {n}.")
-        runBasic(5, n, nset, nconst, tconst, kconst, dconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.0001, 1, totalErrors, totalStandardDeviation, loopTotal)
+        runBasic(5, n, nset, nconst, tconst, kconst, dconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.001, 6, totalErrors, totalStandardDeviation, loopTotal)
 
-    afterBasicLoopStats(5, n, nset, nconst, 0.0001, 1, totalErrors, totalStandardDeviation, loopTotal)
+    afterBasicLoopStats(5, n, nset, nconst, 0.001, 6, totalErrors, totalStandardDeviation, loopTotal)
 
 # WRITING IN ERROR FILE AFTER THE MAIN DFT LOOP
 def afterDftLoopStats(index, var, varset, varconst, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal):
     errorfile = open("dfterrorvary" + str(index) + "%s.txt" % parset[index], "w")
 
     for var in varset:
-        if index == 5:
-            errorfile.write(f"{int(var*multiplier)} {perErrors[int((var*multiplier)-offset)]} {recErrors[int((var*multiplier)-offset)]} {totalDftErrors[int((var*multiplier)-offset)]} {totalDftStandardDeviation[int((var*multiplier)-offset)]} \n")
-
+        if index == 4:
+            if var <= 1.0:
+                errorfile.write(f"{var} {perErrors[int((var*multiplier)-offset)]} {recErrors[int((var*multiplier)-offset)]} {totalDftErrors[int((var*multiplier)-offset)]} {totalDftStandardDeviation[int((var*multiplier)-offset)]} \n")
+            else:
+                errorfile.write(f"{var} {perErrors[int((var*2) + 3)]} {recErrors[int((var*2) + 3)]} {totalDftErrors[int((var*2) + 3)]} {totalDftStandardDeviation[int((var*2) + 3)]} \n")
+        elif index == 5:
+            if var <= 10000:
+                errorfile.write(f"{int(var*multiplier)} {perErrors[int((var*multiplier)-offset)]} {recErrors[int((var*multiplier)-offset)]} {totalDftErrors[int((var*multiplier)-offset)]} {totalDftStandardDeviation[int((var*multiplier)-offset)]} \n")
+            else:
+                errorfile.write(f"{int(var*0.001)} {perErrors[int((var*0.0001) + 3)]} {recErrors[int((var*0.0001) + 3)]} {totalDftErrors[int((var*0.0001) + 3)]} {totalDftStandardDeviation[int((var*0.0001) + 3)]} \n")
         else:
             errorfile.write(f"{var} {perErrors[int((var*multiplier)-offset)]} {recErrors[int((var*multiplier)-offset)]} {totalDftErrors[int((var*multiplier)-offset)]} {totalDftStandardDeviation[int((var*multiplier)-offset)]} \n")
 
@@ -626,8 +634,8 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
     plt.cla()
 
     # COMPUTING THE TIME TAKEN FOR EACH CASE
-    loopTotal.append(time.perf_counter() - loopTime)
-    casetime = round(loopTotal[int((var*multiplier)-offset)])
+    casetime = time.perf_counter() - loopTime
+    loopTotal.append(casetime)
     casemins = math.floor(casetime/60)
     datafile.write(f"\nTotal time for case {parset[index]} = {var}: {casemins}m {casetime - (casemins*60)}s")
 
@@ -683,9 +691,9 @@ def runDftVaryEps():
 
     for eps in epsset:
         print(f"\nProcessing the optimal summation result with DFT for the value eps = {eps}.")
-        runDft(4, eps, epsset, epsconst, tconst, kconst, mconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 4, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+        runDft(4, eps, epsset, epsconst, tconst, kconst, mconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 10, 5, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
-    afterDftLoopStats(4, eps, epsset, epsconst, 4, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+    afterDftLoopStats(4, eps, epsset, epsconst, 10, 5, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
 # VARYING THE NUMBER OF VECTORS N USED
 def runDftVaryN():
@@ -697,9 +705,9 @@ def runDftVaryN():
 
     for n in nset:
         print(f"\nProcessing the optimal summation result with DFT for the value n = {n}.")
-        runDft(5, n, nset, nconst, tconst, kconst, mconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.0001, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+        runDft(5, n, nset, nconst, tconst, kconst, mconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.001, 6, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
-    afterDftLoopStats(5, n, nset, nconst, 0.0001, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
+    afterDftLoopStats(5, n, nset, nconst, 0.001, 6, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, loopTotal)
 
 # CALLING ALL OF THE ABOVE FUNCTIONS: SOME ARE NESTED
 readDataConstDConstN()
