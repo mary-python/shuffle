@@ -20,45 +20,49 @@ def custom(index, dft):
     # VARYING THE NUMBER OF COORDINATES T RETAINED
     if index == 0:
         plt.xticks(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
-        plt.xlabel('Number of coordinates retained', labelpad = 8)
+        plt.xlabel('Number of coordinates retained (t)', labelpad = 8)
 
         # A SINGLE EXPERIMENTAL ERROR IS PLOTTED IN THE BASIC CASE
         if dft == 0:
-            plt.title('Experimental error by number of coordinates retained')
+            plt.title('Experimental error by number of coordinates retained (t)')
 
         # RATIO BETWEEN EXPERIMENTAL ERRORS IS PLOTTED IN THE FOURIER CASE
         else:
-            plt.title('Ratio between experimental errors by number of coordinates retained')
+            plt.title('Ratio between errors by number of coordinates retained (t)')
 
     # VARYING THE NUMBER OF BUCKETS K USED
     elif index == 1:
         plt.xticks(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
-        plt.xlabel('Number of buckets used', labelpad = 8)
+        plt.xlabel('Number of buckets used (k)', labelpad = 8)
 
         if dft == 0:
-            plt.title('Experimental error by number of buckets used')
+            plt.title('Experimental error by number of buckets used (k)')
         else:
-            plt.title('Ratio between experimental errors by number of buckets used')
+            plt.title('Ratio between errors by number of buckets used (k)')
 
     # VARYING THE NUMBER OF FOURIER COEFFICIENTS M
     elif index == 2:
         plt.xticks(['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'])
-        plt.xlabel('% of Fourier coefficients retained', labelpad = 8)
+        plt.xlabel('% of Fourier coefficients retained (m)', labelpad = 8)
 
         if dft == 0:
-            plt.title('Experimental error by % of Fourier coefficients retained')
+            plt.title('Experimental error by % of Fourier coefficients retained (m)')
+        elif dft == 1:
+            plt.title('Ratio between errors by % of Fourier coefficients retained (m)')
+
+        # CHANGE THE TITLE WHEN PERTURBATION ERROR IS ISOLATED
         else:
-            plt.title('Ratio between experimental errors by % of Fourier coefficients retained')
+            plt.title('Perturbation error by % of Fourier coefficients retained (m)')
 
     # VARYING THE VECTOR DIMENSION D
     elif index == 3:
         plt.xticks(['60', '70', '80', '90', '100', '110', '120', '130', '140', '150'])
-        plt.xlabel('Vector dimension', labelpad = 8)
+        plt.xlabel('Vector dimension (d)', labelpad = 8)
 
         if dft == 0:
-            plt.title('Experimental error by vector dimension')
+            plt.title('Experimental error by vector dimension (d)')
         else:
-            plt.title('Ratio between experimental errors by vector dimension')
+            plt.title('Ratio between errors by vector dimension (d)')
     
     # VARYING THE VALUE OF EPSILON
     elif index == 4:
@@ -67,18 +71,22 @@ def custom(index, dft):
 
         if dft == 0:
             plt.title('Experimental error by value of epsilon')
+        elif dft == 1:
+            plt.title('Ratio between errors by value of epsilon')
         else:
-            plt.title('Ratio between experimental errors by value of epsilon')
+            plt.title('Perturbation error by value of epsilon')
 
     # VARYING THE NUMBER OF VECTORS N USED
     else:
         plt.xticks(['6', '7', '9', '12', '15', '20', '30', '40', '50', '60'])
-        plt.xlabel('Number of vectors used' + ' ' + 'x' + ' ' + '$10^{3}$', labelpad = 8)
+        plt.xlabel('Number of vectors used (n)' + ' ' + 'x' + ' ' + '$10^{3}$', labelpad = 8)
 
         if dft == 0:
-            plt.title('Experimental error by number of vectors used')
+            plt.title('Experimental error by number of vectors used (n)')
+        elif dft == 1:
+            plt.title('Ratio between errors by number of vectors used (n)')
         else:
-            plt.title('Ratio between experimental errors by number of vectors used')
+            plt.title('Perturbation error by number of vectors used (n)')
 
 # THE SKELETON DRAWING FUNCTION IN THE BASIC CASE
 def drawBasic(index):
@@ -124,18 +132,18 @@ def drawBasic(index):
     if index == 3:
         p1 = [0.0000005*((s**(29/12))/((1-g))**2) for s, g in plotTuple]
         y1 = np.array(p1)
-        plt.plot(x, y1, label = 'Best fit curve', alpha = 0.6, color = 'k')
+        plt.plot(x, y1, alpha = 0.6, color = 'k')
     elif index == 4:
         p2 = [0.04*((1/(s**(7/6)))/((1-g))**2) for s, g in plotTupleEps1]
         y2 = np.array(p2)
-        plt.plot(xEps1, y2, label = 'Best fit curve part 1', alpha = 0.6, color = 'b')
+        plt.plot(xEps1, y2, alpha = 0.6, color = 'k')
         p3 = [0.04*((1/(s**(1/3)))/((1-g))**2) for s, g in plotTupleEps2]
         y3 = np.array(p3)
-        plt.plot(xEps2, y3, label = 'Best fit curve part 2', alpha = 0.6, color = 'r')
+        plt.plot(xEps2, y3, alpha = 0.6, color = 'k')
     elif index == 5:
         p4 = [(0.8*((1/(s**(7/6)))/((1-g))**2))+0.025 for s, g in plotTuple]
         y4 = np.array(p4)
-        plt.plot(x, y4, label = 'Best fit curve', alpha = 0.6, color = 'k')
+        plt.plot(x, y4, alpha = 0.6, color = 'k')
 
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
@@ -145,22 +153,20 @@ def drawBasic(index):
     if index == 4:
         plt.yscale('log')
         plt.ylim(0.02, 1.2)
-        selectiveFormatter = FixedFormatter(["0.01", "0.1", "1"])
+        selectiveFormatter = FixedFormatter(["0.1", "1"])
         selectiveLocator = FixedLocator([0.1, 1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
     elif index == 5:
         plt.yscale('log')
         plt.ylim(0.02, 15)
-        selectiveFormatter = FixedFormatter(["0.01", "0.1", "1", "10"])
+        selectiveFormatter = FixedFormatter(["0.1", "1", "10"])
         selectiveLocator = FixedLocator([0.1, 1, 10])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
 # THE SKELETON SAVING FUNCTION IN THE BASIC CASE
 def saveBasic(index):
-    if index >= 3:
-        plt.legend()
     plt.tight_layout()
     plt.draw()
     plt.savefig("errorchartvary" + str(index) + "%s.png" % parset[index])
@@ -186,6 +192,8 @@ def drawDft(index):
     recErrors = list()
     totalErrors = list()
     totalStandardDeviation = list()
+    gammas = list()
+    seeds = list()
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
@@ -195,13 +203,16 @@ def drawDft(index):
 
             if index == 4:
                 labels.append(f'{float(tab[0])}')
+                seeds.append(float(tab[0]))
             else:
                 labels.append(f'{int(tab[0])}')
+                seeds.append(int(tab[0]))
 
             perErrors.append((Decimal(tab[1])))
             recErrors.append((Decimal(tab[2])))
             totalErrors.append((Decimal(tab[3])))
             totalStandardDeviation.append((Decimal(tab[4])))
+            gammas.append(float(tab[6]))
             rowCount += 1
 
             if rowCount >= limit:
@@ -211,8 +222,41 @@ def drawDft(index):
     plt.bar(labels, recErrors, width, label = 'Reconstruction error', alpha = 0.6, color = 'r', edgecolor = 'k')
     plt.bar(labels, perErrors, width, bottom = recErrors, label = 'Perturbation error', alpha = 0.6, color = 'c', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
+
+    # PLOTTING COMPARISON LINE GRAPHS TO VERIFY DEPENDENCIES WITH D, EPSILON AND N
+    plotTuple = tuple(zip(seeds, gammas))
+    plotTupleEps1 = tuple(zip(seeds[:6], gammas[:6]))
+    plotTupleEps2 = tuple(zip(seeds[5:], gammas[5:]))
+    x = np.array(labels)
+    xEps1 = x[:6]
+    xEps2 = x[5:]
+
+    if index == 2:
+        p1 = [(4*((1/(s**(19/24)))/((1-g))**2))-0.125 for s, g in plotTuple]
+        y1 = np.array(p1)
+        plt.plot(x, y1, alpha = 0.6, color = 'k')
+    if index == 4:
+        p2 = [(0.0021*((1/(s**(7/6)))/((1-g))**2))+0.016 for s, g in plotTupleEps1]
+        y2 = np.array(p2)
+        plt.plot(xEps1, y2, alpha = 0.6, color = 'k')
+        p3 = [(0.0037*((1/(s**(2/3)))/((1-g))**2))+0.0135 for s, g in plotTupleEps2]
+        y3 = np.array(p3)
+        plt.plot(xEps2, y3, alpha = 0.6, color = 'k')
+    elif index == 5:
+        p4 = [(0.05*((1/(s**(3/2)))/((1-g))**2))+0.017 for s, g in plotTuple]
+        y4 = np.array(p4)
+        plt.plot(x, y4, alpha = 0.6, color = 'k')
+
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental MSE')
+
+    if index == 5:
+        plt.yscale('log')
+        plt.ylim(0.008, 1)
+        selectiveFormatter = FixedFormatter(["0.01", "0.1", "1"])
+        selectiveLocator = FixedLocator([0.01, 0.1, 1])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
 
 # THE SKELETON SAVING FUNCTION IN THE FOURIER CASE
 def saveDft(index):
@@ -226,6 +270,7 @@ def saveDft(index):
     plt.clf()
     plt.cla()
 
+# A SKELETON FUNCTION ISOLATING THE PERTURBATION ERROR
 def fitCurveDft(index):
     labels = list()
     perErrors = list()
@@ -254,7 +299,7 @@ def fitCurveDft(index):
             if rowCount >= limit:
                 break
 
-    # THE BARS PLOTTED ARE THE SAME FOR EACH PARAMETER EXCEPT M
+    # NEED TO ISOLATE PERTURBATION ERRORS TO VERIFY DEPENDENCIES
     plt.bar(labels, perErrors, width, alpha = 0.6, color = 'c', edgecolor = 'k')
     plt.errorbar(labels, perErrors, perStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
 
@@ -269,25 +314,33 @@ def fitCurveDft(index):
     if index == 2:
         p1 = [(0.00000015*((s**(29/12))/((1-g))**2))+0.0005 for s, g in plotTuple]
         y1 = np.array(p1)
-        plt.plot(x, y1, label = 'Best fit curve', alpha = 0.6, color = 'k')
+        plt.plot(x, y1, alpha = 0.6, color = 'k')
     elif index == 4:
-        p2 = [(0.002*((1/(s**(7/6)))/((1-g))**2))+0.005 for s, g in plotTupleEps1]
+        p2 = [(0.0021*((1/(s**(7/6)))/((1-g))**2))+0.005 for s, g in plotTupleEps1]
         y2 = np.array(p2)
-        plt.plot(xEps1, y2, label = 'Best fit curve part 1', alpha = 0.6, color = 'b')
-        p3 = [(0.004*((1/(s**(2/3)))/((1-g))**2))+0.0023 for s, g in plotTupleEps2]
+        plt.plot(xEps1, y2, alpha = 0.6, color = 'k')
+        p3 = [(0.0037*((1/(s**(2/3)))/((1-g))**2))+0.0026 for s, g in plotTupleEps2]
         y3 = np.array(p3)
-        plt.plot(xEps2, y3, label = 'Best fit curve part 2', alpha = 0.6, color = 'm')
+        plt.plot(xEps2, y3, alpha = 0.6, color = 'k')
     elif index == 5:
-        p4 = [(0.06*((1/(s**(5/3)))/((1-g))**2))+0.005 for s, g in plotTuple]
+        p4 = [(0.05*((1/(s**(3/2)))/((1-g))**2))+0.006 for s, g in plotTuple]
         y4 = np.array(p4)
-        plt.plot(x, y4, label = 'Best fit curve', alpha = 0.6, color = 'k')
+        plt.plot(x, y4, alpha = 0.6, color = 'k')
 
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Perturbation error')
 
+    # CREATING A LOGARITHMIC Y-AXIS FOR THE N DEPENDENCY
+    if index == 5:
+        plt.yscale('log')
+        plt.ylim(0.002, 1)
+        selectiveFormatter = FixedFormatter(["0.01", "0.1", "1"])
+        selectiveLocator = FixedLocator([0.01, 0.1, 1])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+
 def saveCurveDft(index):
-    plt.legend()
     plt.tight_layout()
     plt.draw()
     plt.savefig("dftcurvechartvary" + str(index) + "%s.png" % parset[index])
@@ -308,7 +361,7 @@ def plotDft():
 
         if index == 2 or index >= 4:
             fitCurveDft(index)
-            custom(index, 1)
+            custom(index, 2)
             saveCurveDft(index)
 
 # CALLING ALL THE ABOVE FUNCTIONS: SOME ARE NESTED
