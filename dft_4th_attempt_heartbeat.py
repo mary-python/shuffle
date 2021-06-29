@@ -23,14 +23,15 @@ mconst = mset[8]
 dset = [60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
 dconst = dset[4]
 dmax = dset[9]
-epsset = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.5, 2.0, 2.5, 3.0]
-epsconst = epsset[6]
+epsset1 = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+epsset2 = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+epsconst = epsset2[1]
 nset = [6000, 7000, 9000, 12000, 15000, 20000, 30000, 40000, 50000, 60000]
 nconst = nset[8]
 nmax = nset[9]
 
 # INITIALISING OTHER PARAMETERS/CONSTANTS
-parset = ['t', 'k', 'm', 'd', 'eps', 'n']
+parset = ['t', 'k', 'm', 'd', 'eps', 'eps', 'n']
 rset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 R = len(rset)
 dta = 0.25
@@ -124,24 +125,18 @@ def readDataConstDVaryN():
     
 
 # WRITING IN ERROR FILE AFTER THE MAIN BASIC LOOP
-def afterBasicLoopStats(index, var, varset, varconst, multiplier, offset, totalErrors, totalStandardDeviation, loopTotal, gammas):
+def afterBasicLoopStats(index, var, varset, multiplier, offset, totalErrors, totalStandardDeviation, loopTotal, gammas):
 
     errorfile = open("errorvary" + str(index) + "%s.txt" % parset[index], "w")
 
     for var in varset:
-        if index == 4:
-            if var <= 1.0:
-                errorfile.write(f"{var} {totalErrors[int((var*multiplier)-offset)]} {totalStandardDeviation[int((var*multiplier)-offset)]} {gammas[int((var*multiplier)-offset)]} \n")
-            else:
-                errorfile.write(f"{var} {totalErrors[int((var*2) + 3)]} {totalStandardDeviation[int((var*2) + 3)]} {gammas[int((var*2) + 3)]} \n")
-        elif index == 5:
+        if index == 6:
             if var <= 7000:
                 errorfile.write(f"{int(var*multiplier)} {totalErrors[int((var*multiplier)-offset)]} {totalStandardDeviation[int((var*multiplier)-offset)]} {gammas[int((var*multiplier)-offset)]} \n")
             elif var <= 15000:
                 errorfile.write(f"{int(var*multiplier)} {totalErrors[int(((var*multiplier)/3)-1)]} {totalStandardDeviation[int(((var*multiplier)/3)-1)]} {gammas[int(((var*multiplier)/3)-1)]} \n")
             else:
                 errorfile.write(f"{int(var*multiplier)} {totalErrors[int((var*multiplier*0.1) + 3)]} {totalStandardDeviation[int((var*multiplier*0.1) + 3)]} {gammas[int((var*multiplier*0.1) + 3)]} \n")
-
         else:
             errorfile.write(f"{var} {totalErrors[int((var*multiplier)-offset)]} {totalStandardDeviation[int((var*multiplier)-offset)]} {gammas[int((var*multiplier)-offset)]} \n")
 
@@ -155,7 +150,7 @@ def afterBasicLoopStats(index, var, varset, varconst, multiplier, offset, totalE
     errorfile.close()
 
 # MAIN SHUFFLING ALGORITHM WITHOUT DISCRETE FOURIER TRANSFORM
-def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice, nchoice, data, total, multiplier, offset, totalErrors, totalStandardDeviation, loopTotal, gammas):
+def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, data, total, multiplier, offset, totalErrors, totalStandardDeviation, loopTotal, gammas):
 
     loopTime = time.perf_counter()
     numBuckets = 40
@@ -206,7 +201,7 @@ def runBasic(index, var, varset, varconst, tchoice, kchoice, dchoice, epschoice,
                 indexTracker[randomIndex] += 1
     
         # GENERATING STATISTICS FOR THE TRUE AVERAGE VECTORS
-        if index == 5:
+        if index == 6:
             averageVector = [idx/nmax for idx in total]
         else:
             averageVector = [idx/nchoice for idx in total]
@@ -340,9 +335,9 @@ def runBasicVaryT():
 
     for t in tset:
         print(f"\nProcessing the basic optimal summation result for the value t = {t}.")
-        runBasic(0, t, tset, tconst, t, kconst, dconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, totalErrors, totalStandardDeviation, loopTotal, gammas)
+        runBasic(0, t, tset, t, kconst, dconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
-    afterBasicLoopStats(0, t, tset, tconst, 1, 1, totalErrors, totalStandardDeviation, loopTotal, gammas)
+    afterBasicLoopStats(0, t, tset, 1, 1, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
 # VARYING THE NUMBER OF BUCKETS K USED
 def runBasicVaryK():
@@ -353,9 +348,9 @@ def runBasicVaryK():
 
     for k in kset:
         print(f"\nProcessing the basic optimal summation result for the value k = {k}.")
-        runBasic(1, k, kset, kconst, tconst, k, dconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, totalErrors, totalStandardDeviation, loopTotal, gammas)
+        runBasic(1, k, kset, tconst, k, dconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
-    afterBasicLoopStats(1, k, kset, kconst, 1, 1, totalErrors, totalStandardDeviation, loopTotal, gammas)
+    afterBasicLoopStats(1, k, kset, 1, 1, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
 # VARYING THE VECTOR DIMENSION D
 def runBasicVaryD():
@@ -366,22 +361,34 @@ def runBasicVaryD():
 
     for d in dset:
         print(f"\nProcessing the basic optimal summation result for the value d = {d}.")
-        runBasic(3, d, dset, dconst, tconst, kconst, d, epsconst, nconst, heartbeatDataVaryDConstN, totalVectorVaryDConstN, 0.1, 6, totalErrors, totalStandardDeviation, loopTotal, gammas)
+        runBasic(3, d, dset, tconst, kconst, d, epsconst, nconst, heartbeatDataVaryDConstN, totalVectorVaryDConstN, 0.1, 6, totalErrors, totalStandardDeviation, loopTotal, gammas)
     
-    afterBasicLoopStats(3, d, dset, dconst, 0.1, 6, totalErrors, totalStandardDeviation, loopTotal, gammas)
+    afterBasicLoopStats(3, d, dset, 0.1, 6, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
 # VARYING THE VALUE OF EPSILON
-def runBasicVaryEps():
+def runBasicVaryEps1():
     totalErrors = list()
     totalStandardDeviation = list()
     loopTotal = list()
     gammas = list()
 
-    for eps in epsset:
+    for eps in epsset1:
         print(f"\nProcessing the basic optimal summation result for the value eps = {eps}.")
-        runBasic(4, eps, epsset, epsconst, tconst, kconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 10, 5, totalErrors, totalStandardDeviation, loopTotal, gammas)
+        runBasic(4, eps, epsset1, tconst, kconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 20, 10, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
-    afterBasicLoopStats(4, eps, epsset, epsconst, 10, 5, totalErrors, totalStandardDeviation, loopTotal, gammas)
+    afterBasicLoopStats(4, eps, epsset1, 20, 10, totalErrors, totalStandardDeviation, loopTotal, gammas)
+
+def runBasicVaryEps2():
+    totalErrors = list()
+    totalStandardDeviation = list()
+    loopTotal = list()
+    gammas = list()
+
+    for eps in epsset2:
+        print(f"\nProcessing the basic optimal summation result for the value eps = {eps}.")
+        runBasic(5, eps, epsset2, tconst, kconst, dconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 2, 2, totalErrors, totalStandardDeviation, loopTotal, gammas)
+
+    afterBasicLoopStats(5, eps, epsset2, 2, 2, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
 # VARYING THE NUMBER OF VECTORS N USED
 def runBasicVaryN():
@@ -392,22 +399,17 @@ def runBasicVaryN():
 
     for n in nset:
         print(f"\nProcessing the basic optimal summation result for the value n = {n}.")
-        runBasic(5, n, nset, nconst, tconst, kconst, dconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.001, 6, totalErrors, totalStandardDeviation, loopTotal, gammas)
+        runBasic(6, n, nset, tconst, kconst, dconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.001, 6, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
-    afterBasicLoopStats(5, n, nset, nconst, 0.001, 6, totalErrors, totalStandardDeviation, loopTotal, gammas)
+    afterBasicLoopStats(6, n, nset, 0.001, 6, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
 # WRITING IN ERROR FILE AFTER THE MAIN DFT LOOP
-def afterDftLoopStats(index, var, varset, varconst, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas):
+def afterDftLoopStats(index, var, varset, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas):
     
     errorfile = open("dfterrorvary" + str(index) + "%s.txt" % parset[index], "w")
 
     for var in varset:
-        if index == 4:
-            if var <= 1.0:
-                errorfile.write(f"{var} {perErrors[int((var*multiplier)-offset)]} {recErrors[int((var*multiplier)-offset)]} {totalDftErrors[int((var*multiplier)-offset)]} {totalDftStandardDeviation[int((var*multiplier)-offset)]} {perStandardDeviation[int((var*multiplier)-offset)]} {gammas[int((var*multiplier)-offset)]} \n")
-            else:
-                errorfile.write(f"{var} {perErrors[int((var*2) + 3)]} {recErrors[int((var*2) + 3)]} {totalDftErrors[int((var*2) + 3)]} {totalDftStandardDeviation[int((var*2) + 3)]} {perStandardDeviation[int((var*2) + 3)]} {gammas[int((var*2) + 3)]} \n")
-        elif index == 5:
+        if index == 6:
             if var <= 7000:
                 errorfile.write(f"{int(var*multiplier)} {perErrors[int((var*multiplier)-offset)]} {recErrors[int((var*multiplier)-offset)]} {totalDftErrors[int((var*multiplier)-offset)]} {totalDftStandardDeviation[int((var*multiplier)-offset)]} {perStandardDeviation[int((var*multiplier)-offset)]} {gammas[int((var*multiplier)-offset)]} \n")
             elif var <= 15000:
@@ -427,7 +429,7 @@ def afterDftLoopStats(index, var, varset, varconst, multiplier, offset, perError
     errorfile.close()
 
 # MAIN SHUFFLING ALGORITHM WITH DISCRETE FOURIER TRANSFORM
-def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, nchoice, data, total, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas):
+def runDft(index, var, varset, tchoice, kchoice, mchoice, epschoice, nchoice, data, total, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas):
 
     loopTime = time.perf_counter()
     numBuckets = 40
@@ -486,7 +488,7 @@ def runDft(index, var, varset, varconst, tchoice, kchoice, mchoice, epschoice, n
                 dftIndexTracker[dftRandomIndex] += 1
     
         # GENERATING STATISTICS FOR THE TRUE AVERAGE VECTORS
-        if index == 5:
+        if index == 6:
             dftAverageVector = [idx/nmax for idx in total]
         else:
             dftAverageVector = [idx/nchoice for idx in total]
@@ -664,9 +666,9 @@ def runDftVaryT():
 
     for t in tset:
         print(f"\nProcessing the optimal summation result with DFT for the value t = {t}.")
-        runDft(0, t, tset, tconst, t, kconst, mconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+        runDft(0, t, tset, t, kconst, mconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
     
-    afterDftLoopStats(0, t, tset, tconst, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(0, t, tset, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE NUMBER OF BUCKETS K USED
 def runDftVaryK():
@@ -680,9 +682,9 @@ def runDftVaryK():
 
     for k in kset:
         print(f"\nProcessing the optimal summation result with DFT for the value k = {k}.")
-        runDft(1, k, kset, kconst, tconst, k, mconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+        runDft(1, k, kset, tconst, k, mconst, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
-    afterDftLoopStats(1, k, kset, kconst, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(1, k, kset, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE NUMBER OF FOURIER COEFFICIENTS M
 def runDftVaryM():
@@ -696,12 +698,12 @@ def runDftVaryM():
 
     for m in mset:
         print(f"\nProcessing the optimal summation result with DFT for the value m = {m}.")
-        runDft(2, m, mset, mconst, tconst, kconst, m, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+        runDft(2, m, mset, tconst, kconst, m, epsconst, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
-    afterDftLoopStats(2, m, mset, mconst, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(2, m, mset, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE VALUE OF EPSILON
-def runDftVaryEps():
+def runDftVaryEps1():
     perErrors = list()
     recErrors = list()
     totalDftErrors = list()
@@ -710,11 +712,26 @@ def runDftVaryEps():
     loopTotal = list()
     gammas = list()
 
-    for eps in epsset:
+    for eps in epsset1:
         print(f"\nProcessing the optimal summation result with DFT for the value eps = {eps}.")
-        runDft(4, eps, epsset, epsconst, tconst, kconst, mconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 10, 5, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+        runDft(4, eps, epsset1, tconst, kconst, mconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 20, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
-    afterDftLoopStats(4, eps, epsset, epsconst, 10, 5, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(4, eps, epsset1, 20, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+
+def runDftVaryEps2():
+    perErrors = list()
+    recErrors = list()
+    totalDftErrors = list()
+    totalDftStandardDeviation = list()
+    perStandardDeviation = list()
+    loopTotal = list()
+    gammas = list()
+
+    for eps in epsset2:
+        print(f"\nProcessing the optimal summation result with DFT for the value eps = {eps}.")
+        runDft(5, eps, epsset2, tconst, kconst, mconst, eps, nconst, heartbeatDataConstDConstN, totalVectorConstDConstN, 2, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+
+    afterDftLoopStats(5, eps, epsset2, 2, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE NUMBER OF VECTORS N USED
 def runDftVaryN():
@@ -728,9 +745,9 @@ def runDftVaryN():
 
     for n in nset:
         print(f"\nProcessing the optimal summation result with DFT for the value n = {n}.")
-        runDft(5, n, nset, nconst, tconst, kconst, mconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.001, 6, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+        runDft(6, n, nset, tconst, kconst, mconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.001, 6, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
-    afterDftLoopStats(5, n, nset, nconst, 0.001, 6, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(6, n, nset, 0.001, 6, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # CALLING ALL OF THE ABOVE FUNCTIONS: SOME ARE NESTED
 readDataConstDConstN()
@@ -740,13 +757,15 @@ readDataConstDVaryN()
 runBasicVaryT()
 runBasicVaryK()
 runBasicVaryD()
-runBasicVaryEps()
+runBasicVaryEps1()
+runBasicVaryEps2()
 runBasicVaryN()
 
 runDftVaryT()
 runDftVaryK()
 runDftVaryM()
-runDftVaryEps()
+runDftVaryEps1()
+runDftVaryEps2()
 runDftVaryN()
 
 print("Thank you for using the Shuffle Model for Vectors.")

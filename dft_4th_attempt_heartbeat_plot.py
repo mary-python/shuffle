@@ -11,7 +11,7 @@ eps = 1.5
 n = 50000
 dta = 0.25
 width = 0.35
-parset = ['t', 'k', 'm', 'd', 'eps', 'n']
+parset = ['t', 'k', 'm', 'd', 'eps', 'eps', 'n']
 limit = 10
 
 # THE X-AXIS, TICKET AND TITLE ARE INDIVIDUALLY TAILORED FOR EACH PARAMETER AND WHETHER DISCRETE FOURIER TRANSFORM IS USED
@@ -66,7 +66,18 @@ def custom(index, dft):
     
     # VARYING THE VALUE OF EPSILON
     elif index == 4:
-        plt.xticks(['0.5', '0.6', '0.7', '0.8', '0.9', '1.0', '1.5', '2.0', '2.5', '3.0'])
+        plt.xticks(['0.5', '0.55', '0.6', '0.65', '0.7', '0.75', '0.8', '0.85', '0.9', '0.95'])
+        plt.xlabel('Value of epsilon', labelpad = 8)
+
+        if dft == 0:
+            plt.title('Experimental error by value of epsilon')
+        elif dft == 1:
+            plt.title('Ratio between errors by value of epsilon')
+        else:
+            plt.title('Perturbation error by value of epsilon')
+
+    elif index == 5:
+        plt.xticks(['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0', '5.5'])
         plt.xlabel('Value of epsilon', labelpad = 8)
 
         if dft == 0:
@@ -102,7 +113,7 @@ def drawBasic(index):
         for line in reader:
             tab = line.split()
             
-            if index == 4:
+            if index == 4 or index == 5:
                 labels.append(f'{float(tab[0])}')
                 seeds.append(float(tab[0]))
             else:
@@ -123,28 +134,22 @@ def drawBasic(index):
 
     # PLOTTING COMPARISON LINE GRAPHS TO VERIFY DEPENDENCIES WITH D, EPSILON AND N
     plotTuple = tuple(zip(seeds, gammas))
-    plotTupleEps1 = tuple(zip(seeds[:6], gammas[:6]))
-    plotTupleEps2 = tuple(zip(seeds[5:], gammas[5:]))
     x = np.array(labels)
-    xEps1 = x[:6]
-    xEps2 = x[5:]
 
-    if index == 3:
-        p1 = [0.0000005*((s**(29/12))/((1-g))**2) for s, g in plotTuple]
-        y1 = np.array(p1)
-        plt.plot(x, y1, alpha = 0.6, color = 'k')
-    elif index == 4:
-        p2 = [0.04*((1/(s**(7/6)))/((1-g))**2) for s, g in plotTupleEps1]
-        y2 = np.array(p2)
-        plt.plot(xEps1, y2, alpha = 0.6, color = 'k')
-        p3 = [0.04*((1/(s**(1/3)))/((1-g))**2) for s, g in plotTupleEps2]
-        y3 = np.array(p3)
-        plt.plot(xEps2, y3, alpha = 0.6, color = 'k')
-    elif index == 5:
-        p4 = [(0.8*((1/(s**(7/6)))/((1-g))**2))+0.025 for s, g in plotTuple]
-        y4 = np.array(p4)
-        plt.plot(x, y4, alpha = 0.6, color = 'k')
+    if index >= 3:
 
+        if index == 3:
+            p = [0.0000005*((s**(29/12))/((1-g))**2) for s, g in plotTuple]
+        elif index == 4:
+            p = [0.04*((1/(s**(7/6)))/((1-g))**2) for s, g in plotTuple]
+        elif index == 5:
+            p = [0.04*((1/(s**(1/3)))/((1-g))**2) for s, g in plotTuple]
+        else:
+            p = [(0.8*((1/(s**(7/6)))/((1-g))**2))+0.025 for s, g in plotTuple]
+
+        y = np.array(p)
+        plt.plot(x, y, alpha = 0.6, color = 'k')
+    
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental MSE')
@@ -152,12 +157,19 @@ def drawBasic(index):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON AND N DEPENDENCIES
     if index == 4:
         plt.yscale('log')
-        plt.ylim(0.02, 1.2)
+        plt.ylim(0.05, 1.2)
         selectiveFormatter = FixedFormatter(["0.1", "1"])
         selectiveLocator = FixedLocator([0.1, 1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
     elif index == 5:
+        plt.yscale('log')
+        plt.ylim(0.02, 0.08)
+        selectiveFormatter = FixedFormatter(["0.02", "0.03", "0.04", "0.05", "0.06", "0.07", "0.08"])
+        selectiveLocator = FixedLocator([0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+    elif index == 6:
         plt.yscale('log')
         plt.ylim(0.02, 15)
         selectiveFormatter = FixedFormatter(["0.1", "1", "10"])
@@ -177,7 +189,7 @@ def saveBasic(index):
 def plotBasic():
 
     # LEAVING OUT THE PARAMETER M AS IT IS NOT USED HERE
-    for index in range(6):
+    for index in range(7):
         if index == 2:
             continue
 
@@ -201,7 +213,7 @@ def drawDft(index):
         for line in reader:
             tab = line.split()
 
-            if index == 4:
+            if index == 4 or index == 5:
                 labels.append(f'{float(tab[0])}')
                 seeds.append(float(tab[0]))
             else:
@@ -225,32 +237,41 @@ def drawDft(index):
 
     # PLOTTING COMPARISON LINE GRAPHS TO VERIFY DEPENDENCIES WITH D, EPSILON AND N
     plotTuple = tuple(zip(seeds, gammas))
-    plotTupleEps1 = tuple(zip(seeds[:6], gammas[:6]))
-    plotTupleEps2 = tuple(zip(seeds[5:], gammas[5:]))
     x = np.array(labels)
-    xEps1 = x[:6]
-    xEps2 = x[5:]
 
-    if index == 2:
-        p1 = [(4*((1/(s**(19/24)))/((1-g))**2))-0.125 for s, g in plotTuple]
-        y1 = np.array(p1)
-        plt.plot(x, y1, alpha = 0.6, color = 'k')
-    if index == 4:
-        p2 = [(0.0021*((1/(s**(7/6)))/((1-g))**2))+0.016 for s, g in plotTupleEps1]
-        y2 = np.array(p2)
-        plt.plot(xEps1, y2, alpha = 0.6, color = 'k')
-        p3 = [(0.0037*((1/(s**(2/3)))/((1-g))**2))+0.0135 for s, g in plotTupleEps2]
-        y3 = np.array(p3)
-        plt.plot(xEps2, y3, alpha = 0.6, color = 'k')
-    elif index == 5:
-        p4 = [(0.05*((1/(s**(3/2)))/((1-g))**2))+0.017 for s, g in plotTuple]
-        y4 = np.array(p4)
-        plt.plot(x, y4, alpha = 0.6, color = 'k')
+    if index == 2 or index >= 4:
+
+        if index == 2:
+            p = [(4*((1/(s**(19/24)))/((1-g))**2))-0.125 for s, g in plotTuple]
+        elif index == 4:
+            p = [(0.0035*((1/(s**(7/6)))/((1-g))**2))+0.016 for s, g in plotTuple]
+        elif index == 5:
+            p = [(0.0037*((1/(s**(2/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
+        else:
+            p = [(0.05*((1/(s**(3/2)))/((1-g))**2))+0.017 for s, g in plotTuple]
+
+        y = np.array(p)
+        plt.plot(x, y, alpha = 0.6, color = 'k')
 
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental MSE')
 
-    if index == 5:
+    # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON AND N DEPENDENCIES
+    if index == 4:
+        plt.yscale('log')
+        plt.ylim(0.01, 0.3)
+        selectiveFormatter = FixedFormatter(["0.01", "0.1"])
+        selectiveLocator = FixedLocator([0.01, 0.1])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+    elif index == 5:
+        plt.yscale('log')
+        plt.ylim(0.01, 0.04)
+        selectiveFormatter = FixedFormatter(["0.01", "0.015", "0.02", "0.025", "0.03"])
+        selectiveLocator = FixedLocator([0.01, 0.015, 0.02, 0.025, 0.03])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+    elif index == 6:
         plt.yscale('log')
         plt.ylim(0.008, 1)
         selectiveFormatter = FixedFormatter(["0.01", "0.1", "1"])
@@ -284,7 +305,7 @@ def fitCurveDft(index):
         for line in reader:
             tab = line.split()
 
-            if index == 4:
+            if index == 4 or index == 5:
                 labels.append(f'{float(tab[0])}')
                 seeds.append(float(tab[0]))
             else:
@@ -305,34 +326,40 @@ def fitCurveDft(index):
 
     # PLOTTING COMPARISON LINE GRAPHS TO VERIFY DEPENDENCIES WITH D, EPSILON AND N
     plotTuple = tuple(zip(seeds, gammas))
-    plotTupleEps1 = tuple(zip(seeds[:6], gammas[:6]))
-    plotTupleEps2 = tuple(zip(seeds[5:], gammas[5:]))
     x = np.array(labels)
-    xEps1 = x[:6]
-    xEps2 = x[5:]
 
     if index == 2:
-        p1 = [(0.00000015*((s**(29/12))/((1-g))**2))+0.0005 for s, g in plotTuple]
-        y1 = np.array(p1)
-        plt.plot(x, y1, alpha = 0.6, color = 'k')
+        p = [(0.00000015*((s**(29/12))/((1-g))**2))+0.0005 for s, g in plotTuple]
     elif index == 4:
-        p2 = [(0.0021*((1/(s**(7/6)))/((1-g))**2))+0.005 for s, g in plotTupleEps1]
-        y2 = np.array(p2)
-        plt.plot(xEps1, y2, alpha = 0.6, color = 'k')
-        p3 = [(0.0037*((1/(s**(2/3)))/((1-g))**2))+0.0026 for s, g in plotTupleEps2]
-        y3 = np.array(p3)
-        plt.plot(xEps2, y3, alpha = 0.6, color = 'k')
+        p = [(0.0035*((1/(s**(7/6)))/((1-g))**2))+0.005 for s, g in plotTuple]
     elif index == 5:
-        p4 = [(0.05*((1/(s**(3/2)))/((1-g))**2))+0.006 for s, g in plotTuple]
-        y4 = np.array(p4)
-        plt.plot(x, y4, alpha = 0.6, color = 'k')
+        p = [(0.0037*((1/(s**(2/3)))/((1-g))**2))+0.006 for s, g in plotTuple]
+    else:
+        p = [(0.05*((1/(s**(3/2)))/((1-g))**2))+0.006 for s, g in plotTuple]
+    
+    y = np.array(p)
+    plt.plot(x, y, alpha = 0.6, color = 'k')
 
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Perturbation error')
 
-    # CREATING A LOGARITHMIC Y-AXIS FOR THE N DEPENDENCY
-    if index == 5:
+    # CREATING A LOGARITHMIC Y-AXIS FOR THE EPS AND N DEPENDENCIES
+    if index == 4:
+        plt.yscale('log')
+        plt.ylim(0.005, 0.25)
+        selectiveFormatter = FixedFormatter(["0.01", "0.1"])
+        selectiveLocator = FixedLocator([0.01, 0.1])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+    elif index == 5:
+        plt.yscale('log')
+        plt.ylim(0.002, 0.025)
+        selectiveFormatter = FixedFormatter(["0.002", "0.003", "0.004", "0.006", "0.01", "0.02"])
+        selectiveLocator = FixedLocator([0.002, 0.003, 0.004, 0.006, 0.01, 0.02])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+    elif index == 6:
         plt.yscale('log')
         plt.ylim(0.002, 1)
         selectiveFormatter = FixedFormatter(["0.01", "0.1", "1"])
@@ -351,7 +378,7 @@ def saveCurveDft(index):
 def plotDft():
 
     # LEAVING OUT THE PARAMETER D AS IT IS NOT USED HERE
-    for index in range(6):
+    for index in range(7):
         if index == 3:
             continue
 
