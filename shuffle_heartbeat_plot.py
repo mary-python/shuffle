@@ -147,7 +147,7 @@ def drawBasic(index):
         elif index == 4:
             p = [0.04*((1/(s**(7/6)))/((1-g))**2) for s, g in plotTuple]
         elif index == 5:
-            p = [0.04*((1/(s**(1/3)))/((1-g))**2) for s, g in plotTuple]
+            p = [0.042*((1/(s**(1/3)))/((1-g))**2) for s, g in plotTuple]
         else:
             p = [(0.8*((1/(s**(7/6)))/((1-g))**2))+0.025 for s, g in plotTuple]
 
@@ -169,9 +169,9 @@ def drawBasic(index):
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.02, 0.08)
-        selectiveFormatter = FixedFormatter(["0.02", "0.03", "0.04", "0.05", "0.06", "0.07", "0.08"])
-        selectiveLocator = FixedLocator([0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08])
+        plt.ylim(0.02, 0.05)
+        selectiveFormatter = FixedFormatter(["0.02", "0.03", "0.04", "0.05"])
+        selectiveLocator = FixedLocator([0.02, 0.03, 0.04, 0.05])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
@@ -250,9 +250,9 @@ def drawDft(index):
         if index == 2:
             p = [(4*((1/(s**(19/24)))/((1-g))**2))-0.125 for s, g in plotTuple]
         elif index == 4:
-            p = [(0.0035*((1/(s**(7/6)))/((1-g))**2))+0.016 for s, g in plotTuple]
+            p = [(0.0025*((1/(s**(7/6)))/((1-g))**2))+0.016 for s, g in plotTuple]
         elif index == 5:
-            p = [(0.0037*((1/(s**(2/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
+            p = [(0.005*((1/(s**(5/6)))/((1-g))**2))+0.017 for s, g in plotTuple]
         else:
             p = [(0.05*((1/(s**(3/2)))/((1-g))**2))+0.017 for s, g in plotTuple]
 
@@ -339,9 +339,9 @@ def fitCurveDft(index):
     if index == 2:
         p = [(0.00000015*((s**(29/12))/((1-g))**2))+0.0005 for s, g in plotTuple]
     elif index == 4:
-        p = [(0.0035*((1/(s**(7/6)))/((1-g))**2))+0.005 for s, g in plotTuple]
+        p = [(0.0025*((1/(s**(7/6)))/((1-g))**2))+0.005 for s, g in plotTuple]
     elif index == 5:
-        p = [(0.0037*((1/(s**(2/3)))/((1-g))**2))+0.006 for s, g in plotTuple]
+        p = [(0.005*((1/(s**(5/6)))/((1-g))**2))+0.006 for s, g in plotTuple]
     else:
         p = [(0.05*((1/(s**(3/2)))/((1-g))**2))+0.006 for s, g in plotTuple]
     
@@ -363,9 +363,9 @@ def fitCurveDft(index):
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.002, 0.025)
-        selectiveFormatter = FixedFormatter(["0.002", "0.003", "0.004", "0.006", "0.01", "0.02"])
-        selectiveLocator = FixedLocator([0.002, 0.003, 0.004, 0.006, 0.01, 0.02])
+        plt.ylim(0.004, 0.025)
+        selectiveFormatter = FixedFormatter(["0.004", "0.006", "0.01", "0.02"])
+        selectiveLocator = FixedLocator([0.004, 0.006, 0.01, 0.02])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 

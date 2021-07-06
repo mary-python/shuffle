@@ -25,7 +25,7 @@ dconst = dset[4]
 dmax = dset[9]
 epsset1 = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
 epsset2 = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0]
-epsconst = epsset2[1]
+epsconst = epsset2[0]
 nset = [6000, 7000, 9000, 12000, 15000, 20000, 30000, 40000, 50000, 60000]
 nconst = nset[8]
 nmax = nset[9]
@@ -324,7 +324,7 @@ def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, 
     casetime = time.perf_counter() - loopTime
     loopTotal.append(casetime)
     casemins = math.floor(casetime/60)
-    datafile.write(f"\nTotal time for case {parset[index]} = {var}: {casemins}m {casetime - (casemins*60)}s")
+    datafile.write(f"\nTotal time for case {parset[index]} = {var}: {casemins}m {math.floor(casetime - (casemins*60))}s")
 
 # VARYING THE NUMBER OF COORDINATES T RETAINED
 def runBasicVaryT():
@@ -653,7 +653,7 @@ def runDft(index, var, varset, tchoice, kchoice, mchoice, epschoice, nchoice, da
     casetime = time.perf_counter() - loopTime
     loopTotal.append(casetime)
     casemins = math.floor(casetime/60)
-    datafile.write(f"\nTotal time for case {parset[index]} = {var}: {casemins}m {casetime - (casemins*60)}s")
+    datafile.write(f"\nTotal time for case {parset[index]} = {var}: {casemins}m {math.floor(casetime - (casemins*60))}s")
 
 # VARYING THE NUMBER OF COORDINATES T RETAINED
 def runDftVaryT():
