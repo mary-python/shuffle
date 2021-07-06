@@ -9,3 +9,7 @@ Note that the files **mitbih_test.csv** and **mitbih_train.csv** from the [**ECG
 - **Mary Scott** (Mary.P.Scott@warwick.ac.uk), Department of Computer Science, University of Warwick, Coventry, UK, CV4 7AL
 - **Graham Cormode** (G.Cormode@warwick.ac.uk), Department of Computer Science, University of Warwick, Coventry, UK, CV4 7AL
 - **Carsten Maple** (CM@warwick.ac.uk), WMG, University of Warwick, Coventry, UK, CV4 7AL
+
+## Instructions
+
+After downloading all the files as outlined above, first open and run **shuffle_heartbeat_data_collection.py**. There will be various progress bars appearing in the terminal, indicating which experiment is being run. When the text "Thank you for using the Shuffle Model for Vectors" appears, the experiments have finished and all data for the final plots has been collected and saved in the same folder as the Python files. This should happen after approximately 20-25 minutes. At this point, open and run **shuffle_heartbeat_plot.py** to complete the final plots. These should appear within a few seconds, and should be exactly the graphs found in the experimental section of _Extending the Shuffle Model of Differential Privacy to Vectors_.
