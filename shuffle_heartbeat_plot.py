@@ -265,17 +265,17 @@ def drawDft(index):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON AND N DEPENDENCIES
     if index == 4:
         plt.yscale('log')
-        plt.ylim(0.01, 0.3)
-        selectiveFormatter = FixedFormatter(["0.01", "0.1"])
-        selectiveLocator = FixedLocator([0.01, 0.1])
+        plt.ylim(0.01, 0.1)
+        selectiveFormatter = FixedFormatter(["0.01", "0.02", "0.03", "0.04", "0.06", "0.1"])
+        selectiveLocator = FixedLocator([0.01, 0.02, 0.03, 0.04, 0.06, 0.1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.01, 0.04)
-        selectiveFormatter = FixedFormatter(["0.01", "0.015", "0.02", "0.025", "0.03"])
-        selectiveLocator = FixedLocator([0.01, 0.015, 0.02, 0.025, 0.03])
+        plt.ylim(0.01, 0.035)
+        selectiveFormatter = FixedFormatter(["0.01", "0.015", "0.02", "0.025", "0.03", "0.035"])
+        selectiveLocator = FixedLocator([0.01, 0.015, 0.02, 0.025, 0.03, 0.035])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
@@ -355,7 +355,7 @@ def fitCurveDft(index):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPS AND N DEPENDENCIES
     if index == 4:
         plt.yscale('log')
-        plt.ylim(0.005, 0.25)
+        plt.ylim(top = 0.1)
         selectiveFormatter = FixedFormatter(["0.01", "0.1"])
         selectiveLocator = FixedLocator([0.01, 0.1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
@@ -363,7 +363,7 @@ def fitCurveDft(index):
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.004, 0.025)
+        plt.ylim(top = 0.025)
         selectiveFormatter = FixedFormatter(["0.004", "0.006", "0.01", "0.02"])
         selectiveLocator = FixedLocator([0.004, 0.006, 0.01, 0.02])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
