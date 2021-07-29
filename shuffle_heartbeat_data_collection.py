@@ -26,8 +26,8 @@ dmax = dset[9]
 epsset1 = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
 epsset2 = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
 epsconst = epsset1[9]
-nset = [10000, 11000, 12000, 13000, 16000, 20000, 30000, 40000, 50000, 60000]
-nconst = nset[8]
+nset = [10000, 11000, 14000, 17000, 20000, 30000, 40000, 50000, 60000, 70000]
+nconst = nset[7]
 nmax = nset[9]
 
 # INITIALISING OTHER PARAMETERS/CONSTANTS
@@ -131,12 +131,12 @@ def afterBasicLoopStats(index, var, varset, multiplier, offset, totalErrors, tot
 
     for var in varset:
         if index == 6:
-            if var <= 10000:
-                errorfile.write(f"{int(var*multiplier)} {totalErrors[int((var*multiplier*0.25)-offset)]} {totalStandardDeviation[int((var*multiplier*0.25)-offset)]} {gammas[int((var*multiplier*0.25)-offset)]} \n")
-            elif var == 25000:
-                errorfile.write(f"{int(var*multiplier)} {totalErrors[int(var*multiplier*0.2)]} {totalStandardDeviation[int(var*multiplier*0.2)]} {gammas[int(var*multiplier*0.2)]} \n")
+            if var == 10000:
+                errorfile.write(f"{int(var*multiplier)} {totalErrors[int((var*multiplier)-offset)]} {totalStandardDeviation[int((var*multiplier)-offset)]} {gammas[int((var*multiplier)-offset)]} \n")
+            elif var <= 20000:
+                errorfile.write(f"{int(var*multiplier)} {totalErrors[int(((var*multiplier)/3)-(8/3))]} {totalStandardDeviation[int(((var*multiplier)/3)-(8/3))]} {gammas[int(((var*multiplier)/3)-(8/3))]} \n")
             else:
-                errorfile.write(f"{int(var*multiplier)} {totalErrors[int((var*multiplier*0.1) + 3)]} {totalStandardDeviation[int((var*multiplier*0.1) + 3)]} {gammas[int((var*multiplier*0.1) + 3)]} \n")
+                errorfile.write(f"{int(var*multiplier)} {totalErrors[int((var*multiplier*0.1) + 2)]} {totalStandardDeviation[int((var*multiplier*0.1) + 2)]} {gammas[int((var*multiplier*0.1) + 2)]} \n")
         else:
             errorfile.write(f"{var} {totalErrors[int((var*multiplier)-offset)]} {totalStandardDeviation[int((var*multiplier)-offset)]} {gammas[int((var*multiplier)-offset)]} \n")
 
@@ -425,12 +425,12 @@ def afterDftLoopStats(index, var, varset, multiplier, offset, perErrors, recErro
 
     for var in varset:
         if index == 6:
-            if var <= 13000:
+            if var == 10000:
                 errorfile.write(f"{int(var*multiplier)} {perErrors[int((var*multiplier)-offset)]} {recErrors[int((var*multiplier)-offset)]} {totalDftErrors[int((var*multiplier)-offset)]} {totalDftStandardDeviation[int((var*multiplier)-offset)]} {perStandardDeviation[int((var*multiplier)-offset)]} {gammas[int((var*multiplier)-offset)]} \n")
-            elif var == 16000:
-                errorfile.write(f"{int(var*multiplier)} {perErrors[int((var*multiplier)-offset-2)]} {recErrors[int((var*multiplier)-offset-2)]} {totalDftErrors[int((var*multiplier)-offset-2)]} {totalDftStandardDeviation[int((var*multiplier)-offset-2)]} {perStandardDeviation[int((var*multiplier)-offset-2)]} {gammas[int((var*multiplier)-offset-2)]} \n")
+            elif var <= 20000:
+                errorfile.write(f"{int(var*multiplier)} {perErrors[int(((var*multiplier)/3)-(8/3))]} {recErrors[int(((var*multiplier)/3)-(8/3))]} {totalDftErrors[int(((var*multiplier)/3)-(8/3))]} {totalDftStandardDeviation[int(((var*multiplier)/3)-(8/3))]} {perStandardDeviation[int(((var*multiplier)/3)-(8/3))]} {gammas[int(((var*multiplier)/3)-(8/3))]} \n")
             else:
-                errorfile.write(f"{int(var*multiplier)} {perErrors[int((var*multiplier*0.1) + 3)]} {recErrors[int((var*multiplier*0.1) + 3)]} {totalDftErrors[int((var*multiplier*0.1) + 3)]} {totalDftStandardDeviation[int((var*multiplier*0.1) + 3)]} {perStandardDeviation[int((var*multiplier*0.1) + 3)]} {gammas[int((var*multiplier*0.1) + 3)]} \n")
+                errorfile.write(f"{int(var*multiplier)} {perErrors[int((var*multiplier*0.1) + 2)]} {recErrors[int((var*multiplier*0.1) + 2)]} {totalDftErrors[int((var*multiplier*0.1) + 2)]} {totalDftStandardDeviation[int((var*multiplier*0.1) + 2)]} {perStandardDeviation[int((var*multiplier*0.1) + 2)]} {gammas[int((var*multiplier*0.1) + 2)]} \n")
         else:
             errorfile.write(f"{var} {perErrors[int((var*multiplier)-offset)]} {recErrors[int((var*multiplier)-offset)]} {totalDftErrors[int((var*multiplier)-offset)]} {totalDftStandardDeviation[int((var*multiplier)-offset)]} {perStandardDeviation[int((var*multiplier)-offset)]} {gammas[int((var*multiplier)-offset)]} \n")
 
@@ -775,9 +775,9 @@ def runDftVaryN():
 
     for n in nset:
         print(f"\nProcessing the optimal summation result with DFT for the value n = {n}.")
-        runDft(6, n, nset, tconst, kconst, mconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.001, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+        runDft(6, n, nset, tconst, kconst, mconst, epsconst, n, heartbeatDataConstDVaryN, totalVectorConstDVaryN, 0.001, 18, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
-    afterDftLoopStats(6, n, nset, 0.001, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(6, n, nset, 0.001, 18, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # CALLING ALL OF THE ABOVE FUNCTIONS
 readDataConstDConstN()
