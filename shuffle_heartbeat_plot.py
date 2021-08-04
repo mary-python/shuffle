@@ -143,11 +143,11 @@ def drawBasic(index):
     if index >= 3:
 
         if index == 3:
-            p = [0.00000062*((s**(29/12))/((1-g))**2) for s, g in plotTuple]
+            p = [0.00000018*((s**(8/3))/((1-g))**2)+0.002 for s, g in plotTuple]
         elif index == 4:
-            p = [0.027*((1/(s**(7/6)))/((1-g))**2)+0.015 for s, g in plotTuple]
+            p = [0.025*((1/(s**(4/3)))/((1-g))**2)+0.016 for s, g in plotTuple]
         elif index == 5:
-            p = [0.048*((1/(s**(1/3)))/((1-g))**2)-0.006 for s, g in plotTuple]
+            p = [0.02*((1/(s**(4/3)))/((1-g))**2)+0.026 for s, g in plotTuple]
         else:
             p = [1.1*(((1/(s**(7/6)))/((1-g))**2))+0.024 for s, g in plotTuple]
 
@@ -162,16 +162,16 @@ def drawBasic(index):
     if index == 4:
         plt.yscale('log')
         plt.ylim(0.04, 0.3)
-        selectiveFormatter = FixedFormatter(["0.06", "0.1", "0.2", "0.3"])
-        selectiveLocator = FixedLocator([0.06, 0.1, 0.2, 0.3])
+        selectiveFormatter = FixedFormatter(["0.04", "0.06", "0.1", "0.2", "0.3"])
+        selectiveLocator = FixedLocator([0.04, 0.06, 0.1, 0.2, 0.3])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.015, 0.11)
-        selectiveFormatter = FixedFormatter(["0.02", "0.03", "0.04", "0.06", "0.1"])
-        selectiveLocator = FixedLocator([0.02, 0.03, 0.04, 0.06, 0.1])
+        plt.ylim(0.02, 0.07)
+        selectiveFormatter = FixedFormatter(["0.02", "0.03", "0.04", "0.05", "0.06", "0.07"])
+        selectiveLocator = FixedLocator([0.02, 0.03, 0.04, 0.05, 0.06, 0.07])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
@@ -248,11 +248,11 @@ def drawDft(index):
     if index >= 4:
 
         if index == 4:
-            p = [(0.0032*((1/(s**(7/6)))/((1-g))**2))+0.017 for s, g in plotTuple]
+            p = [(0.003*((1/(s**(4/3)))/((1-g))**2))+0.0165 for s, g in plotTuple]
         elif index == 5:
-            p = [(0.0045*((1/(s**(5/6)))/((1-g))**2))+0.015 for s, g in plotTuple]
+            p = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0155 for s, g in plotTuple]
         else:
-            p = [(0.2*((1/(s**(5/3)))/((1-g))**2))+0.02 for s, g in plotTuple]
+            p = [(0.25*((1/(s**(5/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
 
         y = np.array(p)
         plt.plot(x, y, alpha = 0.6, color = 'k')
@@ -263,23 +263,23 @@ def drawDft(index):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON AND N DEPENDENCIES
     if index == 4:
         plt.yscale('log')
-        plt.ylim(0.01, 0.06)
-        selectiveFormatter = FixedFormatter(["0.01", "0.02", "0.03", "0.04", "0.05", "0.06"])
-        selectiveLocator = FixedLocator([0.01, 0.02, 0.03, 0.04, 0.05, 0.06])
+        plt.ylim(0.0095, 0.075)
+        selectiveFormatter = FixedFormatter(["0.01", "0.02", "0.03", "0.04", "0.05", "0.06", "0.07"])
+        selectiveLocator = FixedLocator([0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.01, 0.04)
-        selectiveFormatter = FixedFormatter(["0.01", "0.015", "0.02", "0.025", "0.03", "0.04"])
-        selectiveLocator = FixedLocator([0.01, 0.015, 0.02, 0.025, 0.03, 0.04])
+        plt.ylim(0.01, 0.05)
+        selectiveFormatter = FixedFormatter(["0.01", "0.02", "0.03", "0.04", "0.05"])
+        selectiveLocator = FixedLocator([0.01, 0.02, 0.03, 0.04, 0.05])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 6:
         plt.yscale('log')
-        plt.ylim(0.008, 0.2)
+        plt.ylim(0.009, 0.15)
         selectiveFormatter = FixedFormatter(["0.01", "0.1"])
         selectiveLocator = FixedLocator([0.01, 0.1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
@@ -335,13 +335,13 @@ def fitCurveDft(index):
     x = np.array(labels)
 
     if index == 2:
-        p = [(0.00000017*((s**(29/12))/((1-g))**2))+0.0005 for s, g in plotTuple]
+        p = [(0.000000055*((s**(8/3))/((1-g))**2))+0.0005 for s, g in plotTuple]
     elif index == 4:
-        p = [(0.003*((1/(s**(7/6)))/((1-g))**2))+0.007 for s, g in plotTuple]
+        p = [(0.003*((1/(s**(4/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
     elif index == 5:
-        p = [(0.0045*((1/(s**(5/6)))/((1-g))**2))+0.005 for s, g in plotTuple]
+        p = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
     else:
-        p = [(0.2*((1/(s**(5/3)))/((1-g))**2))+0.01 for s, g in plotTuple]
+        p = [(0.25*((1/(s**(5/3)))/((1-g))**2))+0.007 for s, g in plotTuple]
     
     y = np.array(p)
     plt.plot(x, y, alpha = 0.6, color = 'k')
@@ -353,25 +353,25 @@ def fitCurveDft(index):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPS AND N DEPENDENCIES
     if index == 4:
         plt.yscale('log')
-        plt.ylim(0.006, 0.05)
-        selectiveFormatter = FixedFormatter(["0.01", "0.02", "0.03", "0.04"])
-        selectiveLocator = FixedLocator([0.01, 0.02, 0.03, 0.04])
+        plt.ylim(0.00008, 0.07)
+        selectiveFormatter = FixedFormatter(["0.0001", "0.001", "0.01", "0.03", "0.06"])
+        selectiveLocator = FixedLocator([0.0001, 0.001, 0.01, 0.03, 0.06])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.003, 0.03)
-        selectiveFormatter = FixedFormatter(["0.004", "0.006", "0.01", "0.02", "0.03"])
-        selectiveLocator = FixedLocator([0.004, 0.006, 0.01, 0.02, 0.03])
+        plt.ylim(0.00015, 0.04)
+        selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.04"])
+        selectiveLocator = FixedLocator([0.001, 0.01, 0.04])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 6:
         plt.yscale('log')
-        plt.ylim(0.003, 0.1)
-        selectiveFormatter = FixedFormatter(["0.01", "0.1"])
-        selectiveLocator = FixedLocator([0.01, 0.1])
+        plt.ylim(0.0007, 0.15)
+        selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1"])
+        selectiveLocator = FixedLocator([0.001, 0.01, 0.1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 

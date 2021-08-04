@@ -161,16 +161,13 @@ def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, 
 
     # SETTING GAMMA: PROBABILITY OF A FALSE VALUE
     if tchoice == 1:
-        if epschoice < 1:
-            gamma = max((((14*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*dchoice*kchoice)/((nchoice-1)*epschoice))
-        else:
-            gamma = max((((32*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (21*dchoice*kchoice)/(4*(nchoice-1)*epschoice))
-
+        gamma = max((((14*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*dchoice*kchoice)/((nchoice-1)*epschoice))
+            
     else:
         if epschoice < 1:
             gamma = (((56*dchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
         else:
-            gamma = (((4608*dchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
+            gamma = (((2016*dchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
 
     print(f"\ngamma = {round(gamma, 4)}")
 
@@ -250,16 +247,13 @@ def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, 
     datafile.write(f"Case 1: Optimal Summation in the Shuffle Model \n")
 
     if tchoice == 1:
-        if epschoice < 1:
-            comparison = max((((98*(1/3))*(dchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(dchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
-        else:
-            comparison = max(((8*(dchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), ((21**(2/3))*(dchoice**(8/3)))/(2*((1-gamma)**2)*(nchoice**(5/3))*((2*epschoice)**(2/3))))
+        comparison = max((((98*(1/3))*(dchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(dchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
 
     else:
         if epschoice < 1:
             comparison = (2*tchoice*(dchoice**(8/3))*((14*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
         else:
-            comparison = (32*tchoice*(dchoice**(8/3))*((18*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
+            comparison = (8*tchoice*(dchoice**(8/3))*((63*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
 
     if comparison < 1:
         datafile.write(f"Theoretical Upper Bound for MSE: {round(comparison, 4)} \n")
@@ -460,16 +454,13 @@ def runDft(index, var, varset, tchoice, kchoice, mchoice, epschoice, nchoice, da
 
     # SETTING GAMMA: PROBABILITY OF A FALSE VALUE
     if tchoice == 1:
-        if epschoice < 1:
-            gamma = max((((14*mchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*mchoice*kchoice)/((nchoice-1)*epschoice))
-        else:
-            gamma = max((((32*mchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (21*mchoice*kchoice)/(4*(nchoice-1)*epschoice))
+        gamma = max((((14*mchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*mchoice*kchoice)/((nchoice-1)*epschoice))
 
     else:
         if epschoice < 1:
             gamma = (((56*mchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
         else:
-            gamma = (((4608*mchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
+            gamma = (((2016*mchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
     
     print(f"\ngamma = {round(gamma, 4)}")
 
@@ -585,16 +576,13 @@ def runDft(index, var, varset, tchoice, kchoice, mchoice, epschoice, nchoice, da
     datafile.write(f"Case 2: Fourier Summation Algorithm \n")
 
     if tchoice == 1:
-        if epschoice < 1:
-            dftComparison = max((((98*(1/3))*(mchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(mchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
-        else:
-            dftComparison = max(((8*(mchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), ((21**(2/3))*(mchoice**(8/3)))/(2*((1-gamma)**2)*(nchoice**(5/3))*((2*epschoice)**(2/3))))
-
+        dftComparison = max((((98*(1/3))*(mchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(mchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
+            
     else:
         if epschoice < 1:
             dftComparison = (2*tchoice*(mchoice**(8/3))*((14*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
         else:
-            dftComparison = (32*tchoice*(mchoice**(8/3))*((18*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
+            dftComparison = (8*tchoice*(mchoice**(8/3))*((63*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
 
     if dftComparison < 1:
         datafile.write(f"Theoretical upper bound for perturbation error: {round(dftComparison, 4)} \n")

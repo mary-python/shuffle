@@ -143,13 +143,13 @@ def drawBasic(index):
     if index >= 3:
 
         if index == 3:
-            p = [0.00000055*((s**(29/12))/((1-g))**2) for s, g in plotTuple]
+            p = [0.00000016*((s**(8/3))/((1-g))**2) for s, g in plotTuple]
         elif index == 4:
-            p = [0.024*((1/(s**(7/6)))/((1-g))**2)+0.0095 for s, g in plotTuple]
+            p = [0.023*((1/(s**(4/3)))/((1-g))**2)+0.01 for s, g in plotTuple]
         elif index == 5:
-            p = [0.041*((1/(s**(1/3)))/((1-g))**2)-0.0065 for s, g in plotTuple]
+            p = [0.023*((1/(s**(4/3)))/((1-g))**2)+0.018 for s, g in plotTuple]
         else:
-            p = [1.1*(((1/(s**(7/6)))/((1-g))**2))+0.019 for s, g in plotTuple]
+            p = [3.7*(((1/(s**(5/3)))/((1-g))**2))+0.029 for s, g in plotTuple]
 
         y = np.array(p)
         plt.plot(x, y, alpha = 0.6, color = 'k')
@@ -162,16 +162,16 @@ def drawBasic(index):
     if index == 4:
         plt.yscale('log')
         plt.ylim(0.04, 0.3)
-        selectiveFormatter = FixedFormatter(["0.06", "0.1", "0.2", "0.3"])
-        selectiveLocator = FixedLocator([0.06, 0.1, 0.2, 0.3])
+        selectiveFormatter = FixedFormatter(["0.04", "0.06", "0.1", "0.2", "0.3"])
+        selectiveLocator = FixedLocator([0.04, 0.06, 0.1, 0.2, 0.3])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.013, 0.11)
-        selectiveFormatter = FixedFormatter(["0.02", "0.03", "0.04", "0.06", "0.1"])
-        selectiveLocator = FixedLocator([0.02, 0.03, 0.04, 0.06, 0.1])
+        plt.ylim(0.015, 0.06)
+        selectiveFormatter = FixedFormatter(["0.02", "0.03", "0.04", "0.05", "0.06"])
+        selectiveLocator = FixedLocator([0.02, 0.03, 0.04, 0.05, 0.06])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
@@ -248,11 +248,11 @@ def drawDft(index):
     if index >= 4:
 
         if index == 4:
-            p = [(0.0018*((1/(s**(7/6)))/((1-g))**2))+0.0025 for s, g in plotTuple]
+            p = [(0.0016*((1/(s**(4/3)))/((1-g))**2))+0.0023 for s, g in plotTuple]
         elif index == 5:
-            p = [(0.0025*((1/(s**(5/6)))/((1-g))**2))+0.0027 for s, g in plotTuple]
+            p = [(0.0021*((1/(s**(4/3)))/((1-g))**2))+0.0032 for s, g in plotTuple]
         else:
-            p = [(0.14*((1/(s**(5/3)))/((1-g))**2))+0.0043 for s, g in plotTuple]
+            p = [(0.14*((1/(s**(5/3)))/((1-g))**2))+0.0042 for s, g in plotTuple]
 
         y = np.array(p)
         plt.plot(x, y, alpha = 0.6, color = 'k')
@@ -279,9 +279,9 @@ def drawDft(index):
 
     elif index == 6:
         plt.yscale('log')
-        plt.ylim(0.0001, 0.05)
-        selectiveFormatter = FixedFormatter(["0.0001", "0.001", "0.01"])
-        selectiveLocator = FixedLocator([0.0001, 0.001, 0.01])
+        plt.ylim(0.0001, 0.07)
+        selectiveFormatter = FixedFormatter(["0.0001", "0.001", "0.01", "0.07"])
+        selectiveLocator = FixedLocator([0.0001, 0.001, 0.01, 0.07])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
@@ -335,11 +335,11 @@ def fitCurveDft(index):
     x = np.array(labels)
 
     if index == 2:
-        p = [(0.00000008*((s**(29/12))/((1-g))**2))+0.00007 for s, g in plotTuple]
+        p = [(0.000000027*((s**(8/3))/((1-g))**2))+0.00007 for s, g in plotTuple]
     elif index == 4:
-        p = [(0.0018*((1/(s**(7/6)))/((1-g))**2))+0.0022 for s, g in plotTuple]
+        p = [(0.0016*((1/(s**(4/3)))/((1-g))**2))+0.0022 for s, g in plotTuple]
     elif index == 5:
-        p = [(0.0025*((1/(s**(5/6)))/((1-g))**2))+0.0024 for s, g in plotTuple]
+        p = [(0.0021*((1/(s**(4/3)))/((1-g))**2))+0.003 for s, g in plotTuple]
     else:
         p = [(0.14*((1/(s**(5/3)))/((1-g))**2))+0.004 for s, g in plotTuple]
 
@@ -369,9 +369,9 @@ def fitCurveDft(index):
 
     elif index == 6:
         plt.yscale('log')
-        plt.ylim(0.001, 0.05)
-        selectiveFormatter = FixedFormatter(["0.001", "0.01"])
-        selectiveLocator = FixedLocator([0.001, 0.01])
+        plt.ylim(0.001, 0.07)
+        selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.07"])
+        selectiveLocator = FixedLocator([0.001, 0.01, 0.07])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
