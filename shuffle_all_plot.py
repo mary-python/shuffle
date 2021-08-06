@@ -410,16 +410,15 @@ def plotDft():
     # LEAVING OUT THE PARAMETER D AS IT IS NOT USED HERE
     for index in range(7):
         
-        if index == 0 or index == 1:
+        if index <= 2:
             drawDft(0, index)
             custom(index, 1)
             saveDft(0, index)
 
         if index == 2:
-            for boolean in [0, 1]:
-                drawDft(boolean, index)
-                custom(index, 1)
-                saveDft(boolean, index)
+            drawDft(1, index)
+            custom(index, 1)
+            saveDft(1, index)
 
         if index == 3:
             continue

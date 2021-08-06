@@ -862,7 +862,6 @@ def runDftVaryN(heartOrSynth):
 readHeartbeatDataConstDConstN()
 readHeartbeatDataVaryDConstN()
 readHeartbeatDataConstDVaryN()
-createSyntheticDataConstDConstN()
 
 # CALLING ALL THE BASIC SUMMATION FUNCTIONS
 runBasicVaryT()
@@ -875,13 +874,13 @@ runBasicVaryN()
 # CALLING ALL THE FOURIER SUMMATION FUNCTIONS
 runDftVaryT(0)
 runDftVaryK(0)
-
-# INCLUDING THE SYNTHETIC DATASET FOR M
-for boolean in [0, 1]:
-    runDftVaryM(boolean)
-
+runDftVaryM(0)
 runDftVaryEps1(0)
 runDftVaryEps2(0)
 runDftVaryN(0)
+
+# INCLUDING THE SYNTHETIC DATASET FOR M
+createSyntheticDataConstDConstN()
+runDftVaryM(1)
 
 print("Thank you for using the Shuffle Model for Vectors.")
