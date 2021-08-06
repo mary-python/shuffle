@@ -204,6 +204,29 @@ def plotBasic():
         custom(index, 0)
         saveBasic(index)
 
+# FUNCTION TO READ EACH DATAFILE: DEFINED OUTSIDE MAIN DRAWING FUNCTION AS REFERENCED MULTIPLE TIMES
+def readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount):
+
+    for line in reader:
+        tab = line.split()
+
+        if index == 4 or index == 5:
+            labels.append(f'{float(tab[0])}')
+            seeds.append(float(tab[0]))
+        else:
+            labels.append(f'{int(tab[0])}')
+            seeds.append(int(tab[0]))
+
+        perErrors.append((Decimal(tab[1])))
+        recErrors.append((Decimal(tab[2])))
+        totalErrors.append((Decimal(tab[3])))
+        totalStandardDeviation.append((Decimal(tab[4])))
+        gammas.append(float(tab[6]))
+        rowCount += 1
+
+        if rowCount >= limit:
+            break
+
 # THE SKELETON DRAWING FUNCTION IN THE FOURIER CASE
 def drawDft(heartOrSynth, index):
     labels = list()
@@ -216,48 +239,16 @@ def drawDft(heartOrSynth, index):
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
-    if heartOrSynth == 0:
-        with open("errordatafourierheart" + str(index) + "%s.txt" % parset[index]) as reader:
-            for line in reader:
-                tab = line.split()
-
-                if index == 4 or index == 5:
-                    labels.append(f'{float(tab[0])}')
-                    seeds.append(float(tab[0]))
-                else:
-                    labels.append(f'{int(tab[0])}')
-                    seeds.append(int(tab[0]))
-
-                perErrors.append((Decimal(tab[1])))
-                recErrors.append((Decimal(tab[2])))
-                totalErrors.append((Decimal(tab[3])))
-                totalStandardDeviation.append((Decimal(tab[4])))
-                gammas.append(float(tab[6]))
-                rowCount += 1
-
-                if rowCount >= limit:
-                    break
+    if index == 2:
+        if heartOrSynth == 0:
+            with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
+                readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount)
+        else:
+            with open("errordatafourier" + str(index) + "%ssynth.txt" % parset[index]) as reader:
+                readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount)
     else:
-        with open("errordatafouriersynth" + str(index) + "%s.txt" % parset[index]) as reader:
-            for line in reader:
-                tab = line.split()
-
-                if index == 4 or index == 5:
-                    labels.append(f'{float(tab[0])}')
-                    seeds.append(float(tab[0]))
-                else:
-                    labels.append(f'{int(tab[0])}')
-                    seeds.append(int(tab[0]))
-
-                perErrors.append((Decimal(tab[1])))
-                recErrors.append((Decimal(tab[2])))
-                totalErrors.append((Decimal(tab[3])))
-                totalStandardDeviation.append((Decimal(tab[4])))
-                gammas.append(float(tab[6]))
-                rowCount += 1
-
-                if rowCount >= limit:
-                    break
+        with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
+            readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount)
 
     # THE BARS PLOTTED AND Y-AXIS ARE THE SAME FOR EACH PARAMETER
     plt.bar(labels, recErrors, width, label = 'Reconstruction error', alpha = 0.6, color = 'r', edgecolor = 'k')
@@ -317,10 +308,13 @@ def saveDft(heartOrSynth, index):
     plt.tight_layout()
     plt.draw()
 
-    if heartOrSynth == 0:
-        plt.savefig("errorchartfourierheart" + str(index) + "%s.png" % parset[index])
+    if index == 2:
+        if heartOrSynth == 0:
+            plt.savefig("errorchartfourier" + str(index) + "%sheart.png" % parset[index])
+        else:
+            plt.savefig("errorchartfourier" + str(index) + "%ssynth.png" % parset[index])
     else:
-        plt.savefig("errorchartfouriersynth" + str(index) + "%s.png" % parset[index])
+        plt.savefig("errorchartfourier" + str(index) + "%s.png" % parset[index])
 
     plt.clf()
     plt.cla()
@@ -335,7 +329,7 @@ def fitPerDft(index):
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
-    with open("errordatafourierheart" + str(index) + "%s.txt" % parset[index]) as reader:
+    with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
         for line in reader:
             tab = line.split()
 
@@ -406,7 +400,7 @@ def fitPerDft(index):
 def savePerDft(index):
     plt.tight_layout()
     plt.draw()
-    plt.savefig("errorchartperfourierheart" + str(index) + "%s.png" % parset[index])
+    plt.savefig("errorchartfourier" + str(index) + "%sperturb.png" % parset[index])
     plt.clf()
     plt.cla()
 
@@ -416,6 +410,11 @@ def plotDft():
     # LEAVING OUT THE PARAMETER D AS IT IS NOT USED HERE
     for index in range(7):
         
+        if index == 0 or index == 1:
+            drawDft(0, index)
+            custom(index, 1)
+            saveDft(0, index)
+
         if index == 2:
             for boolean in [0, 1]:
                 drawDft(boolean, index)
@@ -424,11 +423,6 @@ def plotDft():
 
         if index == 3:
             continue
-
-        else:
-            drawDft(0, index)
-            custom(index, 1)
-            saveDft(0, index)
 
         if index == 2 or index >= 4:
             fitPerDft(index)

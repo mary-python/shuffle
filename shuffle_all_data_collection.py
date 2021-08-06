@@ -132,7 +132,7 @@ def createSyntheticData(dimension, start, number, data, total):
     bar.finish()
 
 # KEEPING BOTH D AND N CONSTANT: APPLICABLE FOR CHANGING ANY VARIABLE EXCEPT D OR N
-def readDataConstDConstN():
+def readHeartbeatDataConstDConstN():
 
     print(f"\nReading in the testing data file for constant d and constant n...")
     readHeartbeatData(dconst, 0, "mitbih_test.csv", n1, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, n1)
@@ -140,11 +140,13 @@ def readDataConstDConstN():
     print(f"\nReading in the training data file for constant d and constant n...")
     readHeartbeatData(dconst, n1, "mitbih_train.csv", n2const, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, nconst)
 
+def createSyntheticDataConstDConstN():
+
     print(f"\nCreating the synthetic data file for constant d and constant n...")
     createSyntheticData(dconst, 0, n2const, syntheticDataConstDConstN, totalSynthVectorsConstDConstN)
 
 # VARYING D AND KEEPING N CONSTANT: APPLICABLE FOR CHANGING D
-def readDataVaryDConstN():
+def readHeartbeatDataVaryDConstN():
 
     print(f"\nReading in the testing data file for varying d and constant n...")
     readHeartbeatData(dmax, 0, "mitbih_test.csv", n1, heartbeatDataVaryDConstN, totalHeartVectorsVaryDConstN, n1)
@@ -153,7 +155,7 @@ def readDataVaryDConstN():
     readHeartbeatData(dmax, n1, "mitbih_train.csv", n2const, heartbeatDataVaryDConstN, totalHeartVectorsVaryDConstN, nconst)
 
 # KEEPING D CONSTANT AND VARYING N: APPLICABLE FOR CHANGING N
-def readDataConstDVaryN():
+def readHeartbeatDataConstDVaryN():
 
     print(f"\nReading in the testing data file for constant d and varying n...")
     readHeartbeatData(dconst, 0, "mitbih_test.csv", n1, heartbeatDataConstDVaryN, totalHeartVectorsConstDVaryN, n1)
@@ -465,10 +467,13 @@ def runBasicVaryN():
 # WRITING IN ERROR FILE AFTER THE MAIN DFT LOOP
 def afterDftLoopStats(heartOrSynth, index, var, varset, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas):
     
-    if heartOrSynth == 0:
-        errorfile = open("errordatafourierheart" + str(index) + "%s.txt" % parset[index], "w")
+    if index == 2:
+        if heartOrSynth == 0:
+            errorfile = open("errordatafourier" + str(index) + "%sheart.txt" % parset[index], "w")
+        else:
+            errorfile = open("errordatafourier" + str(index) + "%ssynth.txt" % parset[index], "w")
     else:
-        errorfile = open("errordatafouriersynth" + str(index) + "%s.txt" % parset[index], "w")
+        errorfile = open("errordatafourier" + str(index) + "%s.txt" % parset[index], "w")
 
     for var in varset:
         if index == 6:
@@ -611,12 +616,16 @@ def runDft(heartOrSynth, index, var, varset, tchoice, kchoice, mchoice, epschoic
     gammas.append(Decimal(gamma))
 
     # WRITING THE STATISTICS ON A DATAFILE
-    if heartOrSynth == 0:
-        datafile = open("filefourierheart" + str(index) + "%s" % parset[index] + str(var) + ".txt", "w")
-        datafile.write(f"Case 2: Heartbeat Data with Fourier Transform \n")
+    if index == 2:
+        if heartOrSynth == 0:
+            datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(var) + "heart.txt", "w")
+            datafile.write(f"Case 2: Heartbeat Data with Fourier Transform \n")
+        else:
+            datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(var) + "synth.txt", "w")
+            datafile.write(f"Case 3: Synthetic Data with Fourier Transform \n")
     else:
-        datafile = open("filefouriersynth" + str(index) + "%s" % parset[index] + str(var) + ".txt", "w")
-        datafile.write(f"Case 4: Synthetic Data with Fourier Transform \n")
+        datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(var) + ".txt", "w")
+        datafile.write(f"Case 2: Heartbeat Data with Fourier Transform \n")
 
     if index == 0:
         datafile.write(f"Number of coordinates t retained: {var} \n\n")
@@ -671,10 +680,13 @@ def runDft(heartOrSynth, index, var, varset, tchoice, kchoice, mchoice, epschoic
     mng.window.state('zoomed')
     plt.draw()
 
-    if heartOrSynth == 0:
-        plt.savefig("histfourierheart" + str(index) + "%s" % parset[index] + str(var) + ".png")
+    if index == 2:
+        if heartOrSynth == 0:
+            plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + "heart.png")
+        else:
+            plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + "synth.png")
     else:
-        plt.savefig("histfouriersynth" + str(index) + "%s" % parset[index] + str(var) + ".png")
+        plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + ".png")
 
     plt.clf()
     plt.cla()
@@ -729,10 +741,13 @@ def runDft(heartOrSynth, index, var, varset, tchoice, kchoice, mchoice, epschoic
     mng.window.state('zoomed')
     plt.draw()
     
-    if heartOrSynth == 0:
-        plt.savefig("histfourierheart" + str(index) + "%s" % parset[index] + str(var) + ".png")
+    if index == 2:
+        if heartOrSynth == 0:
+            plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + "heart.png")
+        else:
+            plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + "synth.png")
     else:
-        plt.savefig("histfouriersynth" + str(index) + "%s" % parset[index] + str(var) + ".png")
+        plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + ".png")
 
     plt.clf()
     plt.cla()
@@ -844,9 +859,10 @@ def runDftVaryN(heartOrSynth):
     afterDftLoopStats(heartOrSynth, 6, n, nset, 0.001, 18, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # CALLING ALL THE DATA READING FUNCTIONS
-readDataConstDConstN()
-readDataVaryDConstN()
-readDataConstDVaryN()
+readHeartbeatDataConstDConstN()
+readHeartbeatDataVaryDConstN()
+readHeartbeatDataConstDVaryN()
+createSyntheticDataConstDConstN()
 
 # CALLING ALL THE BASIC SUMMATION FUNCTIONS
 runBasicVaryT()
