@@ -113,7 +113,7 @@ def createSyntheticData(dimension, start, number, data, total):
         coordCount = 0
 
         for coord in range(0, dimension):
-            newCoord = (math.cos((coord/dimension)**2))*(random.random())/2
+            newCoord = (math.sin((coord/dimension)**2))*(random.random())/2
 
             if newCoord > 1:
                 clippedCoord = 1

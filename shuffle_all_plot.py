@@ -319,6 +319,26 @@ def saveDft(heartOrSynth, index):
     plt.clf()
     plt.cla()
 
+# FUNCTION TO READ EACH DATAFILE: DEFINED OUTSIDE MAIN DRAWING FUNCTION AS REFERENCED MULTIPLE TIMES
+def readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, gammas, rowCount):
+    for line in reader:
+        tab = line.split()
+
+        if index == 4 or index == 5:
+            labels.append(f'{float(tab[0])}')
+            seeds.append(float(tab[0]))
+        else:
+            labels.append(f'{int(tab[0])}')
+            seeds.append(int(tab[0]))
+            
+        perErrors.append((Decimal(tab[1])))
+        perStandardDeviation.append((Decimal(tab[5])))
+        gammas.append(float(tab[6]))
+        rowCount += 1
+
+        if rowCount >= limit:
+            break
+
 # A SKELETON FUNCTION ISOLATING THE PERTURBATION ERROR
 def fitPerDft(index):
     labels = list()
@@ -329,24 +349,12 @@ def fitPerDft(index):
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
-    with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
-        for line in reader:
-            tab = line.split()
-
-            if index == 4 or index == 5:
-                labels.append(f'{float(tab[0])}')
-                seeds.append(float(tab[0]))
-            else:
-                labels.append(f'{int(tab[0])}')
-                seeds.append(int(tab[0]))
-            
-            perErrors.append((Decimal(tab[1])))
-            perStandardDeviation.append((Decimal(tab[5])))
-            gammas.append(float(tab[6]))
-            rowCount += 1
-
-            if rowCount >= limit:
-                break
+    if index == 2:
+        with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
+            readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, gammas, rowCount)
+    else:
+        with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
+            readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, gammas, rowCount)
 
     # NEED TO ISOLATE PERTURBATION ERRORS TO VERIFY DEPENDENCIES
     plt.bar(labels, perErrors, width, alpha = 0.6, color = 'c', edgecolor = 'k')
@@ -400,7 +408,7 @@ def fitPerDft(index):
 def savePerDft(index):
     plt.tight_layout()
     plt.draw()
-    plt.savefig("errorchartfourier" + str(index) + "%sperturb.png" % parset[index])
+    plt.savefig("errorchartfourierperturb" + str(index) + "%s.png" % parset[index])
     plt.clf()
     plt.cla()
 
