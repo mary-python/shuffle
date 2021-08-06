@@ -200,8 +200,10 @@ def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, 
 
     # SETTING GAMMA: PROBABILITY OF A FALSE VALUE
     if tchoice == 1:
-        gamma = max((((14*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*dchoice*kchoice)/((nchoice-1)*epschoice))
-            
+        if epschoice < 1:
+            gamma = max((((14*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*dchoice*kchoice)/((nchoice-1)*epschoice))
+        else:
+            gamma = max((((32*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (21*dchoice*kchoice)/(4*(nchoice-1)*epschoice))
     else:
         if epschoice < 1:
             gamma = (((56*dchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
@@ -299,8 +301,10 @@ def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, 
         datafile.write(f"Number of vectors n used: {var} \n\n") 
 
     if tchoice == 1:
-        comparison = max((((98*(1/3))*(dchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(dchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
-
+        if epschoice < 1:
+            comparison = max((((98**(1/3))*(dchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(dchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
+        else:
+            comparison = max(((8*(dchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), ((21**(2/3))*(dchoice**(8/3)))/(2*((1-gamma)**2)*(nchoice**(5/3))*((2*epschoice)**(2/3))))
     else:
         if epschoice < 1:
             comparison = (2*tchoice*(dchoice**(8/3))*((14*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
@@ -512,7 +516,10 @@ def runDft(heartOrSynth, index, var, varset, tchoice, kchoice, mchoice, epschoic
 
     # SETTING GAMMA: PROBABILITY OF A FALSE VALUE
     if tchoice == 1:
-        gamma = max((((14*mchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*mchoice*kchoice)/((nchoice-1)*epschoice))
+        if epschoice < 1:
+            gamma = max((((14*mchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*mchoice*kchoice)/((nchoice-1)*epschoice))
+        else:
+            gamma = max((((32*mchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (21*mchoice*kchoice)/(4*(nchoice-1)*epschoice))
 
     else:
         if epschoice < 1:
@@ -641,8 +648,10 @@ def runDft(heartOrSynth, index, var, varset, tchoice, kchoice, mchoice, epschoic
         datafile.write(f"Number of vectors n used: {var} \n\n") 
 
     if tchoice == 1:
-        dftComparison = max((((98*(1/3))*(mchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(mchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
-            
+        if epschoice < 1:
+            dftComparison = max((((98**(1/3))*(mchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(mchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
+        else:
+            dftComparison = max(((8*(mchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), ((21**(2/3))*(mchoice**(8/3)))/(2*((1-gamma)**2)*(nchoice**(5/3))*((2*epschoice)**(2/3))))
     else:
         if epschoice < 1:
             dftComparison = (2*tchoice*(mchoice**(8/3))*((14*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
