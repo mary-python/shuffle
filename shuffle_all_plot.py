@@ -409,6 +409,9 @@ def plotDft():
 
     # LEAVING OUT THE PARAMETER D AS IT IS NOT USED HERE
     for index in range(7):
+
+        if index == 3:
+            continue
         
         if index <= 2:
             drawDft(0, index)
@@ -419,9 +422,6 @@ def plotDft():
             drawDft(1, index)
             custom(index, 1)
             saveDft(1, index)
-
-        if index == 3:
-            continue
 
         if index == 2 or index >= 4:
             fitPerDft(index)
