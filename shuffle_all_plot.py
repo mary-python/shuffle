@@ -187,8 +187,8 @@ def drawBasic(index):
     elif index == 6:
         plt.yscale('log')
         plt.ylim(0.03, 5)
-        selectiveFormatter = FixedFormatter(["0.1", "1", "5"])
-        selectiveLocator = FixedLocator([0.1, 1, 5])
+        selectiveFormatter = FixedFormatter(["0.03", "0.1", "0.3", "1", "5"])
+        selectiveLocator = FixedLocator([0.03, 0.1, 0.3, 1, 5])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
@@ -348,24 +348,24 @@ def fitPerDft(index):
     if index == 4:
         plt.yscale('log')
         plt.ylim(0.001, 0.05)
-        selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.03", "0.05"])
-        selectiveLocator = FixedLocator([0.001, 0.01, 0.03, 0.05])
+        selectiveFormatter = FixedFormatter(["0.001", "0.003", "0.01", "0.02", "0.05"])
+        selectiveLocator = FixedLocator([0.001, 0.003, 0.01, 0.02, 0.05])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 5:
         plt.yscale('log')
         plt.ylim(0.001, 0.02)
-        selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.02"])
-        selectiveLocator = FixedLocator([0.001, 0.01, 0.02])
+        selectiveFormatter = FixedFormatter(["0.001", "0.003", "0.005", "0.01", "0.02"])
+        selectiveLocator = FixedLocator([0.001, 0.003, 0.005, 0.01, 0.02])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 6:
         plt.yscale('log')
         plt.ylim(0.001, 0.08)
-        selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.08"])
-        selectiveLocator = FixedLocator([0.001, 0.01, 0.08])
+        selectiveFormatter = FixedFormatter(["0.001", "0.003", "0.01", "0.03", "0.08"])
+        selectiveLocator = FixedLocator([0.001, 0.003, 0.01, 0.03, 0.08])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
