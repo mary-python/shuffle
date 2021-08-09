@@ -6,9 +6,9 @@ Note that the files **mitbih_test.csv** and **mitbih_train.csv** from the [**ECG
 
 ## Authors
 
-- **Mary Scott** (Mary.P.Scott@warwick.ac.uk), Department of Computer Science, University of Warwick, Coventry, UK, CV4 7AL
-- **Graham Cormode** (G.Cormode@warwick.ac.uk), Department of Computer Science, University of Warwick, Coventry, UK, CV4 7AL
-- **Carsten Maple** (CM@warwick.ac.uk), WMG, University of Warwick, Coventry, UK, CV4 7AL
+- **Mary Scott**, Department of Computer Science, University of Warwick
+- **Graham Cormode**, Department of Computer Science, University of Warwick
+- **Carsten Maple**, WMG, University of Warwick
 
 ## Instructions
 
