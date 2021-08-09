@@ -39,6 +39,14 @@ n1 = 21892
 n2const = 28108
 n2vary = 38108
 
+# SETTING FONTSIZES FOR GRAPHS
+plt.rc('font', size = 20)
+plt.rc('axes', titlesize = 20, labelsize = 20)
+plt.rc('xtick', labelsize = 20)
+plt.rc('ytick', labelsize = 20)
+plt.rc('legend', fontsize = 20)
+plt.rc('figure', titlesize = 20)
+
 # INITIALISING GLOBAL VARIABLES FOR HEARTBEAT DATA
 heartbeatDataConstDConstN = np.zeros((nconst, dconst))
 heartbeatDataVaryDConstN = np.zeros((nconst, dmax))
@@ -350,7 +358,7 @@ def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, 
     plt.gca().xaxis.set_major_locator(selectiveInputLocator)
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
 
-    plt.gca().set(title = 'Histogram of true average vectors using the heartbeat data in the basic case', xlabel = 'Value', ylabel = 'Frequency')
+    plt.gca().set(title = 'Histogram of true average vectors \n using the heartbeat data in the basic case', xlabel = 'Value', ylabel = 'Frequency')
 
     datafile.write(f"Frequencies of true average vectors: \n")
     datafile.write(f"{str(inputVector)[1:-1]} \n")
@@ -370,7 +378,7 @@ def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, 
     plt.gca().xaxis.set_major_locator(selectiveOutputLocator)
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
 
-    plt.gca().set(title = 'Histogram of reconstructed unbiased vectors using the heartbeat data in the basic case', xlabel = 'Value', ylabel = 'Frequency')
+    plt.gca().set(title = 'Histogram of reconstructed unbiased vectors \n using the heartbeat data in the basic case', xlabel = 'Value', ylabel = 'Frequency')
 
     datafile.write(f"Frequencies of reconstructed unbiased vectors: \n")
     datafile.write(f"{str(outputVector)[1:-1]} \n")
@@ -714,9 +722,9 @@ def runDft(heartOrSynth, index, var, varset, tchoice, kchoice, mchoice, epschoic
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
 
     if heartOrSynth == 0:
-        plt.gca().set(title = 'Histogram of true average vectors using the heartbeat data in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
+        plt.gca().set(title = 'Histogram of true average vectors \n using the heartbeat data in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
     else:
-        plt.gca().set(title = 'Histogram of true average vectors using the synthetic data in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
+        plt.gca().set(title = 'Histogram of true average vectors \n using the synthetic data in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
 
     datafile.write(f"Frequencies of true average vectors: \n")
     datafile.write(f"{str(dftInputVector)[1:-1]} \n")
@@ -737,9 +745,9 @@ def runDft(heartOrSynth, index, var, varset, tchoice, kchoice, mchoice, epschoic
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
 
     if heartOrSynth == 0:
-        plt.gca().set(title = 'Histogram of reconstructed unbiased vectors using the heartbeat data in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
+        plt.gca().set(title = 'Histogram of reconstructed unbiased vectors \n using the heartbeat data in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
     else:
-        plt.gca().set(title = 'Histogram of reconstructed unbiased vectors using the synthetic data in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
+        plt.gca().set(title = 'Histogram of reconstructed unbiased vectors \n using the synthetic data in the Fourier case', xlabel = 'Value', ylabel = 'Frequency')
 
     datafile.write(f"Frequencies of reconstructed unbiased vectors: \n")
     datafile.write(f"{str(dftOutputVector)[1:-1]} \n")

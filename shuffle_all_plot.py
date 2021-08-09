@@ -17,6 +17,14 @@ width = 0.35
 parset = ['t', 'k', 'm', 'd', 'eps', 'eps', 'n']
 limit = 10
 
+# SETTING FONTSIZES FOR GRAPHS
+plt.rc('font', size = 16)
+plt.rc('axes', titlesize = 16, labelsize = 16)
+plt.rc('xtick', labelsize = 16)
+plt.rc('ytick', labelsize = 16)
+plt.rc('legend', fontsize = 16)
+plt.rc('figure', titlesize = 16)
+
 # THE X-AXIS, TICKET AND TITLE ARE INDIVIDUALLY TAILORED FOR EACH PARAMETER AND WHETHER DISCRETE FOURIER TRANSFORM IS USED
 def custom(index, dft):
 
@@ -27,11 +35,11 @@ def custom(index, dft):
 
         # A SINGLE EXPERIMENTAL ERROR IS PLOTTED IN THE BASIC CASE
         if dft == 0:
-            plt.title('Experimental error by number of coordinates retained (t)')
+            plt.title('Experimental error by \n number of coordinates retained (t)')
 
         # RATIO BETWEEN EXPERIMENTAL ERRORS IS PLOTTED IN THE FOURIER CASE
         else:
-            plt.title('Ratio between errors by number of coordinates retained (t)')
+            plt.title('Ratio between errors by \n number of coordinates retained (t)')
 
     # VARYING THE NUMBER OF BUCKETS K USED
     elif index == 1:
@@ -39,9 +47,9 @@ def custom(index, dft):
         plt.xlabel('Number of buckets used (k)', labelpad = 8)
 
         if dft == 0:
-            plt.title('Experimental error by number of buckets used (k)')
+            plt.title('Experimental error by \n number of buckets used (k)')
         else:
-            plt.title('Ratio between errors by number of buckets used (k)')
+            plt.title('Ratio between errors by \n number of buckets used (k)')
 
     # VARYING THE NUMBER OF FOURIER COEFFICIENTS M
     elif index == 2:
@@ -49,13 +57,13 @@ def custom(index, dft):
         plt.xlabel('% of Fourier coefficients retained (m)', labelpad = 8)
 
         if dft == 0:
-            plt.title('Experimental error by % of Fourier coefficients retained (m)')
+            plt.title('Experimental error by % of \n Fourier coefficients retained (m)')
         elif dft == 1:
-            plt.title('Ratio between errors by % of Fourier coefficients retained (m)')
+            plt.title('Ratio between errors by % of \n Fourier coefficients retained (m)')
 
         # CHANGE THE TITLE WHEN PERTURBATION ERROR IS ISOLATED
         else:
-            plt.title('Perturbation error by % of Fourier coefficients retained (m)')
+            plt.title('Perturbation error by % of \n Fourier coefficients retained (m)')
 
     # VARYING THE VECTOR DIMENSION D
     elif index == 3:
@@ -97,11 +105,11 @@ def custom(index, dft):
         plt.xlabel('Number of vectors used (n)' + ' ' + 'x' + ' ' + '$10^{3}$', labelpad = 8)
 
         if dft == 0:
-            plt.title('Experimental error by number of vectors used (n)')
+            plt.title('Experimental error by \n number of vectors used (n)')
         elif dft == 1:
-            plt.title('Ratio between errors by number of vectors used (n)')
+            plt.title('Ratio between errors by \n number of vectors used (n)')
         else:
-            plt.title('Perturbation error by number of vectors used (n)')
+            plt.title('Perturbation error by \n number of vectors used (n)')
 
 # THE SKELETON DRAWING FUNCTION IN THE BASIC CASE
 def drawBasic(index):
