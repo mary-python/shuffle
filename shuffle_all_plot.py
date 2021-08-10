@@ -262,6 +262,9 @@ def drawDft(heartOrSynth, index):
     plt.bar(labels, recErrors, width, label = 'Reconstruction error', alpha = 0.6, color = 'r', edgecolor = 'k')
     plt.bar(labels, perErrors, width, bottom = recErrors, label = 'Perturbation error', alpha = 0.6, color = 'c', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
+    plt.ticklabel_format(axis = 'y', style = 'plain')
+    plt.ylabel('Total experimental MSE')
+
 
 # THE SKELETON SAVING FUNCTION IN THE FOURIER CASE
 def saveDft(heartOrSynth, index):
