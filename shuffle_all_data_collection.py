@@ -17,7 +17,7 @@ tconst = tset[0]
 kset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 kconst = kset[2]
 mset = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-mconst = mset[8]
+mconst = 95
 
 # INITIALISING PARAMETERS/CONSTANTS OF THE DATA
 dset = [60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
@@ -211,7 +211,7 @@ def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, 
         if epschoice < 1:
             gamma = max((((14*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*dchoice*kchoice)/((nchoice-1)*epschoice))
         else:
-            gamma = max((((32*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (21*dchoice*kchoice)/(4*(nchoice-1)*epschoice))
+            gamma = max((((80*dchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (36*dchoice*kchoice)/(11*(nchoice-1)*epschoice))
     else:
         if epschoice < 1:
             gamma = (((56*dchoice*kchoice*(math.log(1/dta))*(math.log((2*tchoice)/dta))))/((nchoice-1)*(epschoice**2)))
@@ -312,7 +312,7 @@ def runBasic(index, var, varset, tchoice, kchoice, dchoice, epschoice, nchoice, 
         if epschoice < 1:
             comparison = max((((98**(1/3))*(dchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(dchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
         else:
-            comparison = max(((8*(dchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), ((21**(2/3))*(dchoice**(8/3)))/(2*((1-gamma)**2)*(nchoice**(5/3))*((2*epschoice)**(2/3))))
+            comparison = max(((2*(dchoice**(8/3))*(20*(np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (2*(9**(2/3))*(dchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((11*epschoice)**(2/3))))
     else:
         if epschoice < 1:
             comparison = (2*tchoice*(dchoice**(8/3))*((14*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
@@ -527,7 +527,7 @@ def runDft(heartOrSynth, index, var, varset, tchoice, kchoice, mchoice, epschoic
         if epschoice < 1:
             gamma = max((((14*mchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (27*mchoice*kchoice)/((nchoice-1)*epschoice))
         else:
-            gamma = max((((32*mchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (21*mchoice*kchoice)/(4*(nchoice-1)*epschoice))
+            gamma = max((((80*mchoice*kchoice*(math.log(2/dta))))/((nchoice-1)*(epschoice**2))), (36*mchoice*kchoice)/(11*(nchoice-1)*epschoice))
 
     else:
         if epschoice < 1:
@@ -659,7 +659,7 @@ def runDft(heartOrSynth, index, var, varset, tchoice, kchoice, mchoice, epschoic
         if epschoice < 1:
             dftComparison = max((((98**(1/3))*(mchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (18*(mchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((4*epschoice)**(2/3))))
         else:
-            dftComparison = max(((8*(mchoice**(8/3))*((np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), ((21**(2/3))*(mchoice**(8/3)))/(2*((1-gamma)**2)*(nchoice**(5/3))*((2*epschoice)**(2/3))))
+            dftComparison = max(((2*(mchoice**(8/3))*(20*(np.log(2/dta))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))), (2*(9**(2/3))*(mchoice**(8/3)))/(((1-gamma)**2)*(nchoice**(5/3))*((11*epschoice)**(2/3))))
     else:
         if epschoice < 1:
             dftComparison = (2*tchoice*(mchoice**(8/3))*((14*(np.log(1/dta))*(np.log((2*tchoice)/dta)))**(2/3)))/(((1-gamma)**2)*(nchoice**(5/3))*(epschoice**(4/3)))
