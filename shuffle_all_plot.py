@@ -109,7 +109,7 @@ def drawBasic(index):
     
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.ylabel('Total experimental MSE')
+    plt.ylabel('Total experimental $\widehat{MSE}$')
 
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON AND N DEPENDENCIES
     if index == 4:
@@ -207,7 +207,7 @@ def drawDft(heartOrSynth, index):
     plt.bar(labels, perErrors, width, bottom = recErrors, label = 'Perturbation error', alpha = 0.6, color = 'c', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
     plt.ticklabel_format(axis = 'y', style = 'plain')
-    plt.ylabel('Total experimental MSE')
+    plt.ylabel('Total experimental $\widehat{MSE}$')
 
 
 # THE SKELETON SAVING FUNCTION IN THE FOURIER CASE
