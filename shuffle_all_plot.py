@@ -11,12 +11,12 @@ parset = ['t', 'k', 'm', 'd', 'eps', 'eps', 'n']
 limit = 10
 
 # SETTING FONTSIZES FOR GRAPHS
-plt.rc('font', size = 14)
-plt.rc('axes', titlesize = 14, labelsize = 14)
-plt.rc('xtick', labelsize = 14)
-plt.rc('ytick', labelsize = 14)
-plt.rc('legend', fontsize = 14)
-plt.rc('figure', titlesize = 14)
+plt.rc('font', size = 16)
+plt.rc('axes', titlesize = 16, labelsize = 16)
+plt.rc('xtick', labelsize = 16)
+plt.rc('ytick', labelsize = 16)
+plt.rc('legend', fontsize = 16)
+plt.rc('figure', titlesize = 16)
 
 # THE X-AXIS, TICKET AND TITLE ARE INDIVIDUALLY TAILORED FOR EACH PARAMETER AND WHETHER DISCRETE FOURIER TRANSFORM IS USED
 def custom(index, dft):
