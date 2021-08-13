@@ -1,4 +1,4 @@
-# Extending the Shuffle Model of Differential Privacy to Vectors: Experimental Evaluation
+# Applying the Shuffle Model of Differential Privacy to Vector Aggregation: Experimental Evaluation
 
 This repository contains all the supporting files for the **experimental section of the paper _Extending the Shuffle Model of Differential Privacy to Vectors_**,
 including all the Python files necessary for anyone to repeat all of the experiments given as evidence for the results in the paper.
