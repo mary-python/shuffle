@@ -15,7 +15,7 @@ plt.rc('font', size = 16)
 plt.rc('axes', titlesize = 16, labelsize = 16)
 plt.rc('xtick', labelsize = 16)
 plt.rc('ytick', labelsize = 16)
-plt.rc('legend', fontsize = 16)
+plt.rc('legend', fontsize = 14)
 plt.rc('figure', titlesize = 16)
 
 # THE X-AXIS, TICKET AND TITLE ARE INDIVIDUALLY TAILORED FOR EACH PARAMETER AND WHETHER DISCRETE FOURIER TRANSFORM IS USED
@@ -86,8 +86,8 @@ def drawBasic(index):
                 break
     
     # THE BARS PLOTTED IS THE SAME FOR EACH PARAMETER
-    plt.bar(labels, totalErrors, width, alpha = 0.6, color = 'm', edgecolor = 'k')
-    plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
+    plt.bar(labels, totalErrors, width, label = 'Total experimental error',  alpha = 0.6, color = 'm', edgecolor = 'k')
+    plt.errorbar(labels, totalErrors, totalStandardDeviation, label = 'Total standard deviation',  linestyle = 'None', capsize = 2, color = 'g')
 
     # PLOTTING COMPARISON LINE GRAPHS TO VERIFY DEPENDENCIES WITH D, EPSILON AND N
     plotTuple = tuple(zip(seeds, gammas))
@@ -105,7 +105,7 @@ def drawBasic(index):
             p = [1.1*(((1/(s**(7/6)))/((1-g))**2))+0.024 for s, g in plotTuple]
 
         y = np.array(p)
-        plt.plot(x, y, alpha = 0.6, color = 'k')
+        plt.plot(x, y, label = 'Best fit curve', alpha = 0.6, color = 'k')
     
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
@@ -138,6 +138,13 @@ def drawBasic(index):
 
 # THE SKELETON SAVING FUNCTION IN THE BASIC CASE
 def saveBasic(index):
+    plt.legend()
+
+    if index >= 3:
+        handles, labels = plt.gca().get_legend_handles_labels()
+        order = [1, 0, 2]
+        plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order])
+
     plt.tight_layout()
     plt.draw()
     plt.savefig("errorchartbasic" + str(index) + "%s.png" % parset[index])
@@ -205,7 +212,7 @@ def drawDft(heartOrSynth, index):
     # THE BARS PLOTTED AND Y-AXIS ARE THE SAME FOR EACH PARAMETER
     plt.bar(labels, recErrors, width, label = 'Reconstruction error', alpha = 0.6, color = 'r', edgecolor = 'k')
     plt.bar(labels, perErrors, width, bottom = recErrors, label = 'Perturbation error', alpha = 0.6, color = 'c', edgecolor = 'k')
-    plt.errorbar(labels, totalErrors, totalStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
+    plt.errorbar(labels, totalErrors, totalStandardDeviation, label = 'Total standard deviation', linestyle = 'None', capsize = 2, color = 'g')
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental $\widehat{MSE}$')
 
@@ -214,7 +221,7 @@ def drawDft(heartOrSynth, index):
 def saveDft(heartOrSynth, index):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
-    order = [1, 0]
+    order = [1, 0, 2]
     plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order])
     plt.tight_layout()
     plt.draw()
@@ -268,8 +275,8 @@ def fitPerDft(index):
             readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, gammas, rowCount)
 
     # NEED TO ISOLATE PERTURBATION ERRORS TO VERIFY DEPENDENCIES
-    plt.bar(labels, perErrors, width, alpha = 0.6, color = 'c', edgecolor = 'k')
-    plt.errorbar(labels, perErrors, perStandardDeviation, linestyle = 'None', capsize = 2, color = 'g')
+    plt.bar(labels, perErrors, width, label = 'Perturbation error',  alpha = 0.6, color = 'c', edgecolor = 'k')
+    plt.errorbar(labels, perErrors, perStandardDeviation, label = 'Standard deviation', linestyle = 'None', capsize = 2, color = 'g')
 
     # PLOTTING COMPARISON LINE GRAPHS TO VERIFY DEPENDENCIES WITH D, EPSILON AND N
     plotTuple = tuple(zip(seeds, gammas))
@@ -285,7 +292,7 @@ def fitPerDft(index):
         p = [(0.32*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
     
     y = np.array(p)
-    plt.plot(x, y, alpha = 0.6, color = 'k')
+    plt.plot(x, y, label = 'Best fit curve', alpha = 0.6, color = 'k')
 
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
@@ -294,9 +301,9 @@ def fitPerDft(index):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPS AND N DEPENDENCIES
     if index == 4:
         plt.yscale('log')
-        plt.ylim(0.002, 0.05)
-        selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.05"])
-        selectiveLocator = FixedLocator([0.002, 0.01, 0.05])
+        plt.ylim(0.002, 0.07)
+        selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.07"])
+        selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.07])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
@@ -317,6 +324,10 @@ def fitPerDft(index):
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
 def savePerDft(index):
+    plt.legend()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    order = [1, 0, 2]
+    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order])
     plt.tight_layout()
     plt.draw()
     plt.savefig("errorchartfourierperturb" + str(index) + "%s.png" % parset[index])
