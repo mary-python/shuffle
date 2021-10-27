@@ -893,7 +893,7 @@ def runDftVaryM(baseline, heartOrSynth):
 
             runDft(baseline, heartOrSynth, 2, m, mset, tconst, kconst, m, epsconst, nconst, syntheticDataConstDConstN, totalSynthVectorsConstDConstN, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
-    afterDftLoopStats(heartOrSynth, 2, m, mset, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(baseline, heartOrSynth, 2, m, mset, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE VALUE OF EPSILON: LESS THAN OR EQUAL TO 1
 def runDftVaryEps1(baseline, heartOrSynth):
