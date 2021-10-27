@@ -618,7 +618,11 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
         dftAverageSquares = [idx**2 for idx in dftAverageVector]
         dftSumOfSquares += sum(dftAverageSquares)
 
-        exactVector = irfft(rfft(dftAverageVector).tolist()[0:mchoice] + [0]*(dconst-mchoice)).tolist()
+        if baseline == 0:
+            exactVector = irfft(rfft(dftAverageVector).tolist()[0:mchoice] + [0]*(dconst-mchoice)).tolist()
+        else:
+            exactVector = dftAverageVector[0:mchoice] + [0]*(dconst-mchoice)
+
         reconstructionTuple = tuple(zip(exactVector, dftAverageVector))
         reconstructionError = [(a - b)**2 for a, b in reconstructionTuple]
         totalReconstructionError.append(sum(reconstructionError))
