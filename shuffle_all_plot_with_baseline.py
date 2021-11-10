@@ -18,42 +18,35 @@ plt.rc('ytick', labelsize = 16)
 plt.rc('legend', fontsize = 14)
 plt.rc('figure', titlesize = 16)
 
-# THE X-AXIS, TICKET AND TITLE ARE INDIVIDUALLY TAILORED FOR EACH PARAMETER AND WHETHER DISCRETE FOURIER TRANSFORM IS USED
+# THE X-AXIS LABEL IS INDIVIDUALLY TAILORED FOR EACH PARAMETER
 def custom(index, dft):
 
     # VARYING THE NUMBER OF COORDINATES T RETAINED
     if index == 0:
-        plt.xticks(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']) 
         plt.xlabel('Number of coordinates ' + '$\mathit{t}$ ' + 'retained', labelpad = 8)
 
     # VARYING THE NUMBER OF BUCKETS K USED
     elif index == 1:
-        plt.xticks(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
         plt.xlabel('Number of buckets ' + '$\mathit{k}$ ' + 'used', labelpad = 8)
 
     # VARYING THE NUMBER OF FOURIER COEFFICIENTS M
     elif index == 2:
-        plt.xticks(['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'])
         plt.xlabel('% of Fourier coefficients ' + '$\mathit{m}$ ' + 'retained', labelpad = 8)
 
     # VARYING THE VECTOR DIMENSION D
     elif index == 3:
-        plt.xticks(['60', '70', '80', '90', '100', '110', '120', '130', '140', '150'])
         plt.xlabel('Vector dimension ' + '$\mathit{d}$', labelpad = 8)
     
     # VARYING THE VALUE OF EPSILON: LESS THAN OR EQUAL TO 1
     elif index == 4:
-        plt.xticks(['0.5', '0.55', '0.6', '0.65', '0.7', '0.75', '0.8', '0.85', '0.9', '0.95'])
         plt.xlabel('Value of ' + '$\mathit{\u03b5}$', labelpad = 8)
 
     # VARYING THE VALUE OF EPSILON: GREATER THAN 1
     elif index == 5:
-        plt.xticks(['1.0','1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0', '5.5'])
         plt.xlabel('Value of ' + '$\mathit{\u03b5}$', labelpad = 8)
 
     # VARYING THE NUMBER OF VECTORS N USED
     else:
-        plt.xticks(['10', '11', '14', '17', '20', '30', '40', '50', '60', '70'])
         plt.xlabel('Number of vectors ' + '$\mathit{n}$ ' + 'used ' + 'x ' + '$10^{3}$', labelpad = 8)
 
 # THE SKELETON DRAWING FUNCTION IN THE BASIC CASE
@@ -110,6 +103,7 @@ def drawBasic(index):
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental $\widehat{MSE}$')
+    plt.xticks(labels)
 
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON AND N DEPENDENCIES
     if index == 4:
@@ -170,10 +164,10 @@ def readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, tot
         tab = line.split()
 
         if index == 4 or index == 5:
-            labels.append(f'{float(tab[0])}')
+            labels[rowCount] = f'{(float(tab[0]))}'
             seeds.append(float(tab[0]))
         else:
-            labels.append(f'{int(tab[0])}')
+            labels[rowCount] = f'{(int(tab[0]))}'
             seeds.append(int(tab[0]))
 
         perErrors.append((Decimal(tab[1])))
@@ -187,73 +181,70 @@ def readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, tot
             break
 
 # THE SKELETON DRAWING FUNCTION IN THE FOURIER CASE
-def drawDft(baseline, heartOrSynth, index):
-    labels = list()
-    perErrors = list()
-    recErrors = list()
-    totalErrors = list()
-    totalStandardDeviation = list()
-    gammas = list()
-    seeds = list()
+def drawDft(heartOrSynth, index):
+    labels = [0]*limit
+    perErrorsA = list()
+    perErrorsB = list()
+    recErrorsA = list()
+    recErrorsB = list()
+    totalErrorsA = list()
+    totalErrorsB = list()
+    totalStandardDeviationA = list()
+    totalStandardDeviationB = list()
+    gammasA = list()
+    gammasB = list()
+    seedsA = list()
+    seedsB = list()
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
     if index == 2:
         if heartOrSynth == 0:
-            if baseline == 0:
-                with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-                    readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount)
-            else:
-                with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-                    readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount)
+            with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
+                readDft(reader, index, labels, seedsA, perErrorsA, recErrorsA, totalErrorsA, totalStandardDeviationA, gammasA, rowCount)
+            with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
+                readDft(reader, index, labels, seedsB, perErrorsB, recErrorsB, totalErrorsB, totalStandardDeviationB, gammasB, rowCount)
         else:
-            if baseline == 0:
-                with open("errordatafourier" + str(index) + "%ssynth.txt" % parset[index]) as reader:
-                    readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount)
-            else:
-                with open("errordatanofourier" + str(index) + "%ssynth.txt" % parset[index]) as reader:
-                    readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount)
+            with open("errordatafourier" + str(index) + "%ssynth.txt" % parset[index]) as reader:
+                readDft(reader, index, labels, seedsA, perErrorsA, recErrorsA, totalErrorsA, totalStandardDeviationA, gammasA, rowCount)
+            with open("errordatanofourier" + str(index) + "%ssynth.txt" % parset[index]) as reader:
+                readDft(reader, index, labels, seedsB, perErrorsB, recErrorsB, totalErrorsB, totalStandardDeviationB, gammasB, rowCount)
     else:
-        if baseline == 0:
-            with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
-                readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount)
-        else:
-            with open("errordatanofourier" + str(index) + "%s.txt" % parset[index]) as reader:
-                readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount)
+        with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
+            readDft(reader, index, labels, seedsA, perErrorsA, recErrorsA, totalErrorsA, totalStandardDeviationA, gammasA, rowCount)
+        with open("errordatanofourier" + str(index) + "%s.txt" % parset[index]) as reader:
+            readDft(reader, index, labels, seedsB, perErrorsB, recErrorsB, totalErrorsB, totalStandardDeviationB, gammasB, rowCount)
 
     # THE BARS PLOTTED AND Y-AXIS ARE THE SAME FOR EACH PARAMETER
-    plt.bar(labels, recErrors, width, label = 'Reconstruction error', alpha = 0.6, color = 'r', edgecolor = 'k')
-    plt.bar(labels, perErrors, width, bottom = recErrors, label = 'Perturbation error', alpha = 0.6, color = 'c', edgecolor = 'k')
-    plt.errorbar(labels, totalErrors, totalStandardDeviation, label = 'Total standard deviation', linestyle = 'None', capsize = 2, color = 'g')
+    xLabels = np.arange(len(labels))
+    plt.bar(xLabels - width/2, recErrorsA, width, label = 'Reconstruction error', alpha = 0.6, color = 'tab:red', edgecolor = 'k') 
+    plt.bar(xLabels - width/2, perErrorsA, width, bottom = recErrorsA, label = 'Perturbation error', alpha = 0.6, color = 'tab:green', edgecolor = 'k')
+    plt.errorbar(xLabels - width/2, totalErrorsA, totalStandardDeviationA, label = 'Total standard deviation', linestyle = 'None', capsize = 2, color = 'tab:blue')
+    
+    plt.bar(xLabels + width/2, recErrorsB, width, label = 'RE for baseline', alpha = 0.6, color = 'tab:cyan', edgecolor = 'k')
+    plt.bar(xLabels + width/2, perErrorsB, width, bottom = recErrorsB, label = 'PE for baseline', alpha = 0.6, color = 'tab:orange', edgecolor = 'k')
+    plt.errorbar(xLabels + width/2, totalErrorsB, totalStandardDeviationB, linestyle = 'None', capsize = 2, color = 'tab:blue')
+    
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Total experimental $\widehat{MSE}$')
-
+    plt.xticks(xLabels, labels)
 
 # THE SKELETON SAVING FUNCTION IN THE FOURIER CASE
-def saveDft(baseline, heartOrSynth, index):
+def saveDft(heartOrSynth, index):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
-    order = [1, 0, 2]
+    order = [1, 0, 4, 3, 2]
     plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order])
     plt.tight_layout()
     plt.draw()
 
     if index == 2:
         if heartOrSynth == 0:
-            if baseline == 0:
-                plt.savefig("errorchartfourier" + str(index) + "%sheart.png" % parset[index])
-            else:
-                plt.savefig("errorchartnofourier" + str(index) + "%sheart.png" % parset[index])
+            plt.savefig("errorchartfourier" + str(index) + "%sheart.png" % parset[index])
         else:
-            if baseline == 0:
-                plt.savefig("errorchartfourier" + str(index) + "%ssynth.png" % parset[index])
-            else:
-                plt.savefig("errorchartnofourier" + str(index) + "%ssynth.png" % parset[index])
+            plt.savefig("errorchartfourier" + str(index) + "%ssynth.png" % parset[index])
     else:
-        if baseline == 0:
-            plt.savefig("errorchartfourier" + str(index) + "%s.png" % parset[index])
-        else:
-            plt.savefig("errorchartnofourier" + str(index) + "%s.png" % parset[index])
+        plt.savefig("errorchartfourier" + str(index) + "%s.png" % parset[index])
 
     plt.clf()
     plt.cla()
@@ -264,10 +255,10 @@ def readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, ga
         tab = line.split()
 
         if index == 4 or index == 5:
-            labels.append(f'{float(tab[0])}')
+            labels[rowCount] = f'{(float(tab[0]))}'
             seeds.append(float(tab[0]))
         else:
-            labels.append(f'{int(tab[0])}')
+            labels[rowCount] = f'{(int(tab[0]))}'
             seeds.append(int(tab[0]))
             
         perErrors.append((Decimal(tab[1])))
@@ -279,158 +270,125 @@ def readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, ga
             break
 
 # A SKELETON FUNCTION ISOLATING THE PERTURBATION ERROR
-def fitPerDft(baseline, index):
-    labels = list()
-    perErrors = list()
-    perStandardDeviation = list()
-    gammas = list()
-    seeds = list()
+def fitPerDft(index):
+    labels = [0]*limit
+    perErrorsA = list()
+    perErrorsB = list()
+    perStandardDeviationA = list()
+    perStandardDeviationB = list()
+    gammasA = list()
+    gammasB = list()
+    seedsA = list()
+    seedsB = list()
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
     if index == 2:
-        if baseline == 0:
-            with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-                readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, gammas, rowCount)
-        else:
-            with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-                readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, gammas, rowCount)
+        with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
+            readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
+        with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
+            readPerDft(reader, index, labels, seedsB, perErrorsB, perStandardDeviationB, gammasB, rowCount)
     else:
-        if baseline == 0:
-            with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
-                readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, gammas, rowCount)
-        else:
-            with open("errordatanofourier" + str(index) + "%s.txt" % parset[index]) as reader:
-                readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, gammas, rowCount)
+        with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
+            readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
+        with open("errordatanofourier" + str(index) + "%s.txt" % parset[index]) as reader:
+            readPerDft(reader, index, labels, seedsB, perErrorsB, perStandardDeviationB, gammasB, rowCount)
 
     # NEED TO ISOLATE PERTURBATION ERRORS TO VERIFY DEPENDENCIES
-    plt.bar(labels, perErrors, width, label = 'Perturbation error',  alpha = 0.6, color = 'c', edgecolor = 'k')
-    plt.errorbar(labels, perErrors, perStandardDeviation, label = 'Standard deviation', linestyle = 'None', capsize = 2, color = 'g')
+    xLabels = np.arange(len(labels))
+    plt.bar(xLabels - width/2, perErrorsA, width, label = 'Perturbation error',  alpha = 0.6, color = 'tab:red', edgecolor = 'k')
+    plt.errorbar(xLabels - width/2, perErrorsA, perStandardDeviationA, label = 'Standard deviation', linestyle = 'None', capsize = 2, color = 'tab:blue')
+    plt.bar(xLabels + width/2, perErrorsB, width, label = 'PE for baseline',  alpha = 0.6, color = 'tab:orange', edgecolor = 'k')
+    plt.errorbar(xLabels + width/2, perErrorsB, perStandardDeviationB, linestyle = 'None', capsize = 2, color = 'tab:blue')
 
     # PLOTTING COMPARISON LINE GRAPHS TO VERIFY DEPENDENCIES WITH D, EPSILON AND N
-    plotTuple = tuple(zip(seeds, gammas))
-    x = np.array(labels)
+    plotTupleA = tuple(zip(seedsA, gammasA))
+    plotTupleB = tuple(zip(seedsB, gammasB))
+    x = np.arange(len(np.array(labels)))
 
-    if baseline == 0:
-        if index == 2:
-            p = [(0.000000055*((s**(8/3))/((1-g))**2))+0.0005 for s, g in plotTuple]
-        elif index == 4:
-            p = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
-        elif index == 5:
-            p = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
-        else:
-            p = [(0.32*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
+    if index == 2:
+        pA = [(0.000000055*((s**(8/3))/((1-g))**2))+0.0005 for s, g in plotTupleA]
+        pB = [(0.0000002*((s**(8/3))/((1-g))**2)) for s, g in plotTupleB]
+    elif index == 4:
+        pA = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleA]
+        pB = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTupleB]
+    elif index == 5:
+        pA = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleA]
+        pB = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTupleB]
     else:
-        if index == 2:
-            p = [(0.0000002*((s**(8/3))/((1-g))**2)) for s, g in plotTuple]
-        elif index == 4:
-            p = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
-        elif index == 5:
-            p = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTuple]
-        else:
-            p = [(3.4*((1/(s**(5/3)))/((1-g))**2))+0.028 for s, g in plotTuple]
-    
-    y = np.array(p)
-    plt.plot(x, y, label = 'Best fit curve', alpha = 0.6, color = 'k')
+        pA = [(0.32*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTupleA]
+        pB = [(3.4*((1/(s**(5/3)))/((1-g))**2))+0.028 for s, g in plotTupleB]
+
+    yA = np.array(pA)
+    yB = np.array(pB)
+    plt.plot(x - width/2, yA, label = 'Best fit curves', alpha = 0.6, color = 'k')
+    plt.plot(x + width/2, yB, alpha = 0.6, color = 'k')
 
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
     plt.ylabel('Perturbation error')
+    plt.xticks(x, labels)
 
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPS AND N DEPENDENCIES
-    if baseline == 0:
-        if index == 4:
-            plt.yscale('log')
-            plt.ylim(0.002, 0.07)
-            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.07"])
-            selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.07])
-            plt.gca().yaxis.set_major_formatter(selectiveFormatter)
-            plt.gca().yaxis.set_major_locator(selectiveLocator)
+    if index == 4:
+        plt.yscale('log')
+        plt.ylim(0.002, 0.25)
+        selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.25"])
+        selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.25])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
 
-        elif index == 5:
-            plt.yscale('log')
-            plt.ylim(0.003, 0.09)
-            selectiveFormatter = FixedFormatter(["0.003", "0.01", "0.03", "0.09"])
-            selectiveLocator = FixedLocator([0.003, 0.01, 0.03, 0.09])
-            plt.gca().yaxis.set_major_formatter(selectiveFormatter)
-            plt.gca().yaxis.set_major_locator(selectiveLocator)
+    elif index == 5:
+        plt.yscale('log')
+        plt.ylim(0.003, 0.8)
+        selectiveFormatter = FixedFormatter(["0.003", "0.01", "0.03", "0.1", "0.8"])
+        selectiveLocator = FixedLocator([0.003, 0.01, 0.03, 0.1, 0.8])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
 
-        elif index == 6:
-            plt.yscale('log')
-            plt.ylim(0.002, 0.13)
-            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1"])
-            selectiveLocator = FixedLocator([0.002, 0.01, 0.1])
-            plt.gca().yaxis.set_major_formatter(selectiveFormatter)
-            plt.gca().yaxis.set_major_locator(selectiveLocator)
+    elif index == 6:
+        plt.yscale('log')
+        plt.ylim(0.002, 1)
+        selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "0.3", "1"])
+        selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.3, 1])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
 
-    else:
-        if index == 4:
-            plt.yscale('log')
-            plt.ylim(0.035, 0.25)
-            selectiveFormatter = FixedFormatter(["0.04", "0.06", "0.1", "0.2", "0.25"])
-            selectiveLocator = FixedLocator([0.04, 0.06, 0.1, 0.2, 0.25])
-            plt.gca().yaxis.set_major_formatter(selectiveFormatter)
-            plt.gca().yaxis.set_major_locator(selectiveLocator)
-
-        elif index == 5:
-            plt.yscale('log')
-            plt.ylim(0.015, 0.8)
-            selectiveFormatter = FixedFormatter(["0.02", "0.1", "0.8"])
-            selectiveLocator = FixedLocator([0.02, 0.1, 0.8])
-            plt.gca().yaxis.set_major_formatter(selectiveFormatter)
-            plt.gca().yaxis.set_major_locator(selectiveLocator)
-
-        elif index == 6:
-            plt.yscale('log')
-            plt.ylim(0.02, 1)
-            selectiveFormatter = FixedFormatter(["0.02", "0.1", "0.3", "1"])
-            selectiveLocator = FixedLocator([0.02, 0.1, 0.3, 1])
-            plt.gca().yaxis.set_major_formatter(selectiveFormatter)
-            plt.gca().yaxis.set_major_locator(selectiveLocator)
-
-def savePerDft(baseline, index):
+def savePerDft(index):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
-    order = [1, 0, 2]
+    order = [1, 3, 0, 2]
     plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order])
     plt.tight_layout()
     plt.draw()
-    
-    if baseline == 0:
-        plt.savefig("errorchartfourierperturb" + str(index) + "%s.png" % parset[index])
-    else:
-        plt.savefig("errorchartnofourierperturb" + str(index) + "%s.png" % parset[index])
-
+    plt.savefig("errorchartfourierperturb" + str(index) + "%s.png" % parset[index])
     plt.clf()
     plt.cla()
 
 # MAIN PLOTTING FUNCTION IN THE FOURIER CASE: COMBINING THE ABOVE
 def plotDft():
 
-    # PLOTTING THE GRAPHS WITH DFT THEN THE BASELINE GRAPHS
-    for base in range(2):
+    # LOOPING THROUGH THE PARAMETER INDICES
+    for index in range(7):
 
-        # LOOPING THROUGH THE PARAMETER INDICES
-        for index in range(7):
-
-            # LEAVING OUT THE PARAMETER D AS IT IS NOT USED HERE
-            if index == 3:
-                continue
+        # LEAVING OUT THE PARAMETER D AS IT IS NOT USED HERE
+        if index == 3:
+            continue
         
-            if index <= 2:
-                drawDft(base, 0, index)
-                custom(index, 1)
-                saveDft(base, 0, index)
+        if index <= 2:
+            drawDft(0, index)
+            custom(index, 1)
+            saveDft(0, index)
 
-            if index == 2:
-                drawDft(base, 1, index)
-                custom(index, 1)
-                saveDft(base, 1, index)
+        if index == 2:
+            drawDft(1, index)
+            custom(index, 1)
+            saveDft(1, index)
 
-            if index == 2 or index >= 4:
-                fitPerDft(base, index)
-                custom(index, 2)
-                savePerDft(base, index)
+        if index == 2 or index >= 4:
+            fitPerDft(index)
+            custom(index, 2)
+            savePerDft(index)
 
 # CALLING ALL THE ABOVE FUNCTIONS: SOME ARE NESTED
 plotBasic()
