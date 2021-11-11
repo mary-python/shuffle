@@ -15,7 +15,7 @@ plt.rc('font', size = 16)
 plt.rc('axes', titlesize = 16, labelsize = 16)
 plt.rc('xtick', labelsize = 16)
 plt.rc('ytick', labelsize = 16)
-plt.rc('legend', fontsize = 14)
+plt.rc('legend', fontsize = 12)
 plt.rc('figure', titlesize = 16)
 
 # THE X-AXIS LABEL IS INDIVIDUALLY TAILORED FOR EACH PARAMETER
@@ -217,9 +217,9 @@ def drawDft(heartOrSynth, index):
 
     # THE BARS PLOTTED AND Y-AXIS ARE THE SAME FOR EACH PARAMETER
     xLabels = np.arange(len(labels))
-    plt.bar(xLabels - width/2, recErrorsA, width, label = 'Reconstruction error', alpha = 0.6, color = 'tab:red', edgecolor = 'k') 
-    plt.bar(xLabels - width/2, perErrorsA, width, bottom = recErrorsA, label = 'Perturbation error', alpha = 0.6, color = 'tab:green', edgecolor = 'k')
-    plt.errorbar(xLabels - width/2, totalErrorsA, totalStandardDeviationA, label = 'Total standard deviation', linestyle = 'None', capsize = 2, color = 'tab:blue')
+    plt.bar(xLabels - width/2, recErrorsA, width, label = 'Reconstruction err.', alpha = 0.6, color = 'tab:red', edgecolor = 'k') 
+    plt.bar(xLabels - width/2, perErrorsA, width, bottom = recErrorsA, label = 'Perturbation err.', alpha = 0.6, color = 'tab:green', edgecolor = 'k')
+    plt.errorbar(xLabels - width/2, totalErrorsA, totalStandardDeviationA, label = 'Total s.d.', linestyle = 'None', capsize = 2, color = 'tab:blue')
     
     plt.bar(xLabels + width/2, recErrorsB, width, label = 'RE for baseline', alpha = 0.6, color = 'tab:cyan', edgecolor = 'k')
     plt.bar(xLabels + width/2, perErrorsB, width, bottom = recErrorsB, label = 'PE for baseline', alpha = 0.6, color = 'tab:orange', edgecolor = 'k')
@@ -229,12 +229,44 @@ def drawDft(heartOrSynth, index):
     plt.ylabel('Total experimental $\widehat{MSE}$')
     plt.xticks(xLabels, labels)
 
+    if index == 0:
+        plt.yscale('log')
+        plt.ylim(0.005, 13)
+        selectiveFormatter = FixedFormatter(["0.005", "0.01", "0.1", "1", "10"])
+        selectiveLocator = FixedLocator([0.005, 0.01, 0.1, 1, 10])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+
+    elif index == 1:
+        plt.yscale('log')
+        plt.ylim(0.005, 2)
+        selectiveFormatter = FixedFormatter(["0.005", "0.01", "0.1", "1"])
+        selectiveLocator = FixedLocator([0.005, 0.01, 0.1, 1])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+
+    elif index == 2:
+        if heartOrSynth == 0:
+            plt.yscale('log')
+            plt.ylim(0.004, 100)
+            selectiveFormatter = FixedFormatter(["0.004", "0.01", "0.1", "1", "10", "100"])
+            selectiveLocator = FixedLocator([0.004, 0.01, 0.1, 1, 10, 100])
+            plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+            plt.gca().yaxis.set_major_locator(selectiveLocator)
+        else:
+            plt.yscale('log')
+            plt.ylim(0.0002, 10)
+            selectiveFormatter = FixedFormatter(["0.0002", "0.001", "0.01", "0.1", "1", "10"])
+            selectiveLocator = FixedLocator([0.0002, 0.001, 0.01, 0.1, 1, 10])
+            plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+            plt.gca().yaxis.set_major_locator(selectiveLocator)
+
 # THE SKELETON SAVING FUNCTION IN THE FOURIER CASE
 def saveDft(heartOrSynth, index):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
     order = [1, 0, 4, 3, 2]
-    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order])
+    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], ncol = 2)
     plt.tight_layout()
     plt.draw()
 
@@ -329,26 +361,29 @@ def fitPerDft(index):
     plt.ylabel('Perturbation error')
     plt.xticks(x, labels)
 
+    if index == 2:
+        plt.ylim(0, 0.075)
+
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPS AND N DEPENDENCIES
-    if index == 4:
+    elif index == 4:
         plt.yscale('log')
-        plt.ylim(0.002, 0.25)
-        selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.25"])
-        selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.25])
+        plt.ylim(0.002, 0.8)
+        selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.2", "0.8"])
+        selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.2, 0.8])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.003, 0.8)
-        selectiveFormatter = FixedFormatter(["0.003", "0.01", "0.03", "0.1", "0.8"])
-        selectiveLocator = FixedLocator([0.003, 0.01, 0.03, 0.1, 0.8])
+        plt.ylim(0.002, 0.8)
+        selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.8"])
+        selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.8])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 6:
         plt.yscale('log')
-        plt.ylim(0.002, 1)
+        plt.ylim(0.002, 1.7)
         selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "0.3", "1"])
         selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.3, 1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
