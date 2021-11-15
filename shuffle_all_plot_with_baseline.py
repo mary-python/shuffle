@@ -1,5 +1,4 @@
 # IMPORTING RELEVANT PACKAGES
-import math, re
 import matplotlib.pyplot as plt
 from decimal import *
 from matplotlib.ticker import FixedFormatter, FixedLocator
@@ -20,7 +19,7 @@ plt.rc('legend', fontsize = 12)
 plt.rc('figure', titlesize = 16)
 
 # THE X-AXIS LABEL IS INDIVIDUALLY TAILORED FOR EACH PARAMETER
-def custom(index, dft):
+def custom(index):
 
     # VARYING THE NUMBER OF COORDINATES T RETAINED
     if index == 0:
@@ -155,7 +154,7 @@ def plotBasic():
             continue
 
         drawBasic(index)
-        custom(index, 0)
+        custom(index)
         saveBasic(index)
 
 # FUNCTION TO READ EACH DATAFILE: DEFINED OUTSIDE MAIN DRAWING FUNCTION AS REFERENCED MULTIPLE TIMES
@@ -500,22 +499,22 @@ def plotDft():
         
         if index <= 2:
             drawDft(0, index)
-            custom(index, 1)
+            custom(index)
             saveDft(0, index)
 
         if index == 2:
             drawDft(1, index)
-            custom(index, 1)
+            custom(index)
             saveDft(1, index)
 
             fitPerDft(index, mset2[5])
-            custom(index, 2)
+            custom(index)
             savePerDft(index)
 
         if index >= 4:
             for m in mset2:
                 fitPerDft(index, m)
-                custom(index, 2)
+                custom(index)
                 savePerDft(index, m)
 
 # CALLING ALL THE ABOVE FUNCTIONS: SOME ARE NESTED
