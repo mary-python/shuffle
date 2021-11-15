@@ -16,8 +16,9 @@ tset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 tconst = tset[0]
 kset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 kconst = kset[2]
-mset = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-mconst = 90
+mset1 = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+mset2 = [5, 20, 40, 55, 75, 95]
+mconst = 95
 
 # INITIALISING PARAMETERS/CONSTANTS OF THE DATA
 dset = [60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
@@ -477,7 +478,7 @@ def runBasicVaryN():
     afterBasicLoopStats(6, n, nset, 0.001, 10, totalErrors, totalStandardDeviation, loopTotal, gammas)
 
 # WRITING IN ERROR FILE AFTER THE MAIN DFT LOOP
-def afterDftLoopStats(baseline, heartOrSynth, index, var, varset, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas):
+def afterDftLoopStats(baseline, heartOrSynth, index, var, varset, mchoice, multiplier, offset, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas):
     
     if index == 2:
         if heartOrSynth == 0:
@@ -490,6 +491,18 @@ def afterDftLoopStats(baseline, heartOrSynth, index, var, varset, multiplier, of
                 errorfile = open("errordatafourier" + str(index) + "%ssynth.txt" % parset[index], "w")
             else:
                 errorfile = open("errordatanofourier" + str(index) + "%ssynth.txt" % parset[index], "w")
+    
+    if index >= 4:
+        if mchoice == 5:
+            if baseline == 0:
+                errorfile = open("errordatafourier" + str(index) + "%s" % parset[index] + str(0) + str(mchoice) + ".txt", "w")    
+            else:
+                errorfile = open("errordatanofourier" + str(index) + "%s" % parset[index] + str(0) + str(mchoice) + ".txt", "w")
+        else:
+            if baseline == 0:
+                errorfile = open("errordatafourier" + str(index) + "%s" % parset[index] + str(mchoice) + ".txt", "w")    
+            else:
+                errorfile = open("errordatanofourier" + str(index) + "%s" % parset[index] + str(mchoice) + ".txt", "w")
 
     else:
         if baseline == 0:
@@ -667,6 +680,23 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
             else:
                 datafile = open("filenofourier" + str(index) + "%s" % parset[index] + str(var) + "synth.txt", "w")
                 datafile.write(f"Case 5: Synthetic Data Fourier Transform Baseline \n")
+
+    if index >= 4:
+        if mchoice == 5:
+            if baseline == 0:
+                datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".txt", "w")
+                datafile.write(f"Case 2: Heartbeat Data with Fourier Transform \n")    
+            else:
+                datafile = open("filenofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".txt", "w")
+                datafile.write(f"Case 4: Heartbeat Data Fourier Transform Baseline \n")
+        else:
+            if baseline == 0:
+                datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".txt", "w") 
+                datafile.write(f"Case 2: Heartbeat Data with Fourier Transform \n")   
+            else:
+                datafile = open("filenofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".txt", "w")
+                datafile.write(f"Case 4: Heartbeat Data Fourier Transform Baseline \n")
+
     else:
         if baseline == 0:
             datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(var) + ".txt", "w")
@@ -684,9 +714,11 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
     elif index == 3:
         datafile.write(f"Vector dimension d: {var} \n\n")
     elif index == 4 or index == 5:
-        datafile.write(f"Value of epsilon: {var} \n\n")
+        datafile.write(f"Value of epsilon: {var} \n")
+        datafile.write(f"Number of Fourier coefficients m: {mchoice} \n\n") 
     else:
-        datafile.write(f"Number of vectors n used: {var} \n\n") 
+        datafile.write(f"Number of vectors n used: {var} \n")
+        datafile.write(f"Number of Fourier coefficients m: {mchoice} \n\n")  
 
     if tchoice == 1:
         if epschoice < 1:
@@ -741,6 +773,19 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
                 plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + "synth.png")
             else:
                 plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(var) + "synth.png")
+
+    if index >= 4:
+        if mchoice == 5:
+            if baseline == 0:
+                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")    
+            else:
+                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")
+        else:
+            if baseline == 0:
+                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".png")    
+            else:
+                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".png")
+
     else:
         if baseline == 0:
             plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + ".png")
@@ -811,6 +856,19 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
                 plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + "synth.png")
             else:
                 plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(var) + "synth.png")
+
+    if index >= 4:
+        if mchoice == 5:
+            if baseline == 0:
+                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")    
+            else:
+                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")
+        else:
+            if baseline == 0:
+                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".png")    
+            else:
+                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".png")
+
     else:
         if baseline == 0:
             plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(var) + ".png")
@@ -844,7 +902,7 @@ def runDftVaryT(baseline, heartOrSynth):
 
         runDft(baseline, heartOrSynth, 0, t, tset, t, kconst, mconst, epsconst, nconst, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
        
-    afterDftLoopStats(baseline, heartOrSynth, 0, t, tset, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(baseline, heartOrSynth, 0, t, tset, mconst, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE NUMBER OF BUCKETS K USED
 def runDftVaryK(baseline, heartOrSynth):
@@ -864,7 +922,7 @@ def runDftVaryK(baseline, heartOrSynth):
         
         runDft(baseline, heartOrSynth, 1, k, kset, tconst, k, mconst, epsconst, nconst, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
-    afterDftLoopStats(baseline, heartOrSynth, 1, k, kset, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(baseline, heartOrSynth, 1, k, kset, mconst, 1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE NUMBER OF FOURIER COEFFICIENTS M
 def runDftVaryM(baseline, heartOrSynth):
@@ -876,14 +934,14 @@ def runDftVaryM(baseline, heartOrSynth):
     loopTotal = list()
     gammas = list()
 
-    for m in mset:
+    for m in mset1:
         if heartOrSynth == 0:
             if baseline == 0:
                 print(f"\nProcessing the optimal summation result with DFT for the value m = {m} using the heartbeat data.")
             else:
                 print(f"\nProcessing the optimal summation baseline result for the value m = {m} using the heartbeat data.")
 
-            runDft(baseline, heartOrSynth, 2, m, mset, tconst, kconst, m, epsconst, nconst, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+            runDft(baseline, heartOrSynth, 2, m, mset1, tconst, kconst, m, epsconst, nconst, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
         
         else:
             if baseline == 0:
@@ -891,9 +949,9 @@ def runDftVaryM(baseline, heartOrSynth):
             else:
                 print(f"\nProcessing the optimal summation baseline result for the value m = {m} using the synthetic data.")
 
-            runDft(baseline, heartOrSynth, 2, m, mset, tconst, kconst, m, epsconst, nconst, syntheticDataConstDConstN, totalSynthVectorsConstDConstN, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+            runDft(baseline, heartOrSynth, 2, m, mset1, tconst, kconst, m, epsconst, nconst, syntheticDataConstDConstN, totalSynthVectorsConstDConstN, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
-    afterDftLoopStats(baseline, heartOrSynth, 2, m, mset, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+    afterDftLoopStats(baseline, heartOrSynth, 2, m, mset1, m, 0.1, 1, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE VALUE OF EPSILON: LESS THAN OR EQUAL TO 1
 def runDftVaryEps1(baseline, heartOrSynth):
@@ -905,15 +963,16 @@ def runDftVaryEps1(baseline, heartOrSynth):
     loopTotal = list()
     gammas = list()
 
-    for eps in epsset1:
-        if baseline == 0:
-            print(f"\nProcessing the optimal summation result with DFT for the value eps = {eps} using the heartbeat data.")
-        else:
-            print(f"\nProcessing the optimal summation baseline result for the value eps = {eps} using the heartbeat data.")
+    for m in mset2:
+        for eps in epsset1: 
+            if baseline == 0:
+                print(f"\nProcessing the optimal summation result with DFT for the values m = {m} and eps = {eps} using the heartbeat data.")
+            else:
+                print(f"\nProcessing the optimal summation baseline result for the values m = {m} and eps = {eps} using the heartbeat data.")
 
-        runDft(baseline, heartOrSynth, 4, eps, epsset1, tconst, kconst, mconst, eps, nconst, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, 20, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+            runDft(baseline, heartOrSynth, 4, eps, epsset1, tconst, kconst, m, eps, nconst, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, 20, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
     
-    afterDftLoopStats(baseline, heartOrSynth, 4, eps, epsset1, 20, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+        afterDftLoopStats(baseline, heartOrSynth, 4, eps, epsset1, m, 20, 10, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE VALUE OF EPSILON: GREATER THAN 1
 def runDftVaryEps2(baseline, heartOrSynth):
@@ -925,15 +984,16 @@ def runDftVaryEps2(baseline, heartOrSynth):
     loopTotal = list()
     gammas = list()
 
-    for eps in epsset2:
-        if baseline == 0:
-            print(f"\nProcessing the optimal summation result with DFT for the value eps = {eps} using the heartbeat data.")
-        else:
-            print(f"\nProcessing the optimal summation baseline result for the value eps = {eps} using the heartbeat data.")
+    for m in mset2:
+        for eps in epsset2:
+            if baseline == 0:
+                print(f"\nProcessing the optimal summation result with DFT for the values m = {m} and eps = {eps} using the heartbeat data.")
+            else:
+                print(f"\nProcessing the optimal summation baseline result for the values m = {m} and eps = {eps} using the heartbeat data.")
 
-        runDft(baseline, heartOrSynth, 5, eps, epsset2, tconst, kconst, mconst, eps, nconst, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, 2, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+            runDft(baseline, heartOrSynth, 5, eps, epsset2, tconst, kconst, m, eps, nconst, heartbeatDataConstDConstN, totalHeartVectorsConstDConstN, 2, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
     
-    afterDftLoopStats(baseline, heartOrSynth, 5, eps, epsset2, 2, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+        afterDftLoopStats(baseline, heartOrSynth, 5, eps, epsset2, m, 2, 2, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # VARYING THE NUMBER OF VECTORS N USED
 def runDftVaryN(baseline, heartOrSynth):
@@ -945,15 +1005,16 @@ def runDftVaryN(baseline, heartOrSynth):
     loopTotal = list()
     gammas = list()
 
-    for n in nset:
-        if baseline == 0:
-            print(f"\nProcessing the optimal summation result with DFT for the value n = {n} using the heartbeat data.")
-        else:
-            print(f"\nProcessing the optimal summation baseline result for the value n = {n} using the heartbeat data.")
+    for m in mset2:
+        for n in nset:
+            if baseline == 0:
+                print(f"\nProcessing the optimal summation result with DFT for the values m = {m} and n = {n} using the heartbeat data.")
+            else:
+                print(f"\nProcessing the optimal summation baseline result for the values m = {m} and n = {n} using the heartbeat data.")
 
-        runDft(baseline, heartOrSynth, 6, n, nset, tconst, kconst, mconst, epsconst, n, heartbeatDataConstDVaryN, totalHeartVectorsConstDVaryN, 0.001, 18, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+            runDft(baseline, heartOrSynth, 6, n, nset, tconst, kconst, m, epsconst, n, heartbeatDataConstDVaryN, totalHeartVectorsConstDVaryN, 0.001, 18, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
     
-    afterDftLoopStats(baseline, heartOrSynth, 6, n, nset, 0.001, 18, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
+        afterDftLoopStats(baseline, heartOrSynth, 6, n, nset, m, 0.001, 18, perErrors, recErrors, totalDftErrors, totalDftStandardDeviation, perStandardDeviation, loopTotal, gammas)
 
 # CALLING ALL THE DATA READING FUNCTIONS
 readHeartbeatDataConstDConstN()

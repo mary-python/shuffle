@@ -7,7 +7,6 @@ import numpy as np
 
 # INITIALISING PARAMETERS/CONSTANTS
 width = 0.35
-mset2 = [5, 20, 40, 55, 75, 95]
 parset = ['t', 'k', 'm', 'd', 'eps', 'eps', 'n']
 limit = 10
 
@@ -276,7 +275,6 @@ def saveDft(heartOrSynth, index):
             plt.savefig("errorchartfourier" + str(index) + "%sheart.png" % parset[index])
         else:
             plt.savefig("errorchartfourier" + str(index) + "%ssynth.png" % parset[index])
-
     else:
         plt.savefig("errorchartfourier" + str(index) + "%s.png" % parset[index])
 
@@ -304,7 +302,7 @@ def readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, ga
             break
 
 # A SKELETON FUNCTION ISOLATING THE PERTURBATION ERROR
-def fitPerDft(index, m):
+def fitPerDft(index):
     labels = [0]*limit
     perErrorsA = list()
     perErrorsB = list()
@@ -322,18 +320,6 @@ def fitPerDft(index, m):
             readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
         with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
             readPerDft(reader, index, labels, seedsB, perErrorsB, perStandardDeviationB, gammasB, rowCount)
-    
-    if index >= 4:
-        if m == 5:
-            with open("errordatafourier" + str(index) + "%s" % parset[index] + str(0) + str(m) + ".txt") as reader:
-                readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
-            with open("errordatanofourier" + str(index) + "%s" % parset[index] + str(0) + str(m) + ".txt") as reader:
-                readPerDft(reader, index, labels, seedsB, perErrorsB, perStandardDeviationB, gammasB, rowCount)
-        else:
-            with open("errordatafourier" + str(index) + "%s" % parset[index] + str(m) + ".txt") as reader:
-                readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
-            with open("errordatanofourier" + str(index) + "%s" % parset[index] + str(m) + ".txt") as reader:
-                readPerDft(reader, index, labels, seedsB, perErrorsB, perStandardDeviationB, gammasB, rowCount)
     else:
         with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
             readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
@@ -355,81 +341,15 @@ def fitPerDft(index, m):
     if index == 2:
         pA = [(0.000000055*((s**(8/3))/((1-g))**2))+0.0005 for s, g in plotTupleA]
         pB = [(0.0000002*((s**(8/3))/((1-g))**2)) for s, g in plotTupleB]
-    
     elif index == 4:
-        if m == 5:
-            pA = [(0.00006*((1/(s**(4/3)))/((1-g))**2))+0.0001 for s, g in plotTupleA]
-            pB = [(0.00001*((1/(s**(4/3)))/((1-g))**2))+0.00003 for s, g in plotTupleB]
-
-        if m == 20:
-            pA = [(0.00037*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTupleA]
-            pB = [(0.00023*((1/(s**(4/3)))/((1-g))**2))+0.0008 for s, g in plotTupleB]
-
-        if m == 40:
-            pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.0019 for s, g in plotTupleA]
-            pB = [(0.0022*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTupleB]
-    
-        if m == 55:
-            pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTupleA]
-            pB = [(0.0041*((1/(s**(4/3)))/((1-g))**2))+0.0064 for s, g in plotTupleB]
-
-        if m == 75:
-            pA = [(0.0047*((1/(s**(4/3)))/((1-g))**2)) for s, g in plotTupleA]
-            pB = [(0.011*((1/(s**(4/3)))/((1-g))**2))+0.01 for s, g in plotTupleB]
-
-        else:
-            pA = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleA]
-            pB = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTupleB]
-
+        pA = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleA]
+        pB = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTupleB]
     elif index == 5:
-        if m == 5:
-            pA = [(0.0002*((1/(s**(4/3)))/((1-g))**2))+0.00014 for s, g in plotTupleA]
-            pB = [(0.000034*((1/(s**(4/3)))/((1-g))**2))+0.00004 for s, g in plotTupleB]
-
-        if m == 20:
-            pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTupleA]
-            pB = [(0.001*((1/(s**(4/3)))/((1-g))**2))+0.0007 for s, g in plotTupleB]
-
-        if m == 40:
-            pA = [(0.0055*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTupleA]
-            pB = [(0.0072*((1/(s**(4/3)))/((1-g))**2))+0.0029 for s, g in plotTupleB]
-    
-        if m == 55:
-            pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.0037 for s, g in plotTupleA]
-            pB = [(0.013*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleB]
-
-        if m == 75:
-            pA = [(0.0035*((1/(s**(4/3)))/((1-g))**2))+0.0065 for s, g in plotTupleA]
-            pB = [(0.037*((1/(s**(4/3)))/((1-g))**2))+0.0084 for s, g in plotTupleB]
-
-        else:
-            pA = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleA]
-            pB = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTupleB]
-
+        pA = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleA]
+        pB = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTupleB]
     else:
-        if m == 5:
-            pA = [(0.0035*((1/(s**(5/3)))/((1-g))**2))+0.00015 for s, g in plotTupleA]
-            pB = [(0.0015*((1/(s**(5/3)))/((1-g))**2))+0.000027 for s, g in plotTupleB]
-
-        if m == 20:
-            pA = [(0.015*((1/(s**(5/3)))/((1-g))**2))+0.0012 for s, g in plotTupleA]
-            pB = [(0.025*((1/(s**(5/3)))/((1-g))**2))+0.0008 for s, g in plotTupleB]
-
-        if m == 40:
-            pA = [(0.05*((1/(s**(5/3)))/((1-g))**2))+0.0023 for s, g in plotTupleA]
-            pB = [(0.3*((1/(s**(5/3)))/((1-g))**2))+0.0033 for s, g in plotTupleB]
-    
-        if m == 55:
-            pA = [(0.26*((1/(s**(5/3)))/((1-g))**2))+0.0025 for s, g in plotTupleA]
-            pB = [(0.74*((1/(s**(5/3)))/((1-g))**2))+0.0062 for s, g in plotTupleB]
-
-        if m == 75:
-            pA = [(0.25*((1/(s**(5/3)))/((1-g))**2))+0.006 for s, g in plotTupleA]
-            pB = [(1.6*((1/(s**(5/3)))/((1-g))**2))+0.016 for s, g in plotTupleB]
-
-        else:
-            pA = [(0.32*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTupleA]
-            pB = [(3.4*((1/(s**(5/3)))/((1-g))**2))+0.028 for s, g in plotTupleB]
+        pA = [(0.32*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTupleA]
+        pB = [(3.4*((1/(s**(5/3)))/((1-g))**2))+0.028 for s, g in plotTupleB]
 
     yA = np.array(pA)
     yB = np.array(pB)
@@ -469,22 +389,14 @@ def fitPerDft(index, m):
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
-def savePerDft(index, m):
+def savePerDft(index):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
     order = [1, 3, 0, 2]
     plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order])
     plt.tight_layout()
     plt.draw()
-    
-    if index >= 4:
-        if m == 5:
-            plt.savefig("errorchartfourierperturb" + str(index) + "%s" % parset[index] + str(0) + str(m) + ".png")
-        else:
-            plt.savefig("errorchartfourierperturb" + str(index) + "%s" % parset[index] + str(m) + ".png")
-    else:
-        plt.savefig("errorchartfourierperturb" + str(index) + "%s.png" % parset[index])
-
+    plt.savefig("errorchartfourierperturb" + str(index) + "%s.png" % parset[index])
     plt.clf()
     plt.cla()
 
@@ -508,15 +420,10 @@ def plotDft():
             custom(index, 1)
             saveDft(1, index)
 
-            fitPerDft(index, mset2[5])
+        if index == 2 or index >= 4:
+            fitPerDft(index)
             custom(index, 2)
             savePerDft(index)
-
-        if index >= 4:
-            for m in mset2:
-                fitPerDft(index, m)
-                custom(index, 2)
-                savePerDft(index, m)
 
 # CALLING ALL THE ABOVE FUNCTIONS: SOME ARE NESTED
 plotBasic()
