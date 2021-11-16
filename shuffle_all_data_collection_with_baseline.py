@@ -493,7 +493,7 @@ def afterDftLoopStats(baseline, heartOrSynth, index, var, varset, mchoice, multi
                 errorfile = open("errordatanofourier" + str(index) + "%ssynth.txt" % parset[index], "w")
     
     # WE LOOP THROUGH 6 DIFFERENT VALUES OF M WHEN WE LOOK AT EPSILON AND N
-    if index >= 4:
+    elif index >= 4:
         if mchoice == 5:
             if baseline == 0:
                 errorfile = open("errordatafourier" + str(index) + "%s" % parset[index] + str(0) + str(mchoice) + ".txt", "w")    
@@ -682,7 +682,7 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
                 datafile = open("filenofourier" + str(index) + "%s" % parset[index] + str(var) + "synth.txt", "w")
                 datafile.write(f"Case 5: Synthetic Data Fourier Transform Baseline \n")
 
-    if index >= 4:
+    elif index >= 4:
         if mchoice == 5:
             if baseline == 0:
                 datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".txt", "w")
@@ -775,7 +775,7 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
             else:
                 plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(var) + "synth.png")
 
-    if index >= 4:
+    elif index >= 4:
         if mchoice == 5:
             if baseline == 0:
                 plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")    
@@ -858,7 +858,7 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
             else:
                 plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(var) + "synth.png")
 
-    if index >= 4:
+    elif index >= 4:
         if mchoice == 5:
             if baseline == 0:
                 plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")    

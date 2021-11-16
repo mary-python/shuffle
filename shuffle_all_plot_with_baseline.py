@@ -315,7 +315,7 @@ def fitPerDft(index, m):
             readPerDft(reader, index, labels, seeds, perErrorsB, perStandardDeviationB, gammas, rowCount)
     
     # THE EPSILON AND N DEPENDENCIES ARE SEPARATED FURTHER BY THE NUMBER OF FOURIER COEFFICIENTS M SELECTED
-    if index >= 4:
+    elif index >= 4:
         if m == 5:
             with open("errordatafourier" + str(index) + "%s" % parset[index] + str(0) + str(m) + ".txt") as reader:
                 readPerDft(reader, index, labels, seeds, perErrorsA, perStandardDeviationA, gammas, rowCount)
