@@ -158,23 +158,20 @@ def plotBasic():
         saveBasic(index)
 
 # FUNCTION TO READ EACH DATAFILE: DEFINED OUTSIDE MAIN DRAWING FUNCTION AS REFERENCED MULTIPLE TIMES
-def readDft(reader, index, labels, seeds, perErrors, recErrors, totalErrors, totalStandardDeviation, gammas, rowCount):
+def readDft(reader, index, labels, perErrors, recErrors, totalErrors, totalStandardDeviation, rowCount):
 
     for line in reader:
         tab = line.split()
 
         if index == 4 or index == 5:
             labels[rowCount] = f'{(float(tab[0]))}'
-            seeds.append(float(tab[0]))
         else:
             labels[rowCount] = f'{(int(tab[0]))}'
-            seeds.append(int(tab[0]))
 
         perErrors.append((Decimal(tab[1])))
         recErrors.append((Decimal(tab[2])))
         totalErrors.append((Decimal(tab[3])))
         totalStandardDeviation.append((Decimal(tab[4])))
-        gammas.append(float(tab[6]))
         rowCount += 1
 
         if rowCount >= limit:
@@ -191,29 +188,25 @@ def drawDft(heartOrSynth, index):
     totalErrorsB = list()
     totalStandardDeviationA = list()
     totalStandardDeviationB = list()
-    gammasA = list()
-    gammasB = list()
-    seedsA = list()
-    seedsB = list()
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
     if index == 2:
         if heartOrSynth == 0:
             with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-                readDft(reader, index, labels, seedsA, perErrorsA, recErrorsA, totalErrorsA, totalStandardDeviationA, gammasA, rowCount)
+                readDft(reader, index, labels, perErrorsA, recErrorsA, totalErrorsA, totalStandardDeviationA, rowCount)
             with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-                readDft(reader, index, labels, seedsB, perErrorsB, recErrorsB, totalErrorsB, totalStandardDeviationB, gammasB, rowCount)
+                readDft(reader, index, labels, perErrorsB, recErrorsB, totalErrorsB, totalStandardDeviationB, rowCount)
         else:
             with open("errordatafourier" + str(index) + "%ssynth.txt" % parset[index]) as reader:
-                readDft(reader, index, labels, seedsA, perErrorsA, recErrorsA, totalErrorsA, totalStandardDeviationA, gammasA, rowCount)
+                readDft(reader, index, labels, perErrorsA, recErrorsA, totalErrorsA, totalStandardDeviationA, rowCount)
             with open("errordatanofourier" + str(index) + "%ssynth.txt" % parset[index]) as reader:
-                readDft(reader, index, labels, seedsB, perErrorsB, recErrorsB, totalErrorsB, totalStandardDeviationB, gammasB, rowCount)
+                readDft(reader, index, labels, perErrorsB, recErrorsB, totalErrorsB, totalStandardDeviationB, rowCount)
     else:
         with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
-            readDft(reader, index, labels, seedsA, perErrorsA, recErrorsA, totalErrorsA, totalStandardDeviationA, gammasA, rowCount)
+            readDft(reader, index, labels, perErrorsA, recErrorsA, totalErrorsA, totalStandardDeviationA, rowCount)
         with open("errordatanofourier" + str(index) + "%s.txt" % parset[index]) as reader:
-            readDft(reader, index, labels, seedsB, perErrorsB, recErrorsB, totalErrorsB, totalStandardDeviationB, gammasB, rowCount)
+            readDft(reader, index, labels, perErrorsB, recErrorsB, totalErrorsB, totalStandardDeviationB, rowCount)
 
     # THE BARS PLOTTED AND Y-AXIS ARE THE SAME FOR EACH PARAMETER
     xLabels = np.arange(len(labels))
@@ -309,35 +302,33 @@ def fitPerDft(index, m):
     perErrorsB = list()
     perStandardDeviationA = list()
     perStandardDeviationB = list()
-    gammasA = list()
-    gammasB = list()
-    seedsA = list()
-    seedsB = list()
+    gammas = list()
+    seeds = list()
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES
     if index == 2:
         with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-            readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
+            readPerDft(reader, index, labels, seeds, perErrorsA, perStandardDeviationA, gammas, rowCount)
         with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-            readPerDft(reader, index, labels, seedsB, perErrorsB, perStandardDeviationB, gammasB, rowCount)
+            readPerDft(reader, index, labels, seeds, perErrorsB, perStandardDeviationB, gammas, rowCount)
     
     if index >= 4:
         if m == 5:
             with open("errordatafourier" + str(index) + "%s" % parset[index] + str(0) + str(m) + ".txt") as reader:
-                readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
+                readPerDft(reader, index, labels, seeds, perErrorsA, perStandardDeviationA, gammas, rowCount)
             with open("errordatanofourier" + str(index) + "%s" % parset[index] + str(0) + str(m) + ".txt") as reader:
-                readPerDft(reader, index, labels, seedsB, perErrorsB, perStandardDeviationB, gammasB, rowCount)
+                readPerDft(reader, index, labels, seeds, perErrorsB, perStandardDeviationB, gammas, rowCount)
         else:
             with open("errordatafourier" + str(index) + "%s" % parset[index] + str(m) + ".txt") as reader:
-                readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
+                readPerDft(reader, index, labels, seeds, perErrorsA, perStandardDeviationA, gammas, rowCount)
             with open("errordatanofourier" + str(index) + "%s" % parset[index] + str(m) + ".txt") as reader:
-                readPerDft(reader, index, labels, seedsB, perErrorsB, perStandardDeviationB, gammasB, rowCount)
+                readPerDft(reader, index, labels, seeds, perErrorsB, perStandardDeviationB, gammas, rowCount)
     else:
         with open("errordatafourier" + str(index) + "%s.txt" % parset[index]) as reader:
-            readPerDft(reader, index, labels, seedsA, perErrorsA, perStandardDeviationA, gammasA, rowCount)
+            readPerDft(reader, index, labels, seeds, perErrorsA, perStandardDeviationA, gammas, rowCount)
         with open("errordatanofourier" + str(index) + "%s.txt" % parset[index]) as reader:
-            readPerDft(reader, index, labels, seedsB, perErrorsB, perStandardDeviationB, gammasB, rowCount)
+            readPerDft(reader, index, labels, seeds, perErrorsB, perStandardDeviationB, gammas, rowCount)
 
     # NEED TO ISOLATE PERTURBATION ERRORS TO VERIFY DEPENDENCIES
     xLabels = np.arange(len(labels))
@@ -347,88 +338,87 @@ def fitPerDft(index, m):
     plt.errorbar(xLabels + width/2, perErrorsB, perStandardDeviationB, linestyle = 'None', capsize = 2, color = 'tab:blue')
 
     # PLOTTING COMPARISON LINE GRAPHS TO VERIFY DEPENDENCIES WITH D, EPSILON AND N
-    plotTupleA = tuple(zip(seedsA, gammasA))
-    plotTupleB = tuple(zip(seedsB, gammasB))
+    plotTuple = tuple(zip(seeds, gammas))
     x = np.arange(len(np.array(labels)))
 
     if index == 2:
-        pA = [(0.000000055*((s**(8/3))/((1-g))**2))+0.0005 for s, g in plotTupleA]
-        pB = [(0.0000002*((s**(8/3))/((1-g))**2)) for s, g in plotTupleB]
+        pA = [(0.000000055*((s**(8/3))/((1-g))**2))+0.0005 for s, g in plotTuple]
+        pB = [(0.0000002*((s**(8/3))/((1-g))**2)) for s, g in plotTuple]
     
     elif index == 4:
         if m == 5:
-            pA = [(0.00006*((1/(s**(4/3)))/((1-g))**2))+0.0001 for s, g in plotTupleA]
-            pB = [(0.00001*((1/(s**(4/3)))/((1-g))**2))+0.00003 for s, g in plotTupleB]
+            pA = [(0.00006*((1/(s**(4/3)))/((1-g))**2))+0.0001 for s, g in plotTuple]
+            pB = [(0.00001*((1/(s**(4/3)))/((1-g))**2))+0.00003 for s, g in plotTuple]
 
         if m == 20:
-            pA = [(0.00037*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTupleA]
-            pB = [(0.00023*((1/(s**(4/3)))/((1-g))**2))+0.0008 for s, g in plotTupleB]
+            pA = [(0.00037*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
+            pB = [(0.00023*((1/(s**(4/3)))/((1-g))**2))+0.0008 for s, g in plotTuple]
 
         if m == 40:
-            pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.0019 for s, g in plotTupleA]
-            pB = [(0.0022*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTupleB]
+            pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.0019 for s, g in plotTuple]
+            pB = [(0.0022*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTuple]
     
         if m == 55:
-            pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTupleA]
-            pB = [(0.0041*((1/(s**(4/3)))/((1-g))**2))+0.0064 for s, g in plotTupleB]
+            pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
+            pB = [(0.0041*((1/(s**(4/3)))/((1-g))**2))+0.0064 for s, g in plotTuple]
 
         if m == 75:
-            pA = [(0.0047*((1/(s**(4/3)))/((1-g))**2)) for s, g in plotTupleA]
-            pB = [(0.011*((1/(s**(4/3)))/((1-g))**2))+0.01 for s, g in plotTupleB]
+            pA = [(0.0047*((1/(s**(4/3)))/((1-g))**2)) for s, g in plotTuple]
+            pB = [(0.011*((1/(s**(4/3)))/((1-g))**2))+0.01 for s, g in plotTuple]
 
         else:
-            pA = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleA]
-            pB = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTupleB]
+            pA = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
+            pB = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
 
     elif index == 5:
         if m == 5:
-            pA = [(0.0002*((1/(s**(4/3)))/((1-g))**2))+0.00014 for s, g in plotTupleA]
-            pB = [(0.000034*((1/(s**(4/3)))/((1-g))**2))+0.00004 for s, g in plotTupleB]
+            pA = [(0.0002*((1/(s**(4/3)))/((1-g))**2))+0.00014 for s, g in plotTuple]
+            pB = [(0.000034*((1/(s**(4/3)))/((1-g))**2))+0.00004 for s, g in plotTuple]
 
         if m == 20:
-            pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTupleA]
-            pB = [(0.001*((1/(s**(4/3)))/((1-g))**2))+0.0007 for s, g in plotTupleB]
+            pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
+            pB = [(0.001*((1/(s**(4/3)))/((1-g))**2))+0.0007 for s, g in plotTuple]
 
         if m == 40:
-            pA = [(0.0055*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTupleA]
-            pB = [(0.0072*((1/(s**(4/3)))/((1-g))**2))+0.0029 for s, g in plotTupleB]
+            pA = [(0.0055*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTuple]
+            pB = [(0.0072*((1/(s**(4/3)))/((1-g))**2))+0.0029 for s, g in plotTuple]
     
         if m == 55:
-            pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.0037 for s, g in plotTupleA]
-            pB = [(0.013*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleB]
+            pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.0037 for s, g in plotTuple]
+            pB = [(0.013*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
 
         if m == 75:
-            pA = [(0.0035*((1/(s**(4/3)))/((1-g))**2))+0.0065 for s, g in plotTupleA]
-            pB = [(0.037*((1/(s**(4/3)))/((1-g))**2))+0.0084 for s, g in plotTupleB]
+            pA = [(0.0035*((1/(s**(4/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
+            pB = [(0.037*((1/(s**(4/3)))/((1-g))**2))+0.0084 for s, g in plotTuple]
 
         else:
-            pA = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTupleA]
-            pB = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTupleB]
+            pA = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
+            pB = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTuple]
 
     else:
         if m == 5:
-            pA = [(0.0035*((1/(s**(5/3)))/((1-g))**2))+0.00015 for s, g in plotTupleA]
-            pB = [(0.0015*((1/(s**(5/3)))/((1-g))**2))+0.000027 for s, g in plotTupleB]
+            pA = [(0.0035*((1/(s**(5/3)))/((1-g))**2))+0.00015 for s, g in plotTuple]
+            pB = [(0.0015*((1/(s**(5/3)))/((1-g))**2))+0.000027 for s, g in plotTuple]
 
         if m == 20:
-            pA = [(0.015*((1/(s**(5/3)))/((1-g))**2))+0.0012 for s, g in plotTupleA]
-            pB = [(0.025*((1/(s**(5/3)))/((1-g))**2))+0.0008 for s, g in plotTupleB]
+            pA = [(0.015*((1/(s**(5/3)))/((1-g))**2))+0.0012 for s, g in plotTuple]
+            pB = [(0.025*((1/(s**(5/3)))/((1-g))**2))+0.0008 for s, g in plotTuple]
 
         if m == 40:
-            pA = [(0.05*((1/(s**(5/3)))/((1-g))**2))+0.0023 for s, g in plotTupleA]
-            pB = [(0.3*((1/(s**(5/3)))/((1-g))**2))+0.0033 for s, g in plotTupleB]
+            pA = [(0.05*((1/(s**(5/3)))/((1-g))**2))+0.0023 for s, g in plotTuple]
+            pB = [(0.3*((1/(s**(5/3)))/((1-g))**2))+0.0033 for s, g in plotTuple]
     
         if m == 55:
-            pA = [(0.26*((1/(s**(5/3)))/((1-g))**2))+0.0025 for s, g in plotTupleA]
-            pB = [(0.74*((1/(s**(5/3)))/((1-g))**2))+0.0062 for s, g in plotTupleB]
+            pA = [(0.26*((1/(s**(5/3)))/((1-g))**2))+0.0025 for s, g in plotTuple]
+            pB = [(0.74*((1/(s**(5/3)))/((1-g))**2))+0.0062 for s, g in plotTuple]
 
         if m == 75:
-            pA = [(0.25*((1/(s**(5/3)))/((1-g))**2))+0.006 for s, g in plotTupleA]
-            pB = [(1.6*((1/(s**(5/3)))/((1-g))**2))+0.016 for s, g in plotTupleB]
+            pA = [(0.25*((1/(s**(5/3)))/((1-g))**2))+0.006 for s, g in plotTuple]
+            pB = [(1.6*((1/(s**(5/3)))/((1-g))**2))+0.016 for s, g in plotTuple]
 
         else:
-            pA = [(0.32*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTupleA]
-            pB = [(3.4*((1/(s**(5/3)))/((1-g))**2))+0.028 for s, g in plotTupleB]
+            pA = [(0.32*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
+            pB = [(3.4*((1/(s**(5/3)))/((1-g))**2))+0.028 for s, g in plotTuple]
 
     yA = np.array(pA)
     yB = np.array(pB)
@@ -446,25 +436,109 @@ def fitPerDft(index, m):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPS AND N DEPENDENCIES
     elif index == 4:
         plt.yscale('log')
-        plt.ylim(0.002, 0.8)
-        selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.2", "0.8"])
-        selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.2, 0.8])
+
+        if m == 5:
+            plt.ylim(0.00001, 0.005)
+            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.005"])
+            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.005])
+
+        if m == 20:
+            plt.ylim(0.0003, 0.02)
+            selectiveFormatter = FixedFormatter(["0.0003", "0.001", "0.01"])
+            selectiveLocator = FixedLocator([0.0003, 0.001, 0.01])
+
+        if m == 40:
+            plt.ylim(0.001, 0.05)
+            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.05"])
+            selectiveLocator = FixedLocator([0.001, 0.01, 0.05])
+    
+        if m == 55:
+            plt.ylim(0.001, 0.1)
+            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.03", "0.1"])
+            selectiveLocator = FixedLocator([0.001, 0.01, 0.03, 0.1])
+
+        if m == 75:
+            plt.ylim(0.002, 0.5)
+            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.5"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.5])
+
+        else:
+            plt.ylim(0.002, 0.8)
+            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.2", "0.8"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.2, 0.8])
+
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.002, 0.8)
-        selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.8"])
-        selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.8])
+
+        if m == 5:
+            plt.ylim(0.00001, 0.005)
+            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.005"])
+            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.005])
+
+        if m == 20:
+            plt.ylim(0.0003, 0.02)
+            selectiveFormatter = FixedFormatter(["0.0003", "0.001", "0.01"])
+            selectiveLocator = FixedLocator([0.00003, 0.001, 0.01])
+
+        if m == 40:
+            plt.ylim(0.0005, 0.1)
+            selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.1"])
+            selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.1])
+    
+        if m == 55:
+            plt.ylim(0.001, 0.1)
+            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.03", "0.1"])
+            selectiveLocator = FixedLocator([0.001, 0.01, 0.03, 0.1])
+
+        if m == 75:
+            plt.ylim(0.002, 0.6)
+            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.1", "0.8"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.8])
+
+        else:
+            plt.ylim(0.002, 0.8)
+            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.8"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.8])
+          
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 6:
         plt.yscale('log')
-        plt.ylim(0.002, 1.7)
-        selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "0.3", "1"])
-        selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.3, 1])
+
+        if m == 5:
+            plt.ylim(0.00001, 0.005)
+            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.005"])
+            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.005])
+
+        if m == 20:
+            plt.ylim(0.0002, 0.01)
+            selectiveFormatter = FixedFormatter(["0.0002", "0.001", "0.01"])
+            selectiveLocator = FixedLocator([0.0002, 0.001, 0.01])
+
+        if m == 40:
+            plt.ylim(0.0005, 0.1)
+            selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.1"])
+            selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.1])
+    
+        if m == 55:
+            plt.ylim(0.0005, 0.2)
+            selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.1"])
+            selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.1])
+
+        if m == 75:
+            plt.ylim(0.001, 1)
+            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "1"])
+            selectiveLocator = FixedLocator([0.001, 0.01, 0.1, 1])
+
+        else:
+            plt.ylim(0.002, 1.7)
+            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "0.3", "1"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.3, 1])
+ 
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
@@ -484,6 +558,166 @@ def savePerDft(index, m):
     else:
         plt.savefig("errorchartfourierperturb" + str(index) + "%s.png" % parset[index])
 
+    plt.clf()
+    plt.cla()
+
+def drawDftLines(index):
+    labels = list()
+    gammas = list()
+    seeds = list()
+    rowCount = 0
+
+    # PUTTING THE DATA ON THE AXES
+    with open("errordatabasic" + str(index) + "%s.txt" % parset[index]) as reader:
+        for line in reader:
+            tab = line.split()
+            
+            if index == 4 or index == 5:
+                labels.append(f'{float(tab[0])}')
+                seeds.append(float(tab[0]))
+            else:
+                labels.append(f'{int(tab[0])}')
+                seeds.append(int(tab[0]))
+
+            gammas.append(float(tab[3]))
+            rowCount += 1
+
+            if rowCount >= limit:
+                break
+
+    # PLOTTING ALL LINE GRAPHS FOR DEPENDENCIES WITH EPSILON AND N
+    plotTuple = tuple(zip(seeds, gammas))
+    x = np.arange(len(np.array(labels)))
+
+    if index == 4:
+        p1A = [(0.00006*((1/(s**(4/3)))/((1-g))**2))+0.0001 for s, g in plotTuple]
+        p1B = [(0.00001*((1/(s**(4/3)))/((1-g))**2))+0.00003 for s, g in plotTuple]
+
+        p2A = [(0.00037*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
+        p2B = [(0.00023*((1/(s**(4/3)))/((1-g))**2))+0.0008 for s, g in plotTuple]
+
+        p3A = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.0019 for s, g in plotTuple]
+        p3B = [(0.0022*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTuple]
+    
+        p4A = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
+        p4B = [(0.0041*((1/(s**(4/3)))/((1-g))**2))+0.0064 for s, g in plotTuple]
+
+        p5A = [(0.0047*((1/(s**(4/3)))/((1-g))**2)) for s, g in plotTuple]
+        p5B = [(0.011*((1/(s**(4/3)))/((1-g))**2))+0.01 for s, g in plotTuple]
+
+        p6A = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
+        p6B = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
+
+    elif index == 5:
+        p1A = [(0.0002*((1/(s**(4/3)))/((1-g))**2))+0.00014 for s, g in plotTuple]
+        p1B = [(0.000034*((1/(s**(4/3)))/((1-g))**2))+0.00004 for s, g in plotTuple]
+
+        p2A = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
+        p2B = [(0.001*((1/(s**(4/3)))/((1-g))**2))+0.0007 for s, g in plotTuple]
+
+        p3A = [(0.0055*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTuple]
+        p3B = [(0.0072*((1/(s**(4/3)))/((1-g))**2))+0.0029 for s, g in plotTuple]
+    
+        p4A = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.0037 for s, g in plotTuple]
+        p4B = [(0.013*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
+
+        p5A = [(0.0035*((1/(s**(4/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
+        p5B = [(0.037*((1/(s**(4/3)))/((1-g))**2))+0.0084 for s, g in plotTuple]
+
+        p6A = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
+        p6B = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTuple]
+
+    else:
+        p1A = [(0.0035*((1/(s**(5/3)))/((1-g))**2))+0.00015 for s, g in plotTuple]
+        p1B = [(0.0015*((1/(s**(5/3)))/((1-g))**2))+0.000027 for s, g in plotTuple]
+
+        p2A = [(0.015*((1/(s**(5/3)))/((1-g))**2))+0.0012 for s, g in plotTuple]
+        p2B = [(0.025*((1/(s**(5/3)))/((1-g))**2))+0.0008 for s, g in plotTuple]
+
+        p3A = [(0.05*((1/(s**(5/3)))/((1-g))**2))+0.0023 for s, g in plotTuple]
+        p3B = [(0.3*((1/(s**(5/3)))/((1-g))**2))+0.0033 for s, g in plotTuple]
+    
+        p4A = [(0.26*((1/(s**(5/3)))/((1-g))**2))+0.0025 for s, g in plotTuple]
+        p4B = [(0.74*((1/(s**(5/3)))/((1-g))**2))+0.0062 for s, g in plotTuple]
+
+        p5A = [(0.25*((1/(s**(5/3)))/((1-g))**2))+0.006 for s, g in plotTuple]
+        p5B = [(1.6*((1/(s**(5/3)))/((1-g))**2))+0.016 for s, g in plotTuple]
+
+        p6A = [(0.32*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
+        p6B = [(3.4*((1/(s**(5/3)))/((1-g))**2))+0.028 for s, g in plotTuple]
+
+    y1A = np.array(p1A)
+    y1B = np.array(p1B)
+
+    y2A = np.array(p2A)
+    y2B = np.array(p2B)
+
+    y3A = np.array(p3A)
+    y3B = np.array(p3B)
+
+    y4A = np.array(p4A)
+    y4B = np.array(p4B)
+
+    y5A = np.array(p5A)
+    y5B = np.array(p5B)
+
+    y6A = np.array(p6A)
+    y6B = np.array(p6B)
+
+    plt.plot(x, y1A, label = '$\mathit{m} = 5$', alpha = 0.6, color = 'gold')
+    plt.plot(x, y1B, label = '$\mathit{m} = 5$ for baseline', alpha = 0.6, color = 'orange')
+
+    plt.plot(x, y2A, label = '$\mathit{m} = 20$', alpha = 0.6, color = 'lime')
+    plt.plot(x, y2B, label = '$\mathit{m} = 20$ for baseline', alpha = 0.6, color = 'green')
+
+    plt.plot(x, y3A, label = '$\mathit{m} = 40$', alpha = 0.6, color = 'cyan')
+    plt.plot(x, y3B, label = '$\mathit{m} = 40$ for baseline', alpha = 0.6, color = 'deepskyblue')
+
+    plt.plot(x, y4A, label = '$\mathit{m} = 55$', alpha = 0.6, color = 'royalblue')
+    plt.plot(x, y4B, label = '$\mathit{m} = 55$ for baseline', alpha = 0.6, color = 'navy')
+
+    plt.plot(x, y5A, label = '$\mathit{m} = 75$', alpha = 0.6, color = 'mediumorchid')
+    plt.plot(x, y5B, label = '$\mathit{m} = 75$ for baseline', alpha = 0.6, color = 'indigo')
+
+    plt.plot(x, y6A, label = '$\mathit{m} = 95$', alpha = 0.6, color = 'deeppink')
+    plt.plot(x, y6B, label = '$\mathit{m} = 95$ for baseline', alpha = 0.6, color = 'crimson')
+
+    # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
+    plt.ticklabel_format(axis = 'y', style = 'plain')
+    plt.ylabel('Perturbation error')
+    plt.xticks(x, labels)
+
+    # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON AND N DEPENDENCIES
+    if index == 4:
+        plt.yscale('log')
+        plt.ylim(0.00001, 0.8)
+        selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.01", "0.1", "0.8"])
+        selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.01, 0.1, 0.8])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+
+    elif index == 5:
+        plt.yscale('log')
+        plt.ylim(0.00001, 0.8)
+        selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.01", "0.1", "0.8"])
+        selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.01, 0.1, 0.8])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+
+    elif index == 6:
+        plt.yscale('log')
+        plt.ylim(0.00001, 1.7)
+        selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.01", "0.1", "1"])
+        selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.01, 0.1, 1])
+        plt.gca().yaxis.set_major_formatter(selectiveFormatter)
+        plt.gca().yaxis.set_major_locator(selectiveLocator)
+
+# THE SKELETON SAVING FUNCTION IN THE BASIC CASE
+def saveDftLines(index):
+    plt.legend()
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig("errorchartfourierline" + str(index) + "%s.png" % parset[index])
     plt.clf()
     plt.cla()
 
@@ -516,6 +750,10 @@ def plotDft():
                 fitPerDft(index, m)
                 custom(index)
                 savePerDft(index, m)
+            
+            drawDftLines(index)
+            custom(index)
+            saveDftLines(index)
 
 # CALLING ALL THE ABOVE FUNCTIONS: SOME ARE NESTED
 plotBasic()
