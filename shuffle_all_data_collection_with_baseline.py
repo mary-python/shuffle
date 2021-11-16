@@ -492,6 +492,7 @@ def afterDftLoopStats(baseline, heartOrSynth, index, var, varset, mchoice, multi
             else:
                 errorfile = open("errordatanofourier" + str(index) + "%ssynth.txt" % parset[index], "w")
     
+    # WE LOOP THROUGH 6 DIFFERENT VALUES OF M WHEN WE LOOK AT EPSILON AND N
     if index >= 4:
         if mchoice == 5:
             if baseline == 0:
@@ -510,6 +511,7 @@ def afterDftLoopStats(baseline, heartOrSynth, index, var, varset, mchoice, multi
         else:
             errorfile = open("errordatanofourier" + str(index) + "%s.txt" % parset[index], "w")
 
+    # WHEN WE CHANGE N, THE X-AXIS IS NOT UNIFORM
     for var in varset:
         if index == 6:
             if var == 10000:
@@ -542,8 +544,6 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
     totalPerturbationError = list()
     totalDftMeanSquaredError = list()
     dftSumOfSquares = 0
-    sampledError = 0
-    returnedError = 0
 
     # SETTING GAMMA: PROBABILITY OF A FALSE VALUE
     if tchoice == 1:
@@ -572,7 +572,7 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
         # APPLYING THE ALGORITHM TO EACH NEW VECTOR
         for newVector in data:
     
-            # DISCRETE FOURIER TRANSFORM APPLIED TO NEW VECTOR
+            # DISCRETE FOURIER TRANSFORM APPLIED TO NEW VECTOR IF NOT BASELINE CASE
             if baseline == 0:
                 dftVector = (rfft(newVector)).tolist()
             else:
@@ -614,6 +614,7 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
         dftDebiasedVector = [2*((z - ((gamma/2)*count))/(1 - gamma)/max(count, 1))-1 for count, z in dftMergedTracker]
         paddedVector = dftDebiasedVector + [0]*(dconst - mchoice)
 
+        # INVERSE DISCRETE FOURIER TRANSFORM APPLIED TO PADDED VECTOR IF NOT BASELINE CASE
         if baseline == 0:
             finalVector = (irfft(paddedVector, dconst)).tolist()
         else:
@@ -963,6 +964,7 @@ def runDftVaryEps1(baseline, heartOrSynth):
     loopTotal = list()
     gammas = list()
 
+    # LOOPING THROUGH 6 DIFFERENT VALUES OF M
     for m in mset2:
         for eps in epsset1: 
             if baseline == 0:
@@ -984,6 +986,7 @@ def runDftVaryEps2(baseline, heartOrSynth):
     loopTotal = list()
     gammas = list()
 
+    # LOOPING THROUGH 6 DIFFERENT VALUES OF M
     for m in mset2:
         for eps in epsset2:
             if baseline == 0:
@@ -1005,6 +1008,7 @@ def runDftVaryN(baseline, heartOrSynth):
     loopTotal = list()
     gammas = list()
 
+    # LOOPING THROUGH 6 DIFFERENT VALUES OF M
     for m in mset2:
         for n in nset:
             if baseline == 0:

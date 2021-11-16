@@ -78,7 +78,7 @@ def drawBasic(index):
             if rowCount >= limit:
                 break
     
-    # THE BARS PLOTTED IS THE SAME FOR EACH PARAMETER
+    # THE BARS PLOTTED ARE THE SAME FOR EACH PARAMETER
     plt.bar(labels, totalErrors, width, label = 'Total experimental error',  alpha = 0.6, color = 'm', edgecolor = 'k')
     plt.errorbar(labels, totalErrors, totalStandardDeviation, label = 'Total standard deviation',  linestyle = 'None', capsize = 2, color = 'g')
 
@@ -222,6 +222,7 @@ def drawDft(heartOrSynth, index):
     plt.ylabel('Total experimental $\widehat{MSE}$')
     plt.xticks(xLabels, labels)
 
+    # CREATING A LOGARITHMIC Y-AXIS FOR THE T, K AND M DEPENDENCIES
     if index == 0:
         plt.yscale('log')
         plt.ylim(0.005, 13)
@@ -275,7 +276,7 @@ def saveDft(heartOrSynth, index):
     plt.clf()
     plt.cla()
 
-# FUNCTION TO READ EACH DATAFILE: DEFINED OUTSIDE MAIN DRAWING FUNCTION AS REFERENCED MULTIPLE TIMES
+# FUNCTION TO READ EACH DATAFILE: ISOLATING THE PERTURBATION ERROR
 def readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, gammas, rowCount):
     for line in reader:
         tab = line.split()
@@ -306,13 +307,14 @@ def fitPerDft(index, m):
     seeds = list()
     rowCount = 0
 
-    # PUTTING THE DATA ON THE AXES
+    # PUTTING THE DATA ON THE AXES: SEPARATED BY INDEX AND WHETHER BASELINE DATA IS USED OR NOT
     if index == 2:
         with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
             readPerDft(reader, index, labels, seeds, perErrorsA, perStandardDeviationA, gammas, rowCount)
         with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
             readPerDft(reader, index, labels, seeds, perErrorsB, perStandardDeviationB, gammas, rowCount)
     
+    # THE EPSILON AND N DEPENDENCIES ARE SEPARATED FURTHER BY THE NUMBER OF FOURIER COEFFICIENTS M SELECTED
     if index >= 4:
         if m == 5:
             with open("errordatafourier" + str(index) + "%s" % parset[index] + str(0) + str(m) + ".txt") as reader:
@@ -341,10 +343,12 @@ def fitPerDft(index, m):
     plotTuple = tuple(zip(seeds, gammas))
     x = np.arange(len(np.array(labels)))
 
+    # CHANGING D
     if index == 2:
         pA = [(0.000000055*((s**(8/3))/((1-g))**2))+0.0005 for s, g in plotTuple]
         pB = [(0.0000002*((s**(8/3))/((1-g))**2)) for s, g in plotTuple]
     
+    # EPSILON LESS THAN 1: SEPARATED BY M
     elif index == 4:
         if m == 5:
             pA = [(0.00006*((1/(s**(4/3)))/((1-g))**2))+0.0001 for s, g in plotTuple]
@@ -370,6 +374,7 @@ def fitPerDft(index, m):
             pA = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
             pB = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
 
+    # EPSILON EQUAL OR GREATER THAN 1: SEPARATED BY M
     elif index == 5:
         if m == 5:
             pA = [(0.0002*((1/(s**(4/3)))/((1-g))**2))+0.00014 for s, g in plotTuple]
@@ -395,6 +400,7 @@ def fitPerDft(index, m):
             pA = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
             pB = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTuple]
 
+    # CHANGING N: SEPARATED BY M
     else:
         if m == 5:
             pA = [(0.0035*((1/(s**(5/3)))/((1-g))**2))+0.00015 for s, g in plotTuple]
@@ -433,7 +439,7 @@ def fitPerDft(index, m):
     if index == 2:
         plt.ylim(0, 0.075)
 
-    # CREATING A LOGARITHMIC Y-AXIS FOR THE EPS AND N DEPENDENCIES
+    # CREATING A LOGARITHMIC Y-AXIS FOR EPSILON LESS THAN 1: SEPARATED BY M
     elif index == 4:
         plt.yscale('log')
 
@@ -470,6 +476,7 @@ def fitPerDft(index, m):
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
+    # EPSILON EQUAL OR GREATER THAN 1: SEPARATED BY M
     elif index == 5:
         plt.yscale('log')
 
@@ -506,6 +513,7 @@ def fitPerDft(index, m):
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
+    # CHANGING N: SEPARATED BY M
     elif index == 6:
         plt.yscale('log')
 
@@ -542,6 +550,7 @@ def fitPerDft(index, m):
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
+# THE SKELETON SAVING FUNCTION FOR THE ISOLATED PERTURBATION ERROR
 def savePerDft(index, m):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
@@ -561,14 +570,15 @@ def savePerDft(index, m):
     plt.clf()
     plt.cla()
 
+# A FINAL FUNCTION TO GRAB ALL THE BEST FIT LINES FROM ABOVE AND PLOT THEM TOGETHER
 def drawDftLines(index):
     labels = list()
     gammas = list()
     seeds = list()
     rowCount = 0
 
-    # PUTTING THE DATA ON THE AXES
-    with open("errordatabasic" + str(index) + "%s.txt" % parset[index]) as reader:
+    # CAN GRAB THE LABELS, SEEDS AND GAMMAS FROM ANY FOURIER DATA FILE
+    with open("errordatafourier" + str(index) + "%s" % parset[index] + str(0) + str(5) + ".txt") as reader:
         for line in reader:
             tab = line.split()
             
@@ -579,7 +589,7 @@ def drawDftLines(index):
                 labels.append(f'{int(tab[0])}')
                 seeds.append(int(tab[0]))
 
-            gammas.append(float(tab[3]))
+            gammas.append(float(tab[6]))
             rowCount += 1
 
             if rowCount >= limit:
@@ -589,6 +599,7 @@ def drawDftLines(index):
     plotTuple = tuple(zip(seeds, gammas))
     x = np.arange(len(np.array(labels)))
 
+    # EPSILON LESS THAN 1: SEPARATED BY M
     if index == 4:
         p1A = [(0.00006*((1/(s**(4/3)))/((1-g))**2))+0.0001 for s, g in plotTuple]
         p1B = [(0.00001*((1/(s**(4/3)))/((1-g))**2))+0.00003 for s, g in plotTuple]
@@ -608,6 +619,7 @@ def drawDftLines(index):
         p6A = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
         p6B = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
 
+    # EPSILON EQUAL OR GREATER THAN 1: SEPARATED BY M
     elif index == 5:
         p1A = [(0.0002*((1/(s**(4/3)))/((1-g))**2))+0.00014 for s, g in plotTuple]
         p1B = [(0.000034*((1/(s**(4/3)))/((1-g))**2))+0.00004 for s, g in plotTuple]
@@ -627,6 +639,7 @@ def drawDftLines(index):
         p6A = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
         p6B = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTuple]
 
+    # CHANGING N: SEPARATED BY M
     else:
         p1A = [(0.0035*((1/(s**(5/3)))/((1-g))**2))+0.00015 for s, g in plotTuple]
         p1B = [(0.0015*((1/(s**(5/3)))/((1-g))**2))+0.000027 for s, g in plotTuple]
@@ -712,7 +725,7 @@ def drawDftLines(index):
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
-# THE SKELETON SAVING FUNCTION IN THE BASIC CASE
+# SAVING THE FINAL GRAPH
 def saveDftLines(index):
     plt.legend()
     plt.tight_layout()
