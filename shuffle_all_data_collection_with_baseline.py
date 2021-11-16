@@ -685,17 +685,17 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
     elif index >= 4:
         if mchoice == 5:
             if baseline == 0:
-                datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".txt", "w")
+                datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(0) + str(mchoice) + ".txt", "w")
                 datafile.write(f"Case 2: Heartbeat Data with Fourier Transform \n")    
             else:
-                datafile = open("filenofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".txt", "w")
+                datafile = open("filenofourier" + str(index) + "%s" % parset[index] + str(0) + str(mchoice) + ".txt", "w")
                 datafile.write(f"Case 4: Heartbeat Data Fourier Transform Baseline \n")
         else:
             if baseline == 0:
-                datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".txt", "w") 
+                datafile = open("filefourier" + str(index) + "%s" % parset[index] + str(mchoice) + ".txt", "w") 
                 datafile.write(f"Case 2: Heartbeat Data with Fourier Transform \n")   
             else:
-                datafile = open("filenofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".txt", "w")
+                datafile = open("filenofourier" + str(index) + "%s" % parset[index] + str(mchoice) + ".txt", "w")
                 datafile.write(f"Case 4: Heartbeat Data Fourier Transform Baseline \n")
 
     else:
@@ -778,14 +778,14 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
     elif index >= 4:
         if mchoice == 5:
             if baseline == 0:
-                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")    
+                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(0) + str(mchoice) + ".png")    
             else:
-                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")
+                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(0) + str(mchoice) + ".png")
         else:
             if baseline == 0:
-                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".png")    
+                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(mchoice) + ".png")    
             else:
-                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".png")
+                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(mchoice) + ".png")
 
     else:
         if baseline == 0:
@@ -861,14 +861,14 @@ def runDft(baseline, heartOrSynth, index, var, varset, tchoice, kchoice, mchoice
     elif index >= 4:
         if mchoice == 5:
             if baseline == 0:
-                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")    
+                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(0) + str(mchoice) + ".png")    
             else:
-                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(0) + str(mchoice) + ".png")
+                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(0) + str(mchoice) + ".png")
         else:
             if baseline == 0:
-                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".png")    
+                plt.savefig("histfourier" + str(index) + "%s" % parset[index] + str(mchoice) + ".png")    
             else:
-                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(parset[2]) + str(mchoice) + ".png")
+                plt.savefig("histnofourier" + str(index) + "%s" % parset[index] + str(mchoice) + ".png")
 
     else:
         if baseline == 0:
@@ -956,16 +956,17 @@ def runDftVaryM(baseline, heartOrSynth):
 
 # VARYING THE VALUE OF EPSILON: LESS THAN OR EQUAL TO 1
 def runDftVaryEps1(baseline, heartOrSynth):
-    perErrors = list()
-    recErrors = list()
-    totalDftErrors = list()
-    totalDftStandardDeviation = list()
-    perStandardDeviation = list()
-    loopTotal = list()
-    gammas = list()
 
     # LOOPING THROUGH 6 DIFFERENT VALUES OF M
     for m in mset2:
+        perErrors = list()
+        recErrors = list()
+        totalDftErrors = list()
+        totalDftStandardDeviation = list()
+        perStandardDeviation = list()
+        loopTotal = list()
+        gammas = list()
+
         for eps in epsset1: 
             if baseline == 0:
                 print(f"\nProcessing the optimal summation result with DFT for the values m = {m} and eps = {eps} using the heartbeat data.")
@@ -978,16 +979,17 @@ def runDftVaryEps1(baseline, heartOrSynth):
 
 # VARYING THE VALUE OF EPSILON: GREATER THAN 1
 def runDftVaryEps2(baseline, heartOrSynth):
-    perErrors = list()
-    recErrors = list()
-    totalDftErrors = list()
-    totalDftStandardDeviation = list()
-    perStandardDeviation = list()
-    loopTotal = list()
-    gammas = list()
 
     # LOOPING THROUGH 6 DIFFERENT VALUES OF M
     for m in mset2:
+        perErrors = list()
+        recErrors = list()
+        totalDftErrors = list()
+        totalDftStandardDeviation = list()
+        perStandardDeviation = list()
+        loopTotal = list()
+        gammas = list()
+
         for eps in epsset2:
             if baseline == 0:
                 print(f"\nProcessing the optimal summation result with DFT for the values m = {m} and eps = {eps} using the heartbeat data.")
@@ -1000,16 +1002,17 @@ def runDftVaryEps2(baseline, heartOrSynth):
 
 # VARYING THE NUMBER OF VECTORS N USED
 def runDftVaryN(baseline, heartOrSynth):
-    perErrors = list()
-    recErrors = list()
-    totalDftErrors = list()
-    totalDftStandardDeviation = list()
-    perStandardDeviation = list()
-    loopTotal = list()
-    gammas = list()
-
+    
     # LOOPING THROUGH 6 DIFFERENT VALUES OF M
     for m in mset2:
+        perErrors = list()
+        recErrors = list()
+        totalDftErrors = list()
+        totalDftStandardDeviation = list()
+        perStandardDeviation = list()
+        loopTotal = list()
+        gammas = list()
+
         for n in nset:
             if baseline == 0:
                 print(f"\nProcessing the optimal summation result with DFT for the values m = {m} and n = {n} using the heartbeat data.")

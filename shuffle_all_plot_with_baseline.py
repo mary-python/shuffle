@@ -132,12 +132,12 @@ def drawBasic(index):
 
 # THE SKELETON SAVING FUNCTION IN THE BASIC CASE
 def saveBasic(index):
-    plt.legend()
+    plt.legend(loc = "upper center", bbox_to_anchor = (0.5, 1.15), ncol = 2)
 
     if index >= 3:
         handles, labels = plt.gca().get_legend_handles_labels()
         order = [1, 0, 2]
-        plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order])
+        plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.15), ncol = 2)
 
     plt.tight_layout()
     plt.draw()
@@ -260,7 +260,7 @@ def saveDft(heartOrSynth, index):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
     order = [1, 0, 4, 3, 2]
-    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], ncol = 2)
+    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.15), ncol = 2)
     plt.tight_layout()
     plt.draw()
 
@@ -283,14 +283,14 @@ def readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, ga
 
         if index == 4 or index == 5:
             labels[rowCount] = f'{(float(tab[0]))}'
-            seeds.append(float(tab[0]))
+            seeds[rowCount] = float(tab[0])
         else:
             labels[rowCount] = f'{(int(tab[0]))}'
-            seeds.append(int(tab[0]))
+            seeds[rowCount] = int(tab[0])
             
         perErrors.append((Decimal(tab[1])))
         perStandardDeviation.append((Decimal(tab[5])))
-        gammas.append(float(tab[6]))
+        gammas[rowCount] = float(tab[6])
         rowCount += 1
 
         if rowCount >= limit:
@@ -303,8 +303,8 @@ def fitPerDft(index, m):
     perErrorsB = list()
     perStandardDeviationA = list()
     perStandardDeviationB = list()
-    gammas = list()
-    seeds = list()
+    gammas = [0]*limit
+    seeds = [0]*limit
     rowCount = 0
 
     # PUTTING THE DATA ON THE AXES: SEPARATED BY INDEX AND WHETHER BASELINE DATA IS USED OR NOT
@@ -354,19 +354,19 @@ def fitPerDft(index, m):
             pA = [(0.00006*((1/(s**(4/3)))/((1-g))**2))+0.0001 for s, g in plotTuple]
             pB = [(0.00001*((1/(s**(4/3)))/((1-g))**2))+0.00003 for s, g in plotTuple]
 
-        if m == 20:
+        elif m == 20:
             pA = [(0.00037*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
             pB = [(0.00023*((1/(s**(4/3)))/((1-g))**2))+0.0008 for s, g in plotTuple]
 
-        if m == 40:
+        elif m == 40:
             pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.0019 for s, g in plotTuple]
             pB = [(0.0022*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTuple]
     
-        if m == 55:
+        elif m == 55:
             pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
             pB = [(0.0041*((1/(s**(4/3)))/((1-g))**2))+0.0064 for s, g in plotTuple]
 
-        if m == 75:
+        elif m == 75:
             pA = [(0.0047*((1/(s**(4/3)))/((1-g))**2)) for s, g in plotTuple]
             pB = [(0.011*((1/(s**(4/3)))/((1-g))**2))+0.01 for s, g in plotTuple]
 
@@ -380,19 +380,19 @@ def fitPerDft(index, m):
             pA = [(0.0002*((1/(s**(4/3)))/((1-g))**2))+0.00014 for s, g in plotTuple]
             pB = [(0.000034*((1/(s**(4/3)))/((1-g))**2))+0.00004 for s, g in plotTuple]
 
-        if m == 20:
+        elif m == 20:
             pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
             pB = [(0.001*((1/(s**(4/3)))/((1-g))**2))+0.0007 for s, g in plotTuple]
 
-        if m == 40:
+        elif m == 40:
             pA = [(0.0055*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTuple]
             pB = [(0.0072*((1/(s**(4/3)))/((1-g))**2))+0.0029 for s, g in plotTuple]
     
-        if m == 55:
+        elif m == 55:
             pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.0037 for s, g in plotTuple]
             pB = [(0.013*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
 
-        if m == 75:
+        elif m == 75:
             pA = [(0.0035*((1/(s**(4/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
             pB = [(0.037*((1/(s**(4/3)))/((1-g))**2))+0.0084 for s, g in plotTuple]
 
@@ -406,19 +406,19 @@ def fitPerDft(index, m):
             pA = [(0.0035*((1/(s**(5/3)))/((1-g))**2))+0.00015 for s, g in plotTuple]
             pB = [(0.0015*((1/(s**(5/3)))/((1-g))**2))+0.000027 for s, g in plotTuple]
 
-        if m == 20:
+        elif m == 20:
             pA = [(0.015*((1/(s**(5/3)))/((1-g))**2))+0.0012 for s, g in plotTuple]
             pB = [(0.025*((1/(s**(5/3)))/((1-g))**2))+0.0008 for s, g in plotTuple]
 
-        if m == 40:
+        elif m == 40:
             pA = [(0.05*((1/(s**(5/3)))/((1-g))**2))+0.0023 for s, g in plotTuple]
             pB = [(0.3*((1/(s**(5/3)))/((1-g))**2))+0.0033 for s, g in plotTuple]
     
-        if m == 55:
+        elif m == 55:
             pA = [(0.26*((1/(s**(5/3)))/((1-g))**2))+0.0025 for s, g in plotTuple]
             pB = [(0.74*((1/(s**(5/3)))/((1-g))**2))+0.0062 for s, g in plotTuple]
 
-        if m == 75:
+        elif m == 75:
             pA = [(0.25*((1/(s**(5/3)))/((1-g))**2))+0.006 for s, g in plotTuple]
             pB = [(1.6*((1/(s**(5/3)))/((1-g))**2))+0.016 for s, g in plotTuple]
 
@@ -448,22 +448,22 @@ def fitPerDft(index, m):
             selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.005"])
             selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.005])
 
-        if m == 20:
+        elif m == 20:
             plt.ylim(0.0003, 0.02)
             selectiveFormatter = FixedFormatter(["0.0003", "0.001", "0.01"])
             selectiveLocator = FixedLocator([0.0003, 0.001, 0.01])
 
-        if m == 40:
+        elif m == 40:
             plt.ylim(0.001, 0.05)
             selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.05"])
             selectiveLocator = FixedLocator([0.001, 0.01, 0.05])
     
-        if m == 55:
+        elif m == 55:
             plt.ylim(0.001, 0.1)
             selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.03", "0.1"])
             selectiveLocator = FixedLocator([0.001, 0.01, 0.03, 0.1])
 
-        if m == 75:
+        elif m == 75:
             plt.ylim(0.002, 0.5)
             selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.5"])
             selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.5])
@@ -485,22 +485,22 @@ def fitPerDft(index, m):
             selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.005"])
             selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.005])
 
-        if m == 20:
+        elif m == 20:
             plt.ylim(0.0003, 0.02)
             selectiveFormatter = FixedFormatter(["0.0003", "0.001", "0.01"])
             selectiveLocator = FixedLocator([0.00003, 0.001, 0.01])
 
-        if m == 40:
+        elif m == 40:
             plt.ylim(0.0005, 0.1)
             selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.1"])
             selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.1])
     
-        if m == 55:
+        elif m == 55:
             plt.ylim(0.001, 0.1)
             selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.03", "0.1"])
             selectiveLocator = FixedLocator([0.001, 0.01, 0.03, 0.1])
 
-        if m == 75:
+        elif m == 75:
             plt.ylim(0.002, 0.6)
             selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.1", "0.8"])
             selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.8])
@@ -522,22 +522,22 @@ def fitPerDft(index, m):
             selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.005"])
             selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.005])
 
-        if m == 20:
+        elif m == 20:
             plt.ylim(0.0002, 0.01)
             selectiveFormatter = FixedFormatter(["0.0002", "0.001", "0.01"])
             selectiveLocator = FixedLocator([0.0002, 0.001, 0.01])
 
-        if m == 40:
+        elif m == 40:
             plt.ylim(0.0005, 0.1)
             selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.1"])
             selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.1])
     
-        if m == 55:
+        elif m == 55:
             plt.ylim(0.0005, 0.2)
             selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.1"])
             selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.1])
 
-        if m == 75:
+        elif m == 75:
             plt.ylim(0.001, 1)
             selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "1"])
             selectiveLocator = FixedLocator([0.001, 0.01, 0.1, 1])
@@ -555,7 +555,7 @@ def savePerDft(index, m):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
     order = [1, 3, 0, 2]
-    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order])
+    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.15), ncol = 2)
     plt.tight_layout()
     plt.draw()
     
@@ -572,9 +572,9 @@ def savePerDft(index, m):
 
 # A FINAL FUNCTION TO GRAB ALL THE BEST FIT LINES FROM ABOVE AND PLOT THEM TOGETHER
 def drawDftLines(index):
-    labels = list()
-    gammas = list()
-    seeds = list()
+    labels = [0]*limit
+    gammas = [0]*limit
+    seeds = [0]*limit
     rowCount = 0
 
     # CAN GRAB THE LABELS, SEEDS AND GAMMAS FROM ANY FOURIER DATA FILE
@@ -583,13 +583,13 @@ def drawDftLines(index):
             tab = line.split()
             
             if index == 4 or index == 5:
-                labels.append(f'{float(tab[0])}')
-                seeds.append(float(tab[0]))
+                labels[rowCount] = f'{(float(tab[0]))}'
+                seeds[rowCount] = float(tab[0])
             else:
-                labels.append(f'{int(tab[0])}')
-                seeds.append(int(tab[0]))
+                labels[rowCount] = f'{(int(tab[0]))}'
+                seeds[rowCount] = int(tab[0])
 
-            gammas.append(float(tab[6]))
+            gammas[rowCount] = float(tab[6])
             rowCount += 1
 
             if rowCount >= limit:
@@ -728,9 +728,12 @@ def drawDftLines(index):
 # SAVING THE FINAL GRAPH
 def saveDftLines(index):
     plt.legend()
+    handles, labels = plt.gca().get_legend_handles_labels()
+    order = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.15), ncol = 2)
     plt.tight_layout()
     plt.draw()
-    plt.savefig("errorchartfourierline" + str(index) + "%s.png" % parset[index])
+    plt.savefig("errorchartfourierplines" + str(index) + "%s.png" % parset[index])
     plt.clf()
     plt.cla()
 
@@ -756,7 +759,7 @@ def plotDft():
 
             fitPerDft(index, mset2[5])
             custom(index)
-            savePerDft(index)
+            savePerDft(index, mset2[5])
 
         if index >= 4:
             for m in mset2:
