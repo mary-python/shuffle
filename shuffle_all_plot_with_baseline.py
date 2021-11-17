@@ -79,8 +79,8 @@ def drawBasic(index):
                 break
     
     # THE BARS PLOTTED ARE THE SAME FOR EACH PARAMETER
-    plt.bar(labels, totalErrors, width, label = 'Total experimental error',  alpha = 0.6, color = 'm', edgecolor = 'k')
-    plt.errorbar(labels, totalErrors, totalStandardDeviation, label = 'Total standard deviation',  linestyle = 'None', capsize = 2, color = 'g')
+    plt.bar(labels, totalErrors, width, label = 'Total experimental err.',  alpha = 0.6, color = 'm', edgecolor = 'k')
+    plt.errorbar(labels, totalErrors, totalStandardDeviation, label = 'Total s.d.',  linestyle = 'None', capsize = 2, color = 'g')
 
     # PLOTTING COMPARISON LINE GRAPHS TO VERIFY DEPENDENCIES WITH D, EPSILON AND N
     plotTuple = tuple(zip(seeds, gammas))
@@ -137,7 +137,7 @@ def saveBasic(index):
     if index >= 3:
         handles, labels = plt.gca().get_legend_handles_labels()
         order = [1, 0, 2]
-        plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.15), ncol = 2)
+        plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.2), ncol = 2, shadow = True)
 
     plt.tight_layout()
     plt.draw()
@@ -260,7 +260,7 @@ def saveDft(heartOrSynth, index):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
     order = [1, 0, 4, 3, 2]
-    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.15), ncol = 2)
+    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.2), ncol = 2, shadow = True)
     plt.tight_layout()
     plt.draw()
 
@@ -555,7 +555,7 @@ def savePerDft(index, m):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
     order = [1, 3, 0, 2]
-    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.15), ncol = 2)
+    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.2), ncol = 2, shadow = True)
     plt.tight_layout()
     plt.draw()
     
@@ -678,22 +678,22 @@ def drawDftLines(index):
     y6B = np.array(p6B)
 
     plt.plot(x, y1A, label = '$\mathit{m} = 5$', alpha = 0.6, color = 'gold')
-    plt.plot(x, y1B, label = '$\mathit{m} = 5$ for baseline', alpha = 0.6, color = 'orange')
+    plt.plot(x, y1B, label = '$\mathit{m} = 5$ (baseline)', alpha = 0.6, color = 'orange')
 
     plt.plot(x, y2A, label = '$\mathit{m} = 20$', alpha = 0.6, color = 'lime')
-    plt.plot(x, y2B, label = '$\mathit{m} = 20$ for baseline', alpha = 0.6, color = 'green')
+    plt.plot(x, y2B, label = '$\mathit{m} = 20$ (baseline)', alpha = 0.6, color = 'green')
 
     plt.plot(x, y3A, label = '$\mathit{m} = 40$', alpha = 0.6, color = 'cyan')
-    plt.plot(x, y3B, label = '$\mathit{m} = 40$ for baseline', alpha = 0.6, color = 'deepskyblue')
+    plt.plot(x, y3B, label = '$\mathit{m} = 40$ (baseline)', alpha = 0.6, color = 'deepskyblue')
 
     plt.plot(x, y4A, label = '$\mathit{m} = 55$', alpha = 0.6, color = 'royalblue')
-    plt.plot(x, y4B, label = '$\mathit{m} = 55$ for baseline', alpha = 0.6, color = 'navy')
+    plt.plot(x, y4B, label = '$\mathit{m} = 55$ (baseline)', alpha = 0.6, color = 'navy')
 
     plt.plot(x, y5A, label = '$\mathit{m} = 75$', alpha = 0.6, color = 'mediumorchid')
-    plt.plot(x, y5B, label = '$\mathit{m} = 75$ for baseline', alpha = 0.6, color = 'indigo')
+    plt.plot(x, y5B, label = '$\mathit{m} = 75$ (baseline)', alpha = 0.6, color = 'indigo')
 
     plt.plot(x, y6A, label = '$\mathit{m} = 95$', alpha = 0.6, color = 'deeppink')
-    plt.plot(x, y6B, label = '$\mathit{m} = 95$ for baseline', alpha = 0.6, color = 'crimson')
+    plt.plot(x, y6B, label = '$\mathit{m} = 95$ (baseline)', alpha = 0.6, color = 'crimson')
 
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
@@ -703,23 +703,23 @@ def drawDftLines(index):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE EPSILON AND N DEPENDENCIES
     if index == 4:
         plt.yscale('log')
-        plt.ylim(0.00001, 0.8)
-        selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.01", "0.1", "0.8"])
-        selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.01, 0.1, 0.8])
+        plt.ylim(0.00001, 1)
+        selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.01", "0.1", "1"])
+        selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.01, 0.1, 1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 5:
         plt.yscale('log')
-        plt.ylim(0.00001, 0.8)
-        selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.01", "0.1", "0.8"])
-        selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.01, 0.1, 0.8])
+        plt.ylim(0.00001, 1)
+        selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.01", "0.1", "1"])
+        selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.01, 0.1, 1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 6:
         plt.yscale('log')
-        plt.ylim(0.00001, 1.7)
+        plt.ylim(0.00001, 2)
         selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.01", "0.1", "1"])
         selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.01, 0.1, 1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
@@ -730,7 +730,7 @@ def saveDftLines(index):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
     order = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.15), ncol = 2)
+    plt.legend([handles[idx] for idx in order], [labels[idx] for idx in order], loc = "upper center", bbox_to_anchor = (0.5, 1.3), ncol = 2, shadow = True, fontsize = 9)
     plt.tight_layout()
     plt.draw()
     plt.savefig("errorchartfourierplines" + str(index) + "%s.png" % parset[index])
