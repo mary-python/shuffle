@@ -225,15 +225,15 @@ def drawDft(heartOrSynth, index):
     # CREATING A LOGARITHMIC Y-AXIS FOR THE T, K AND M DEPENDENCIES
     if index == 0:
         plt.yscale('log')
-        plt.ylim(0.005, 13)
-        selectiveFormatter = FixedFormatter(["0.005", "0.01", "0.1", "1", "10"])
-        selectiveLocator = FixedLocator([0.005, 0.01, 0.1, 1, 10])
+        plt.ylim(0.005, 3)
+        selectiveFormatter = FixedFormatter(["0.005", "0.01", "0.1", "1"])
+        selectiveLocator = FixedLocator([0.005, 0.01, 0.1, 1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
     elif index == 1:
         plt.yscale('log')
-        plt.ylim(0.005, 2)
+        plt.ylim(0.005, 1)
         selectiveFormatter = FixedFormatter(["0.005", "0.01", "0.1", "1"])
         selectiveLocator = FixedLocator([0.005, 0.01, 0.1, 1])
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
@@ -242,14 +242,14 @@ def drawDft(heartOrSynth, index):
     elif index == 2:
         if heartOrSynth == 0:
             plt.yscale('log')
-            plt.ylim(0.004, 100)
-            selectiveFormatter = FixedFormatter(["0.004", "0.01", "0.1", "1", "10", "100"])
-            selectiveLocator = FixedLocator([0.004, 0.01, 0.1, 1, 10, 100])
+            plt.ylim(0.004, 20)
+            selectiveFormatter = FixedFormatter(["0.004", "0.01", "0.1", "1", "10"])
+            selectiveLocator = FixedLocator([0.004, 0.01, 0.1, 1, 10])
             plt.gca().yaxis.set_major_formatter(selectiveFormatter)
             plt.gca().yaxis.set_major_locator(selectiveLocator)
         else:
             plt.yscale('log')
-            plt.ylim(0.0002, 10)
+            plt.ylim(0.0002, 2)
             selectiveFormatter = FixedFormatter(["0.0002", "0.001", "0.01", "0.1", "1", "10"])
             selectiveLocator = FixedLocator([0.0002, 0.001, 0.01, 0.1, 1, 10])
             plt.gca().yaxis.set_major_formatter(selectiveFormatter)
@@ -351,54 +351,54 @@ def fitPerDft(index, m):
     # EPSILON LESS THAN 1: SEPARATED BY M
     elif index == 4:
         if m == 5:
-            pA = [(0.00006*((1/(s**(4/3)))/((1-g))**2))+0.0001 for s, g in plotTuple]
+            pA = [(0.00012*((1/(s**(4/3)))/((1-g))**2))+0.00003 for s, g in plotTuple]
             pB = [(0.00001*((1/(s**(4/3)))/((1-g))**2))+0.00003 for s, g in plotTuple]
 
         elif m == 20:
-            pA = [(0.00037*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
-            pB = [(0.00023*((1/(s**(4/3)))/((1-g))**2))+0.0008 for s, g in plotTuple]
+            pA = [(0.00016*((1/(s**(4/3)))/((1-g))**2))+0.0012 for s, g in plotTuple]
+            pB = [(0.00015*((1/(s**(4/3)))/((1-g))**2))+0.00085 for s, g in plotTuple]
 
         elif m == 40:
-            pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.0019 for s, g in plotTuple]
-            pB = [(0.0022*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTuple]
+            pA = [(0.0009*((1/(s**(4/3)))/((1-g))**2))+0.003 for s, g in plotTuple]
+            pB = [(0.0014*((1/(s**(4/3)))/((1-g))**2))+0.0036 for s, g in plotTuple]
     
         elif m == 55:
-            pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
-            pB = [(0.0041*((1/(s**(4/3)))/((1-g))**2))+0.0064 for s, g in plotTuple]
+            pA = [(0.002*((1/(s**(4/3)))/((1-g))**2))+0.0026 for s, g in plotTuple]
+            pB = [(0.0046*((1/(s**(4/3)))/((1-g))**2))+0.005 for s, g in plotTuple]
 
         elif m == 75:
-            pA = [(0.0047*((1/(s**(4/3)))/((1-g))**2)) for s, g in plotTuple]
-            pB = [(0.011*((1/(s**(4/3)))/((1-g))**2))+0.01 for s, g in plotTuple]
+            pA = [(0.0023*((1/(s**(4/3)))/((1-g))**2))+0.006 for s, g in plotTuple]
+            pB = [(0.012*((1/(s**(4/3)))/((1-g))**2))+0.0075 for s, g in plotTuple]
 
         else:
-            pA = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
-            pB = [(0.02*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
+            pA = [(0.0027*((1/(s**(4/3)))/((1-g))**2))+0.008 for s, g in plotTuple]
+            pB = [(0.019*((1/(s**(4/3)))/((1-g))**2))+0.022 for s, g in plotTuple]
 
     # EPSILON EQUAL OR GREATER THAN 1: SEPARATED BY M
     elif index == 5:
         if m == 5:
-            pA = [(0.0002*((1/(s**(4/3)))/((1-g))**2))+0.00014 for s, g in plotTuple]
-            pB = [(0.000034*((1/(s**(4/3)))/((1-g))**2))+0.00004 for s, g in plotTuple]
+            pA = [(0.00015*((1/(s**(4/3)))/((1-g))**2))+0.00015 for s, g in plotTuple]
+            pB = [(0.000042*((1/(s**(4/3)))/((1-g))**2))+0.000037 for s, g in plotTuple]
 
         elif m == 20:
-            pA = [(0.0012*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
-            pB = [(0.001*((1/(s**(4/3)))/((1-g))**2))+0.0007 for s, g in plotTuple]
+            pA = [(0.0013*((1/(s**(4/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
+            pB = [(0.0009*((1/(s**(4/3)))/((1-g))**2))+0.00075 for s, g in plotTuple]
 
         elif m == 40:
-            pA = [(0.0055*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTuple]
-            pB = [(0.0072*((1/(s**(4/3)))/((1-g))**2))+0.0029 for s, g in plotTuple]
+            pA = [(0.0035*((1/(s**(4/3)))/((1-g))**2))+0.0021 for s, g in plotTuple]
+            pB = [(0.0068*((1/(s**(4/3)))/((1-g))**2))+0.0028 for s, g in plotTuple]
     
         elif m == 55:
-            pA = [(0.0025*((1/(s**(4/3)))/((1-g))**2))+0.0037 for s, g in plotTuple]
-            pB = [(0.013*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
+            pA = [(0.0045*((1/(s**(4/3)))/((1-g))**2))+0.003 for s, g in plotTuple]
+            pB = [(0.014*((1/(s**(4/3)))/((1-g))**2))+0.0053 for s, g in plotTuple]
 
         elif m == 75:
-            pA = [(0.0035*((1/(s**(4/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
-            pB = [(0.037*((1/(s**(4/3)))/((1-g))**2))+0.0084 for s, g in plotTuple]
+            pA = [(0.0096*((1/(s**(4/3)))/((1-g))**2))+0.0045 for s, g in plotTuple]
+            pB = [(0.035*((1/(s**(4/3)))/((1-g))**2))+0.0096 for s, g in plotTuple]
 
         else:
-            pA = [(0.01*((1/(s**(4/3)))/((1-g))**2))+0.0055 for s, g in plotTuple]
-            pB = [(0.075*((1/(s**(4/3)))/((1-g))**2))+0.015 for s, g in plotTuple]
+            pA = [(0.013*((1/(s**(4/3)))/((1-g))**2))+0.0053 for s, g in plotTuple]
+            pB = [(0.065*((1/(s**(4/3)))/((1-g))**2))+0.017 for s, g in plotTuple]
 
     # CHANGING N: SEPARATED BY M
     else:
@@ -444,34 +444,34 @@ def fitPerDft(index, m):
         plt.yscale('log')
 
         if m == 5:
-            plt.ylim(0.00001, 0.005)
-            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.005"])
-            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.005])
+            plt.ylim(0.00001, 0.002)
+            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.002"])
+            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.002])
 
         elif m == 20:
-            plt.ylim(0.0003, 0.02)
-            selectiveFormatter = FixedFormatter(["0.0003", "0.001", "0.01"])
-            selectiveLocator = FixedLocator([0.0003, 0.001, 0.01])
+            plt.ylim(0.0003, 0.007)
+            selectiveFormatter = FixedFormatter(["0.0001", "0.001", "0.007"])
+            selectiveLocator = FixedLocator([0.0003, 0.001, 0.007])
 
         elif m == 40:
+            plt.ylim(0.001, 0.03)
+            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.03"])
+            selectiveLocator = FixedLocator([0.001, 0.01, 0.03])
+    
+        elif m == 55:
             plt.ylim(0.001, 0.05)
             selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.05"])
             selectiveLocator = FixedLocator([0.001, 0.01, 0.05])
-    
-        elif m == 55:
-            plt.ylim(0.001, 0.1)
-            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.03", "0.1"])
-            selectiveLocator = FixedLocator([0.001, 0.01, 0.03, 0.1])
 
         elif m == 75:
-            plt.ylim(0.002, 0.5)
-            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.5"])
-            selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.5])
+            plt.ylim(0.002, 0.2)
+            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.1", "0.2"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.2])
 
         else:
-            plt.ylim(0.002, 0.8)
-            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.2", "0.8"])
-            selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.2, 0.8])
+            plt.ylim(0.002, 0.3)
+            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.1", "0.3"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.3])
 
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
@@ -481,34 +481,34 @@ def fitPerDft(index, m):
         plt.yscale('log')
 
         if m == 5:
-            plt.ylim(0.00001, 0.005)
-            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.005"])
-            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.005])
+            plt.ylim(0.00001, 0.001)
+            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001"])
+            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001])
 
         elif m == 20:
-            plt.ylim(0.0003, 0.02)
-            selectiveFormatter = FixedFormatter(["0.0003", "0.001", "0.01"])
-            selectiveLocator = FixedLocator([0.00003, 0.001, 0.01])
+            plt.ylim(0.0003, 0.006)
+            selectiveFormatter = FixedFormatter(["0.0003", "0.001", "0.006"])
+            selectiveLocator = FixedLocator([0.0003, 0.001, 0.006])
 
         elif m == 40:
-            plt.ylim(0.0005, 0.1)
-            selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.1"])
-            selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.1])
+            plt.ylim(0.0005, 0.03)
+            selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.03"])
+            selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.03])
     
         elif m == 55:
-            plt.ylim(0.001, 0.1)
-            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.03", "0.1"])
-            selectiveLocator = FixedLocator([0.001, 0.01, 0.03, 0.1])
+            plt.ylim(0.001, 0.06)
+            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.06"])
+            selectiveLocator = FixedLocator([0.001, 0.01, 0.06])
 
         elif m == 75:
-            plt.ylim(0.002, 0.6)
-            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.1", "0.8"])
-            selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.8])
+            plt.ylim(0.002, 0.3)
+            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.1", "0.3"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.3])
 
         else:
-            plt.ylim(0.002, 0.8)
-            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.03", "0.1", "0.8"])
-            selectiveLocator = FixedLocator([0.002, 0.01, 0.03, 0.1, 0.8])
+            plt.ylim(0.002, 0.9)
+            selectiveFormatter = FixedFormatter(["0.002", "0.01", "0.1", "0.9"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.9])
           
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
@@ -518,34 +518,34 @@ def fitPerDft(index, m):
         plt.yscale('log')
 
         if m == 5:
-            plt.ylim(0.00001, 0.005)
-            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.005"])
-            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.005])
+            plt.ylim(0.00001, 0.001)
+            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001"])
+            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001])
 
         elif m == 20:
-            plt.ylim(0.0002, 0.01)
-            selectiveFormatter = FixedFormatter(["0.0002", "0.001", "0.01"])
-            selectiveLocator = FixedLocator([0.0002, 0.001, 0.01])
+            plt.ylim(0.0002, 0.004)
+            selectiveFormatter = FixedFormatter(["0.0002", "0.001", "0.004"])
+            selectiveLocator = FixedLocator([0.0002, 0.001, 0.004])
 
         elif m == 40:
-            plt.ylim(0.0005, 0.1)
-            selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.1"])
-            selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.1])
+            plt.ylim(0.0005, 0.03)
+            selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.03"])
+            selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.03])
     
         elif m == 55:
-            plt.ylim(0.0005, 0.2)
-            selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.1"])
-            selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.1])
+            plt.ylim(0.0005, 0.07)
+            selectiveFormatter = FixedFormatter(["0.0005", "0.001", "0.01", "0.07"])
+            selectiveLocator = FixedLocator([0.0005, 0.001, 0.01, 0.07])
 
         elif m == 75:
-            plt.ylim(0.001, 1)
-            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "1"])
-            selectiveLocator = FixedLocator([0.001, 0.01, 0.1, 1])
+            plt.ylim(0.001, 0.4)
+            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "0.4"])
+            selectiveLocator = FixedLocator([0.001, 0.01, 0.1, 0.4])
 
         else:
             plt.ylim(0.002, 1.7)
-            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "0.3", "1"])
-            selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 0.3, 1])
+            selectiveFormatter = FixedFormatter(["0.001", "0.01", "0.1", "1", "1.7"])
+            selectiveLocator = FixedLocator([0.002, 0.01, 0.1, 1, 1.7])
  
         plt.gca().yaxis.set_major_formatter(selectiveFormatter)
         plt.gca().yaxis.set_major_locator(selectiveLocator)
