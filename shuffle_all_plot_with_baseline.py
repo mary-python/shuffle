@@ -31,7 +31,7 @@ def custom(index):
 
     # VARYING THE NUMBER OF FOURIER COEFFICIENTS M
     elif index == 2:
-        plt.xlabel('% of Fourier coefficients ' + '$\mathit{m}$ ' + 'retained', labelpad = 8)
+        plt.xlabel('% of (Fourier) coefficients ' + '$\mathit{m}$ ' + 'retained', labelpad = 8)
 
     # VARYING THE VECTOR DIMENSION D
     elif index == 3:
@@ -297,7 +297,7 @@ def readPerDft(reader, index, labels, seeds, perErrors, perStandardDeviation, ga
             break
 
 # A SKELETON FUNCTION ISOLATING THE PERTURBATION ERROR
-def fitPerDft(index, m):
+def fitPerDft(heartOrSynth, index, m):
     labels = [0]*limit
     perErrorsA = list()
     perErrorsB = list()
@@ -309,10 +309,16 @@ def fitPerDft(index, m):
 
     # PUTTING THE DATA ON THE AXES: SEPARATED BY INDEX AND WHETHER BASELINE DATA IS USED OR NOT
     if index == 2:
-        with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-            readPerDft(reader, index, labels, seeds, perErrorsA, perStandardDeviationA, gammas, rowCount)
-        with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
-            readPerDft(reader, index, labels, seeds, perErrorsB, perStandardDeviationB, gammas, rowCount)
+        if heartOrSynth == 0:
+            with open("errordatafourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
+                readPerDft(reader, index, labels, seeds, perErrorsA, perStandardDeviationA, gammas, rowCount)
+            with open("errordatanofourier" + str(index) + "%sheart.txt" % parset[index]) as reader:
+                readPerDft(reader, index, labels, seeds, perErrorsB, perStandardDeviationB, gammas, rowCount)
+        else:
+            with open("errordatafourier" + str(index) + "%ssynth.txt" % parset[index]) as reader:
+                readPerDft(reader, index, labels, seeds, perErrorsA, perStandardDeviationA, gammas, rowCount)
+            with open("errordatanofourier" + str(index) + "%ssynth.txt" % parset[index]) as reader:
+                readPerDft(reader, index, labels, seeds, perErrorsB, perStandardDeviationB, gammas, rowCount)
     
     # THE EPSILON AND N DEPENDENCIES ARE SEPARATED FURTHER BY THE NUMBER OF FOURIER COEFFICIENTS M SELECTED
     elif index >= 4:
@@ -345,8 +351,12 @@ def fitPerDft(index, m):
 
     # CHANGING D
     if index == 2:
-        pA = [(0.000000055*((s**(8/3))/((1-g))**2))+0.0005 for s, g in plotTuple]
-        pB = [(0.0000002*((s**(8/3))/((1-g))**2)) for s, g in plotTuple]
+        if heartOrSynth == 0:
+            pA = [(0.000000038*((s**(8/3))/((1-g))**2))+0.001 for s, g in plotTuple]
+            pB = [(0.0000002*((s**(8/3))/((1-g))**2))+0.00026 for s, g in plotTuple]
+        else:
+            pA = [(0.000000009*((s**(8/3))/((1-g))**2))+0.00008 for s, g in plotTuple]
+            pB = [(0.00000018*((s**(8/3))/((1-g))**2))+0.00036 for s, g in plotTuple]
     
     # EPSILON LESS THAN 1: SEPARATED BY M
     elif index == 4:
@@ -437,7 +447,14 @@ def fitPerDft(index, m):
     plt.xticks(x, labels)
 
     if index == 2:
-        plt.ylim(0, 0.075)
+        if heartOrSynth == 0:
+            plt.ylim(0.0001, 0.075)
+            selectiveFormatter = FixedFormatter(["0.0001", "0.001", "0.01", "0.075"])
+            selectiveLocator = FixedLocator([0.0001, 0.001, 0.01, 0.075])
+        else:
+            plt.ylim(0.00001, 0.06)
+            selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001", "0.01", "0.06"])
+            selectiveLocator = FixedLocator([0.00001, 0.0001, 0.001, 0.01, 0.06])
 
     # CREATING A LOGARITHMIC Y-AXIS FOR EPSILON LESS THAN 1: SEPARATED BY M
     elif index == 4:
@@ -516,7 +533,7 @@ def fitPerDft(index, m):
     # CHANGING N: SEPARATED BY M
     elif index == 6:
         plt.yscale('log')
-
+        
         if m == 5:
             plt.ylim(0.00001, 0.001)
             selectiveFormatter = FixedFormatter(["0.00001", "0.0001", "0.001"])
@@ -551,7 +568,7 @@ def fitPerDft(index, m):
         plt.gca().yaxis.set_major_locator(selectiveLocator)
 
 # THE SKELETON SAVING FUNCTION FOR THE ISOLATED PERTURBATION ERROR
-def savePerDft(index, m):
+def savePerDft(heartOrSynth, index, m):
     plt.legend()
     handles, labels = plt.gca().get_legend_handles_labels()
     order = [1, 3, 0, 2]
@@ -559,7 +576,13 @@ def savePerDft(index, m):
     plt.tight_layout()
     plt.draw()
     
-    if index >= 4:
+    if index == 2:
+        if heartOrSynth == 0:
+            plt.savefig("errorchartfourierperturb" + str(index) + "%sheart.png" % parset[index])
+        else:
+            plt.savefig("errorchartfourierperturb" + str(index) + "%ssynth.png" % parset[index])
+
+    elif index >= 4:
         if m == 5:
             plt.savefig("errorchartfourierperturb" + str(index) + "%s" % parset[index] + str(0) + str(m) + ".png")
         else:
@@ -757,15 +780,16 @@ def plotDft():
             custom(index)
             saveDft(1, index)
 
-            fitPerDft(index, mset2[5])
-            custom(index)
-            savePerDft(index, mset2[5])
+            for i in range(2):
+                fitPerDft(i, index, mset2[5])
+                custom(index)
+                savePerDft(i, index, mset2[5])
 
         if index >= 4:
             for m in mset2:
-                fitPerDft(index, m)
+                fitPerDft(0, index, m)
                 custom(index)
-                savePerDft(index, m)
+                savePerDft(0, index, m)
             
             drawDftLines(index)
             custom(index)
