@@ -403,28 +403,28 @@ def fitPerDft(index, m):
     # CHANGING N: SEPARATED BY M
     else:
         if m == 5:
-            pA = [(0.0035*((1/(s**(5/3)))/((1-g))**2))+0.00015 for s, g in plotTuple]
-            pB = [(0.0015*((1/(s**(5/3)))/((1-g))**2))+0.000027 for s, g in plotTuple]
+            pA = [(0.0045*((1/(s**(5/3)))/((1-g))**2))+0.00015 for s, g in plotTuple]
+            pB = [(0.00002*((1/(s**(5/3)))/((1-g))**2))+0.000038 for s, g in plotTuple]
 
         elif m == 20:
-            pA = [(0.015*((1/(s**(5/3)))/((1-g))**2))+0.0012 for s, g in plotTuple]
-            pB = [(0.025*((1/(s**(5/3)))/((1-g))**2))+0.0008 for s, g in plotTuple]
+            pA = [(0.05*((1/(s**(5/3)))/((1-g))**2))+0.001 for s, g in plotTuple]
+            pB = [(0.038*((1/(s**(5/3)))/((1-g))**2))+0.00065 for s, g in plotTuple]
 
         elif m == 40:
-            pA = [(0.05*((1/(s**(5/3)))/((1-g))**2))+0.0023 for s, g in plotTuple]
-            pB = [(0.3*((1/(s**(5/3)))/((1-g))**2))+0.0033 for s, g in plotTuple]
+            pA = [(0.1*((1/(s**(5/3)))/((1-g))**2))+0.0022 for s, g in plotTuple]
+            pB = [(0.28*((1/(s**(5/3)))/((1-g))**2))+0.0032 for s, g in plotTuple]
     
         elif m == 55:
-            pA = [(0.26*((1/(s**(5/3)))/((1-g))**2))+0.0025 for s, g in plotTuple]
-            pB = [(0.74*((1/(s**(5/3)))/((1-g))**2))+0.0062 for s, g in plotTuple]
+            pA = [(0.2*((1/(s**(5/3)))/((1-g))**2))+0.0026 for s, g in plotTuple]
+            pB = [(0.8*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
 
         elif m == 75:
-            pA = [(0.25*((1/(s**(5/3)))/((1-g))**2))+0.006 for s, g in plotTuple]
-            pB = [(1.6*((1/(s**(5/3)))/((1-g))**2))+0.016 for s, g in plotTuple]
+            pA = [(0.135*((1/(s**(5/3)))/((1-g))**2))+0.0075 for s, g in plotTuple]
+            pB = [(1.85*((1/(s**(5/3)))/((1-g))**2))+0.016 for s, g in plotTuple]
 
         else:
-            pA = [(0.32*((1/(s**(5/3)))/((1-g))**2))+0.0065 for s, g in plotTuple]
-            pB = [(3.4*((1/(s**(5/3)))/((1-g))**2))+0.028 for s, g in plotTuple]
+            pA = [(0.35*((1/(s**(5/3)))/((1-g))**2))+0.0072 for s, g in plotTuple]
+            pB = [(4.0*((1/(s**(5/3)))/((1-g))**2))+0.028 for s, g in plotTuple]
 
     yA = np.array(pA)
     yB = np.array(pB)
@@ -677,23 +677,23 @@ def drawDftLines(index):
     y6A = np.array(p6A)
     y6B = np.array(p6B)
 
-    plt.plot(x, y1A, label = '$\mathit{m} = 5$', alpha = 0.6, color = 'gold')
-    plt.plot(x, y1B, label = '$\mathit{m} = 5$ (baseline)', alpha = 0.6, color = 'orange')
+    plt.plot(x, y1A, label = '$\mathit{m} = 5$', alpha = 0.6, color = 'darkorange')
+    plt.plot(x, y1B, label = '$\mathit{m} = 5$ (baseline)', alpha = 0.6, color = 'chocolate')
 
-    plt.plot(x, y2A, label = '$\mathit{m} = 20$', alpha = 0.6, color = 'lime')
-    plt.plot(x, y2B, label = '$\mathit{m} = 20$ (baseline)', alpha = 0.6, color = 'green')
+    plt.plot(x, y2A, label = '$\mathit{m} = 20$', alpha = 0.6, color = 'limegreen')
+    plt.plot(x, y2B, label = '$\mathit{m} = 20$ (baseline)', alpha = 0.6, color = 'darkgreen')
 
-    plt.plot(x, y3A, label = '$\mathit{m} = 40$', alpha = 0.6, color = 'cyan')
+    plt.plot(x, y3A, label = '$\mathit{m} = 40$', alpha = 0.6, color = 'darkolivegreen')
     plt.plot(x, y3B, label = '$\mathit{m} = 40$ (baseline)', alpha = 0.6, color = 'deepskyblue')
 
     plt.plot(x, y4A, label = '$\mathit{m} = 55$', alpha = 0.6, color = 'royalblue')
     plt.plot(x, y4B, label = '$\mathit{m} = 55$ (baseline)', alpha = 0.6, color = 'navy')
 
-    plt.plot(x, y5A, label = '$\mathit{m} = 75$', alpha = 0.6, color = 'mediumorchid')
-    plt.plot(x, y5B, label = '$\mathit{m} = 75$ (baseline)', alpha = 0.6, color = 'indigo')
+    plt.plot(x, y5A, label = '$\mathit{m} = 75$', alpha = 0.6, color = 'deeppink')
+    plt.plot(x, y5B, label = '$\mathit{m} = 75$ (baseline)', alpha = 0.6, color = 'darkmagenta')
 
-    plt.plot(x, y6A, label = '$\mathit{m} = 95$', alpha = 0.6, color = 'deeppink')
-    plt.plot(x, y6B, label = '$\mathit{m} = 95$ (baseline)', alpha = 0.6, color = 'crimson')
+    plt.plot(x, y6A, label = '$\mathit{m} = 95$', alpha = 0.6, color = 'crimson')
+    plt.plot(x, y6B, label = '$\mathit{m} = 95$ (baseline)', alpha = 0.6, color = 'darkred')
 
     # THE Y-AXIS IS THE SAME FOR EACH PARAMETER
     plt.ticklabel_format(axis = 'y', style = 'plain')
