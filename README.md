@@ -4,7 +4,7 @@ This repository contains all the supporting files for the **experimental section
 
 ## Environment
 
-- Install the **latest version of Python 3**, and install the additional packages **decimal, matplotlib, numpy, progress and scipy** using **PIP**.
+- Install the [**latest version of Python 3**](https://www.python.org/downloads/), and install the additional packages **decimal, matplotlib, numpy, progress and scipy** using **PIP**.
 - Download the Python files **shuffle_all_data_collection.py** and **shuffle_all_plot.py**, or **shuffle_all_data_collection_with_baseline.py** and **shuffle_all_plot_with_baseline_corrected.py** if interested in the baseline experiments.
 - Download the files **mitbih_test.csv** (102.89 MB) and **mitbih_train.csv** (411.5 MB) from the [**ECG Heartbeat Categorization Dataset**](https://www.kaggle.com/shayanfazeli/heartbeat) and place them in the same folder as the Python files.
 
